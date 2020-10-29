@@ -1,0 +1,16 @@
+﻿{
+    "SystemMenus": {
+
+        "MenuList": [
+            {
+                "ID": "",
+                "Name": "",
+                "Description": "",
+                "Icon": "",
+                "ActionEntry": "",
+                "SubMenus": [
+                ]
+            }
+        ]
+    }
+}

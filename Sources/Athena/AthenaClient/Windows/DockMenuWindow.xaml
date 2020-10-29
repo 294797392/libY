@@ -1,0 +1,19 @@
+﻿<Window x:Class="AthenaClient.Windows.DockMenuWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:athena="clr-namespace:AthenaClient"
+        xmlns:local="clr-namespace:AthenaClient.Windows"
+        mc:Ignorable="d"
+        Title="DockMenuWindow" 
+        Width="{x:Static SystemParameters.PrimaryScreenWidth}" Height="30"
+        DataContext="{Binding Source={x:Static athena:UserContext.Context}, Path=DockMenuVM}"
+        WindowStyle="None" AllowsTransparency="True" Top="0" Left="0">
+    
+    <Grid>
+        <Border BorderBrush="Silver" BorderThickness="0,0,0,1"/>
+
+    </Grid>
+    
+</Window>
