@@ -16,8 +16,9 @@ https://edu.csdn.net/course/detail/24525?utm_medium=distribute.pc_relevant.none-
 * 矩阵相加：
 * 矩阵减法：
 * 矩阵乘法：
-* 矩阵除法：
 * 转置矩阵：将矩阵的行列互换得到的新矩阵称为转置矩阵 TODO：转置矩阵的运算性质
+
+## 逆矩阵
 
 
 
