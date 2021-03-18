@@ -8,7 +8,6 @@ project(tools VERSION 1.1 LANGUAGES C)
 # set(CMAKE_BUILD_TYPE "Debug")
 set(TOOLS_SOURCE_DIR ../sources/)
 
-
 # 检测编译工具链（GCC,MSVC,...）
 
 # 设置要引用的头文件目录
@@ -21,3 +20,4 @@ aux_source_directory(${TOOLS_SOURCE_DIR}av TOOLS_LIBAV)
 add_library(av SHARED ${TOOLS_SOURCE_DIR})
 
 # target_link_libraries(cpp_test PRIVATE cpp)
+
