@@ -3,11 +3,13 @@
 #include <string.h>
 
 #include "av/av.h"
-#include "av/acap.h"
+#include "av/acap/acap.h"
+#include "av/acap/drivers/acap_driver.h"
 
 struct acap_s
 {
-    void *driver;
+    void *driver_object;
+    acap_driver *driver;
     acap_config *config;
 };
 
@@ -26,6 +28,5 @@ acap *acap_create(acap_config *config)
 
 void acap_release(acap *cap)
 {
-
 }
 
