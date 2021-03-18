@@ -1,3 +1,0 @@
-/e/oheiheiheiheihei/tools/cmake/CMakeFiles/rebuild_cache.dir
-/e/oheiheiheiheihei/tools/cmake/CMakeFiles/av.dir
-/e/oheiheiheiheihei/tools/cmake/CMakeFiles/edit_cache.dir
