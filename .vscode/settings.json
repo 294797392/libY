@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "acap_driver.h": "c"
+        "acap_driver.h": "c",
+        "*.rh": "c"
     }
 }

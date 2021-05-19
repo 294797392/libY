@@ -15,7 +15,18 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\sources\guid.c">
+    <ClInclude Include="..\..\sources\funkcpp\fuckcpp.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sources\funkcpp\Process.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\sources\funkcpp\Process.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sources\funkcpp\fuck.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
