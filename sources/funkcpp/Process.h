@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "String.h"
+#include "StreamReader.h"
 #include "fuckcpp.h"
 
 using std::string;
@@ -21,24 +23,32 @@ public:
 	struct ProcessStartInfo
 	{
 	public:
-		string FileName;
+		String FileName;
 		bool UseShellExecute;
 		bool RedirectStandardError;
 		bool RedirectStandardOutput;
 		bool RedirectStandardInput;
 		bool CreateNoWindow;
-		string Arguments;
+		String Arguments;
 		ProcessWindowStyle WindowStyle;
 	};
 
+
+private:
+	ProcessStartInfo startInfo;
+	HANDLE inRead = NULL;
+	HANDLE inWrite = NULL;
+	HANDLE outRead = NULL;
+	HANDLE outWrite = NULL;
+	PROCESS_INFORMATION procInfo;
+
 public:
-	Process();
+	Process(ProcessStartInfo& startInfo);
 	~Process();
 
-
 public:
-	static Process* Start(ProcessStartInfo& startInfo);
-
+	StreamReader* StandardInput;
+	StreamReader* StandardOutput;
 
 private:
 

@@ -15,31 +15,19 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\sources\funkcpp\fuckcpp.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\sources\funkcpp\Process.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\sources\funkcpp\String.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\sources\funkcpp\StreamReader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
+    <ClCompile Include="..\..\sources\libtools\linked_list.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sources\libtools\main.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\sources\funkcpp\Process.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\sources\funkcpp\fuck.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\sources\funkcpp\String.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\sources\funkcpp\StreamReader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
+    <ClInclude Include="..\..\sources\libtools\linked_list.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sources\libtools\toolbase.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

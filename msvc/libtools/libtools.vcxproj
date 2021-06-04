@@ -18,23 +18,11 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\sources\funkcpp\fuckcpp.h" />
-    <ClInclude Include="..\..\sources\funkcpp\Process.h" />
-    <ClInclude Include="..\..\sources\funkcpp\StreamReader.h" />
-    <ClInclude Include="..\..\sources\funkcpp\String.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\sources\funkcpp\fuck.cpp" />
-    <ClCompile Include="..\..\sources\funkcpp\Process.cpp" />
-    <ClCompile Include="..\..\sources\funkcpp\StreamReader.cpp" />
-    <ClCompile Include="..\..\sources\funkcpp\String.cpp" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{e15d5a1b-c17e-4749-9900-8ed514733232}</ProjectGuid>
-    <RootNamespace>fuckcpp</RootNamespace>
+    <ProjectGuid>{4e41bc07-cf2a-4ca6-93cb-1cdaf734ffbf}</ProjectGuid>
+    <RootNamespace>libtools</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -100,6 +88,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -150,6 +139,14 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\sources\libtools\linked_list.c" />
+    <ClCompile Include="..\..\sources\libtools\main.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\sources\libtools\linked_list.h" />
+    <ClInclude Include="..\..\sources\libtools\toolbase.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
