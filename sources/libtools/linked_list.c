@@ -43,9 +43,11 @@ linkeditem *linkedlist_addlast(linkedlist *list, void *data)
 
 	list->last = item;
 	list->num += 1;
+
+	return item;
 }
 
-linkeditem *linkedlist_removelast(linkedlist *list)
+void *linkedlist_removelast(linkedlist *list)
 {
 	if (list->first == NULL)
 	{
@@ -57,18 +59,23 @@ linkeditem *linkedlist_removelast(linkedlist *list)
 	// 如果第一个元素和最后一个元素一样，那么说明只有一个元素
 	if (last == list->first)
 	{
+		void *data = last->data;
 		list->first = NULL;
 		list->last = NULL;
-		return last;
+		list->num = 0;
+		free(last);
+		return data;
 	}
 
 	// 把最后一个元素设置为最后一个元素的上一个元素
 	list->last = last->prev;
 	list->last->next = NULL;
-
 	list->num -= 1;
 
-	return last;
+	void *data = last->data;
+	free(last);
+
+	return data;
 }
 
 int linkedlist_count(linkedlist *list)
@@ -76,7 +83,7 @@ int linkedlist_count(linkedlist *list)
 	return list->num;
 }
 
-void linkedlist_foreach(linkedlist *list, list_foreach_action action)
+void linkedlist_foreach(linkedlist *list, list_foreach_action action, void *userdata)
 {
 	if (list->num == 0)
 	{
@@ -87,7 +94,7 @@ void linkedlist_foreach(linkedlist *list, list_foreach_action action)
 
 	while (current)
 	{
-		action(current->data);
+		action(list, current, userdata);
 
 		current = current->next;
 	}
@@ -95,6 +102,17 @@ void linkedlist_foreach(linkedlist *list, list_foreach_action action)
 
 void linkedlist_clear(linkedlist *list)
 {
+	linkeditem *current = list->first;
+
+	while (current)
+	{
+		linkeditem *next = current->next;
+
+		free(current);
+
+		current = next;
+	}
+
 	memset(list, 0, sizeof(linkedlist));
 }
 

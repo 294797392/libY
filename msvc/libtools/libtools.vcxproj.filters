@@ -21,12 +21,30 @@
     <ClCompile Include="..\..\sources\libtools\main.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\sources\libtools\readdata.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sources\libtools\tool_file.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sources\libtools\tool_string.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\sources\libtools\linked_list.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\sources\libtools\toolbase.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sources\libtools\readdata.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sources\libtools\tool_file.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sources\libtools\tool_string.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

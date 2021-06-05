@@ -18,7 +18,7 @@ typedef struct linkedlist_s linkedlist;
 extern "C" {
 #endif
 
-	typedef int (*list_foreach_action)(void *data);
+	typedef int (*list_foreach_action)(linkedlist *list, linkeditem *item, void *userdata);
 
 	TOOLSAPI linkedlist *new_linkedlist();
 
@@ -26,11 +26,11 @@ extern "C" {
 
 	TOOLSAPI linkeditem *linkedlist_addlast(linkedlist *list, void *data);
 
-	TOOLSAPI linkeditem *linkedlist_removelast(linkedlist *list);
+	TOOLSAPI void *linkedlist_removelast(linkedlist *list);
 
 	TOOLSAPI int linkedlist_count(linkedlist *list);
 
-	TOOLSAPI void linkedlist_foreach(linkedlist *list, list_foreach_action action);
+	TOOLSAPI void linkedlist_foreach(linkedlist *list, list_foreach_action action, void *userdata);
 
 	TOOLSAPI void linkedlist_clear(linkedlist *list);
 
