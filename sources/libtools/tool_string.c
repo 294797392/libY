@@ -74,7 +74,7 @@ int string_split(const char *str, const char separator, string_split_options opt
 			}
 			else
 			{
-				char *token = calloc(1, token_len + 1);
+				char *token = (char*)calloc(1, token_len + 1);
 				strncpy(token, str + token_pos, token_len);
 				tokens[num_tokens] = token;
 				token_len = 0;
@@ -90,7 +90,7 @@ int string_split(const char *str, const char separator, string_split_options opt
 
 	if(token_len > 0)
 	{
-		char *token = calloc(1, token_len + 1);
+		char *token = (char*)calloc(1, token_len + 1);
 		strncpy(token, str + token_pos, token_len);
 		tokens[num_tokens] = token;
 		num_tokens++;
