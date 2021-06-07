@@ -27,13 +27,40 @@ struct tool_treenode_s
 extern "C" {
 #endif
 
+    typedef void (*tree_free_func)(void *data);
+
 	typedef int (*tree_foreach_action)(tool_tree *tree, tool_treenode *node, void *userdata);
 
+    /*
+     * 描述：
+     * 实例化一棵树
+     */
     TOOLSAPI tool_tree *new_tree();
+
+    TOOLSAPI tool_tree *new_tree2(tree_free_func freefunc);
 
     TOOLSAPI tool_treenode *tree_initroot(tool_tree *tree, void *data);
 
+    /*
+     * 描述：
+     * 对tree进行遍历操作
+     * 
+     * 参数：
+     * @tree：tree对象
+     * @foreach_action：遍历函数
+     * @userdata：用户自定义数据
+     */
     TOOLSAPI void tree_foreach(tool_tree *tree, tree_foreach_action foreach_action, void *userdata);
+
+    /*
+     * 描述：
+     * 删除某个节点以及子节点
+     * 
+     * 参数：
+     * @tree：tree对象
+     * @node：要删除的节点
+     */
+    TOOLSAPI void tree_delete(tool_tree *tree, tool_treenode *node);
 
 #ifdef __cplusplus
 }

@@ -9,12 +9,21 @@ struct linkedlist_s
 	linkeditem *first;
 	linkeditem *last;
 	int num;
+
+	list_free_func free;
 };
 
 linkedlist *new_linkedlist()
 {
 	linkedlist *list = (linkedlist *)calloc(1, sizeof(linkedlist));
 
+	return list;
+}
+
+linkedlist *new_linkedlist2(list_free_func freefunc)
+{
+	linkedlist *list = new_linkedlist();
+	list->free = freefunc;
 	return list;
 }
 
@@ -107,6 +116,11 @@ void linkedlist_clear(linkedlist *list)
 	while (current)
 	{
 		linkeditem *next = current->next;
+
+		if(list->free)
+		{
+			list->free(current->data);			
+		}
 
 		free(current);
 

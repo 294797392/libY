@@ -10,11 +10,21 @@ struct tool_tree_s
     tool_treenode *root;
 
     int foreach_status;
+
+    // 释放data的函数
+    tree_free_func free;
 };
 
 tool_tree *new_tree()
 {
     tool_tree *tree = (tool_tree*)calloc(1, sizeof(tool_tree));
+    return tree;
+}
+
+tool_tree *new_tree2(tree_free_func freefunc)
+{
+    tool_tree *tree = new_tree();
+    tree->free = freefunc;
     return tree;
 }
 
@@ -73,5 +83,20 @@ tool_treenode *tree_initroot(tool_tree *tree, void *data)
     return node;
 }
 
+void tree_delete(tool_tree *tree, tool_treenode *node)
+{
+    if(node->num_child > 0)
+    {
+        for (int i = 0; i < node->num_child; i++)
+        {
+            tree_delete(tree, node->children[i]);
+        }
+    }
 
+    if(tree->free)
+    {
+        tree->free(node->data);
+    }
 
+    free(node);
+}
