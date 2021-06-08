@@ -1,4 +1,4 @@
-#ifndef __TOOL_NET_H__
+﻿#ifndef __TOOL_NET_H__
 #define __TOOL_NET_H__
 
 #include "toolbase.h"

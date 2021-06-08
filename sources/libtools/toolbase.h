@@ -1,4 +1,4 @@
-#ifndef __TOOLBASE_H__
+﻿#ifndef __TOOLBASE_H__
 #define __TOOLBASE_H__
 
 #ifdef WIN32

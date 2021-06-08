@@ -86,7 +86,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
@@ -142,16 +142,18 @@
   <ItemGroup>
     <ClCompile Include="..\..\sources\libtools\linked_list.c" />
     <ClCompile Include="..\..\sources\libtools\main.c" />
-    <ClCompile Include="..\..\sources\libtools\readdata.c" />
     <ClCompile Include="..\..\sources\libtools\tool_file.c" />
+    <ClCompile Include="..\..\sources\libtools\tool_net.c" />
     <ClCompile Include="..\..\sources\libtools\tool_string.c" />
+    <ClCompile Include="..\..\sources\libtools\tool_tree.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\sources\libtools\linked_list.h" />
-    <ClInclude Include="..\..\sources\libtools\readdata.h" />
     <ClInclude Include="..\..\sources\libtools\toolbase.h" />
     <ClInclude Include="..\..\sources\libtools\tool_file.h" />
+    <ClInclude Include="..\..\sources\libtools\tool_net.h" />
     <ClInclude Include="..\..\sources\libtools\tool_string.h" />
+    <ClInclude Include="..\..\sources\libtools\tool_tree.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

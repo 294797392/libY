@@ -1,4 +1,4 @@
-#ifndef __TOOL_STRING_H__
+﻿#ifndef __TOOL_STRING_H__
 #define __TOOL_STRING_H__
 
 #include "toolbase.h"

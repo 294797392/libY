@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "tool_tree.h": "c"
+        "tool_tree.h": "c",
+        "tool_string.h": "c",
+        "stdio.h": "c"
     }
 }

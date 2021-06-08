@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "linked_list.h"
-#include "readdata.h"
+#include "tool_tree.h"
 
 static int foreach_printf(linkedlist *list, linkeditem *item, void *userdata)
 {
@@ -13,32 +13,6 @@ static int foreach_printf(linkedlist *list, linkeditem *item, void *userdata)
 
 static int foreach_printf2(linkedlist *list, linkeditem *item, void *userdata)
 {
-	sorted_data *sd = (sorted_data *)item->data;
-	if (sd->type == DT_DOUBLE)
-	{
-		for (size_t i = 0; i < sd->values_double_len; i++)
-		{
-			printf("%f\n", sd->values_double[i]);
-		}
-	}
-	else if (sd->type == DT_FLOAT)
-	{
-		for (size_t i = 0; i < sd->values_float_len; i++)
-		{
-			printf("%f\n", sd->values_float[i]);
-		}
-	}
-	else if (sd->type == DT_INT)
-	{
-		for (size_t i = 0; i < sd->values_int_len; i++)
-		{
-			printf("%d\n", sd->values_int[i]);
-		}
-	}
-
-	printf("over\n");
-	printf("\n\n\n");
-
 	return 0;
 }
 
@@ -70,22 +44,59 @@ static void test_linkedlist()
 	printf("test over\n");
 }
 
+static char *newstr(const char *str)
+{
+	char *r = (char *)calloc(1, strlen(str) + 1);
+	strncpy(r, str, strlen(str));
+	return r;
+}
+
+static tool_treenode *new_treenode(tool_tree *tree, tool_treenode *parent, void *data)
+{
+	tool_treenode *node = (tool_treenode *)calloc(1, sizeof(tool_treenode));
+	node->data = data;
+	node->parent = parent;
+	parent->children[parent->num_child] = node;
+	parent->num_child++;
+	return node;
+}
+
+static void init_tree(tool_tree *tree, tool_treenode *root)
+{
+	tool_treenode *node1 = new_treenode(tree, root, newstr("1.1"));
+	tool_treenode *node2 = new_treenode(tree, root, newstr("1.2"));
+	tool_treenode *node3 = new_treenode(tree, root, newstr("1.3"));
+
+	tool_treenode *node11 = new_treenode(tree, node1, newstr("1.1.1"));
+	tool_treenode *node12 = new_treenode(tree, node1, newstr("1.1.2"));
+	tool_treenode *node13 = new_treenode(tree, node1, newstr("1.1.3"));
+
+	tool_treenode *node21 = new_treenode(tree, node2, newstr("1.2.1"));
+	tool_treenode *node22 = new_treenode(tree, node2, newstr("1.2.2"));
+	tool_treenode *node23 = new_treenode(tree, node2, newstr("1.2.3"));
+
+	tool_treenode *node31 = new_treenode(tree, node3, newstr("1.3.1"));
+	tool_treenode *node32 = new_treenode(tree, node3, newstr("1.3.2"));
+	tool_treenode *node33 = new_treenode(tree, node3, newstr("1.3.3"));
+}
+
+static int tree_foreach2_action(tool_tree *tree, tool_treenode *node, void *userdata)
+{
+	printf("%s\n", node->data);
+
+	return 1;
+}
+
 int main(int argc, char **argv)
 {
-	//test_linkedlist();
-	read_data("D:\\code\\oheiheiheiheihei\\tools\\msvc\\libtools\\x64\\Debug\\data.txt");
+	char *rootdata = "root";
+	tool_tree *tree = new_tree();
+	tool_treenode *root = tree_initroot(tree, rootdata);
+	init_tree(tree, root, 1);
 
-	linkedlist *list = get_linkedlist();
-
-	//linkedlist_foreach(list, foreach_printf2, NULL);
-
-	save_binary_file();
-
-	//linkedlist_foreach(list, foreach_printf2, NULL);
-
-	read_binary_file();
-
-	linkedlist_foreach(list, foreach_printf2, NULL);
+	tree_foreach2(tree, tree_foreach2_action, NULL);
 
 	return 0;
 }
+
+
