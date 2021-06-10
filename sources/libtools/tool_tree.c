@@ -34,12 +34,6 @@ static void foreach_delete(tool_tree *tree, tool_treenode *parent)
     free(parent);
 }
 
-static void foreach_write(tool_tree *tree, tool_treenode *parent, void *userdata)
-{
-
-}
-
-
 static void foreach_node(tool_tree *tree, tool_treenode *parent, tree_foreach_action foreach_action, void *userdata)
 {
     if(parent == NULL)
@@ -160,7 +154,17 @@ tool_treenode *tree_initroot(tool_tree *tree, void *data)
     return node;
 }
 
-int tool_tree_isempty(tool_tree *tree)
+tool_treenode *tree_newnode(tool_treenode *parent, void *data)
+{
+	tool_treenode *node = (tool_treenode *)calloc(1, sizeof(tool_treenode));
+	node->data = data;
+	node->parent = parent;
+	parent->children[parent->num_child] = node;
+	parent->num_child++;
+	return node;
+}
+
+int tree_isempty(tool_tree *tree)
 {
     return tree->root == NULL;
 }
@@ -203,20 +207,10 @@ void tree_delete(tool_tree *tree, tool_treenode *node)
     }
 }
 
-int tree_savebinary(tool_tree *tree, const char *path)
+void tree_clear(tool_tree *tree)
 {
-    FILE *f = fopen(path, "wb");
-    if(f == NULL)
+    if(tree->root != NULL)
     {
-        return TOOLERR_NOFILE;
+        tree_delete(tree, tree->root);
     }
-
-    tree_foreach(tree, foreach_write, f);
-
-    fclose(f);
-}
-
-tool_tree *tree_loadbinary(tool_tree *tree, const char *path)
-{
-
 }
