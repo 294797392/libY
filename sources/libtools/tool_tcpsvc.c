@@ -38,11 +38,16 @@ struct tcpsvc_s
 	int linebased;
 	char terminator;
 
+	// 服务器支持的客户端连接数
 	int max_cli;
+	// 当前已连接的数量
 	int num_cli;
+	// 服务器socket文件描述符
 	OS_SOCKET fd;
 
+	// 是否正在运行
 	int running;
+	// 服务器主线程
 	pthread_t worker_thread;
 
 	tcpsvc_event_callback evt_cb;
@@ -50,7 +55,8 @@ struct tcpsvc_s
 
 	// 可以保存的最大的客户端文件描述符数量
 	OS_SOCKET clifds[DEFAULT_CLI_FDS];
-	int max_fdidx;  // 当前用到的最多的描述符
+	int last_fdidx;  // 最后一个文件描述符索引
+	OS_SOCKET maxfd;	// maximum of client socket fd
 };
 
 static void notify_event(tcpsvc *svc, tcp_client cli, TCPSVC_EVENT evt, void *data, size_t size)
@@ -59,6 +65,27 @@ static void notify_event(tcpsvc *svc, tcp_client cli, TCPSVC_EVENT evt, void *da
 	{
 		svc->evt_cb(svc, cli, evt, data, size, svc->userdata);
 	}
+}
+
+static OS_SOCKET maxfd(tcpsvc *svc)
+{
+	OS_SOCKET max = svc->fd;
+
+	for (size_t i = 0; i <= last_fdidx; i++)
+	{
+		OS_SOCKET fd = svc->clifds[i];
+		if(fd == INVALID_CLI_FD)
+		{
+			continue;
+		}
+
+		if(fd > max)
+		{
+			max = fd;
+		}
+	}
+
+	return max;
 }
 
 static OS_SOCKET new_client(tcpsvc *svc)
@@ -90,23 +117,23 @@ static int add_clifd(tcpsvc *svc, OS_SOCKET clifd)
 		{
 			svc->clifds[i] = clifd;
 
-			if (i > svc->max_fdidx)
+			if (i > svc->last_fdidx)
 			{
-				svc->max_fdidx = i;
+				svc->last_fdidx = i;
 			}
-			return 0;
+			return 1;
 		}
 	}
 
-	return 1;
+	return 0;
 }
 
 static int process_clifds(tcpsvc *svc, fd_set *rdfds, fd_set *exfds)
 {
 	// 是否要更新FD_SET的标志
-	int update_fds = 0;
+	int should_update = 0;
 
-	for (int i = 0; i <= svc->max_fdidx; i++)
+	for (int i = 0; i <= svc->last_fdidx; i++)
 	{
 		OS_SOCKET fd = svc->clifds[i];
 		if (fd == INVALID_CLI_FD)
@@ -128,7 +155,7 @@ static int process_clifds(tcpsvc *svc, fd_set *rdfds, fd_set *exfds)
 					svc->num_cli--;
 					svc->clifds[i] = INVALID_CLI_FD;
 					notify_event(svc, 0, TCPSVC_EVT_CLI_DISCONNECTED, NULL, 0);
-					update_fds = 1;
+					should_update = 1;
 				}
 				else
 				{
@@ -144,7 +171,7 @@ static int process_clifds(tcpsvc *svc, fd_set *rdfds, fd_set *exfds)
 		}
 	}
 
-	return update_fds;
+	return should_update;
 }
 
 // 清除不用监控的fds
@@ -154,7 +181,7 @@ static void cleanup_clifds(tcpsvc *svc, FD_SET *rdfds, FD_SET *wrfds, FD_SET *ex
 	FD_ZERO(wrfds);
 	FD_ZERO(exfds);
 	FD_SET(svc->fd, rdfds);
-	for (int i = 0; i <= svc->max_fdidx; i++)
+	for (int i = 0; i <= svc->last_fdidx; i++)
 	{
 		OS_SOCKET fd = svc->clifds[i];
 		if (fd != INVALID_CLI_FD)
@@ -191,7 +218,7 @@ static void *worker_thread_proc(void *state)
 	FD_SET(svc->fd, &rdfds);
 
 	/* 最大的文件描述符的值，用来当做select函数的第一个参数 */
-	int maxfds = svc->fd;
+	svc->maxfd = svc->fd;
 
 	while (1)
 	{
@@ -222,7 +249,7 @@ static void *worker_thread_proc(void *state)
 #ifdef WIN32
 		ret = select(0, &readfds, &writefds, &exceptfds, &tv);
 #else
-		ret = select(maxfds + 1, &readfds, &writefds, &exceptfds, &tv);
+		ret = select(svc->maxfd + 1, &readfds, &writefds, &exceptfds, &tv);
 #endif
 		if (ret == 0)
 		{
@@ -266,7 +293,7 @@ static void *worker_thread_proc(void *state)
 				else
 				{
 					// 超出了最大连接数
-					if (svc->num_cli >= svc->max_cli || add_clifd(svc, clifd))
+					if (svc->num_cli >= svc->max_cli || !add_clifd(svc, clifd))
 					{
 						// 没有位置了
 						notify_event(svc, clifd, TCPSVC_EVT_CLI_FULL, NULL, 0);
@@ -281,6 +308,7 @@ static void *worker_thread_proc(void *state)
 
 						// 刷新监控描述符
 						cleanup_clifds(svc, &rdfds, &wrfds, &exfds);
+						svc->maxfd = maxfd(svc);
 
 						// 通知外部模块
 						notify_event(svc, clifd, TCPSVC_EVT_CLI_CONNECTED, clifd, sizeof(OS_SOCKET));
@@ -292,6 +320,7 @@ static void *worker_thread_proc(void *state)
 			{
 				// 到这里表示需要刷新FD_SET
 				cleanup_clifds(svc, &rdfds, &wrfds, &exfds);
+				svc->maxfd = maxfd(svc);
 			}
 		}
 	}
