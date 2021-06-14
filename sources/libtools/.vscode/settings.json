@@ -2,6 +2,10 @@
     "files.associations": {
         "tool_tree.h": "c",
         "tool_string.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "types.h": "c",
+        "fcntl.h": "c",
+        "tool_tcpcli.h": "c",
+        "tool_net.h": "c"
     }
 }

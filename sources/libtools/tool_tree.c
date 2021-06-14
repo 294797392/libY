@@ -181,7 +181,7 @@ void tree_delete(tool_tree *tree, tool_treenode *node)
     {
         int index = -1;
         tool_treenode *parent = node->parent;
-        for (size_t i = 0; i < parent->num_child; i++)
+        for (int i = 0; i < parent->num_child; i++)
         {
             if(parent->children[i] == node)
             {

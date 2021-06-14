@@ -4,10 +4,12 @@
 
 #include "linked_list.h"
 #include "tool_tree.h"
+#include "tool_tcpcli.h"
+#include "tool_tcpsvc.h"
 
 static int foreach_printf(linkedlist *list, linkeditem *item, void *userdata)
 {
-	printf("%s\n", item->data);
+	//printf("%s\n", item->data);
 	return 0;
 }
 
@@ -87,14 +89,103 @@ static int tree_foreach2_action(tool_tree *tree, tool_treenode *node, void *user
 	return 1;
 }
 
+static int tcp_cli_callback(tcpcli *cli, TCPCLI_EVENT event, void *data, size_t dsize, void *userdata)
+{
+	switch (event)
+	{
+		case TCPCLI_EVT_CONNECTING:
+		{
+			printf("connecting...\n");
+			break;
+		}
+
+		case TCPCLI_EVT_CONNECTED:
+		{
+			printf("connected\n");
+			break;
+		}
+
+		case TCPCLI_EVT_DISCONNECTED:
+		{
+			printf("disconnect\n");
+			break;
+		}
+
+		case TCPCLI_EVT_RECVMSG:
+		{
+			printf("message:%s\n", data);
+			break;
+		}
+
+		default:
+			break;
+	}
+
+	return 0;
+}
+
+static int tcp_svc_callback(tcpsvc *svc, tcp_client cli, TCPSVC_EVENT event, void *data, size_t size, void *userdata)
+{
+	switch (event)
+	{
+		case TCPSVC_EVT_CLI_CONNECTED:
+		{
+			printf("TCPSVC_EVT_CLI_CONNECTED\n");
+			break;
+		}
+
+		case TCPSVC_EVT_CLI_DISCONNECTED:
+		{
+			printf("TCPSVC_EVT_CLI_DISCONNECTED\n");
+			break;
+		}
+
+		case TCPSVC_EVT_CLI_MESSAGE:
+		{
+			printf("TCPSVC_EVT_CLI_MESSAGE, %s\n", data);
+			tcpsvc_sendto(svc, cli, "hello c#\n", strlen("hello c#\n"));
+			break;
+		}
+
+		case TCPSVC_EVT_CLI_FULL:
+		{
+			printf("TCPSVC_EVT_CLI_FULL\n");
+			break;
+		}
+
+		case TCPSVC_EVT_ERROR:
+		{
+			printf("TCPSVC_EVT_ERROR\n");
+			break;
+		}
+
+		default:
+			break;
+	}
+}
+
 int main(int argc, char **argv)
 {
-	char *rootdata = "root";
-	tool_tree *tree = new_tree();
-	tool_treenode *root = tree_initroot(tree, rootdata);
-	init_tree(tree, root, 1);
+	//char *rootdata = "root";
+	//tool_tree *tree = new_tree();
+	//tool_treenode *root = tree_initroot(tree, rootdata);
+	//init_tree(tree, root);
 
-	tree_foreach2(tree, tree_foreach2_action, NULL);
+	//tree_foreach2(tree, tree_foreach2_action, NULL);
+
+	//tcpcli *cli = new_tcpcli("127.0.0.1", 8888);
+	//tcpcli_setopt(cli, TCPOPT_LINE_BASED, NULL, 0);
+	//tcpcli_set_event_callback(cli, tcp_cli_callback, NULL);
+	//tcpcli_start(cli);
+
+	int maxcli = 5;
+	tcpsvc *svc = new_tcpsvc(NULL, 8888);
+	tcpsvc_setopt(svc, TCPOPT_LINE_BASED, NULL, 0);
+	tcpsvc_setopt(svc, TCPOPT_MAX_CLI, &maxcli, sizeof(int));
+	tcpsvc_set_event_callback(svc, tcp_svc_callback, NULL);
+	tcpsvc_start(svc);
+
+	os_sleep(999999);
 
 	return 0;
 }

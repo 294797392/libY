@@ -33,6 +33,15 @@
     <ClCompile Include="..\..\sources\libtools\tool_tree.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\sources\libtools\tool_tcpcli.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sources\libtools\toolbase.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sources\libtools\tool_tcpsvc.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\sources\libtools\linked_list.h">
@@ -51,6 +60,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\sources\libtools\tool_tree.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sources\libtools\tool_tcpcli.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sources\libtools\toolcode.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sources\libtools\tool_tcpsvc.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
