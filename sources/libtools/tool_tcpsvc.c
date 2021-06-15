@@ -143,6 +143,7 @@ static int process_clifds(tcpsvc *svc, fd_set *rdfds, fd_set *exfds)
 			continue;
 		}
 
+		// 经过测试，当客户端连接断开后，也会收到read信号，此时再去read就会失败
 		if (FD_ISSET(fd, rdfds))
 		{
 			// 有数据发送过来，开始读取
@@ -307,11 +308,9 @@ static void *worker_thread_proc(void *state)
 					{
 						// 接收客户端连接成功
 						svc->num_cli++;
-
 						// 刷新监控描述符
 						cleanup_clifds(svc, &rdfds, &wrfds, &exfds);
 						svc->maxfd = maxfd(svc);
-
 						// 通知外部模块
 						notify_event(svc, clifd, TCPSVC_EVT_CLI_CONNECTED, NULL, 0);
 					}

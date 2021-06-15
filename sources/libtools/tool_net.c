@@ -55,7 +55,7 @@ int net_read_until(OS_SOCKET fd, char *buf, size_t len, char terminator)
 			}
 			else
 			{
-				TLOGE("fd_read_line failed, %d", errno);
+				TLOGE("net_read_until failed, %d", errno);
 				return 0;
 			}
 		}
@@ -92,7 +92,7 @@ int net_write(OS_SOCKET fd, void *data, size_t len)
 			}
 			else
 			{
-				TLOGE("pushsvc send failed, %ld", ret);
+				TLOGE("net_write failed, %ld", ret);
 				return 1;
 			}
 		}

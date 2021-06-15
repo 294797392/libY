@@ -124,12 +124,15 @@ static int tcp_cli_callback(tcpcli *cli, TCPCLI_EVENT event, void *data, size_t 
 	return 0;
 }
 
+static tcp_client skfd = 0;
+
 static int tcp_svc_callback(tcpsvc *svc, tcp_client cli, TCPSVC_EVENT event, void *data, size_t size, void *userdata)
 {
 	switch (event)
 	{
 		case TCPSVC_EVT_CLI_CONNECTED:
 		{
+			skfd = cli;
 			printf("TCPSVC_EVT_CLI_CONNECTED\n");
 			break;
 		}
@@ -186,6 +189,16 @@ int main(int argc, char **argv)
 	tcpsvc_setopt(svc, TCPOPT_MAX_CLI, (char*)&maxcli, sizeof(int));
 	tcpsvc_set_event_callback(svc, tcp_svc_callback, NULL);
 	tcpsvc_start(svc);
+
+	char c;
+	scanf(&c);
+
+	while (1)
+	{
+		tcpsvc_sendto(svc, skfd, "hello\n", 6);
+
+		os_sleep(1000);
+	}
 
 	os_sleep(999999);
 
