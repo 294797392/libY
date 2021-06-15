@@ -8,6 +8,8 @@ project(tools VERSION 1.1 LANGUAGES C)
 # set(CMAKE_BUILD_TYPE "Debug")
 set(LIBTOOLS_DIR ../sources/libtools)
 
+add_definitions(-D UNIX)
+
 # 检测编译工具链（GCC,MSVC,...）
 
 # 设置要引用的头文件目录

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <fcntl.h>
+#include <errno.h>
 #ifdef UNIX
 #include <unistd.h>
 #else
@@ -74,7 +75,7 @@ int fd_write(int fd, void *data, size_t len)
 			}
 			else
 			{
-				TLOGE("pushsvc send failed, %d", ret);
+				TLOGE("fd_write failed, %ld", ret);
 				return 1;
 			}
 		}

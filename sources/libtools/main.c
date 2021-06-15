@@ -84,7 +84,7 @@ static void init_tree(tool_tree *tree, tool_treenode *root)
 
 static int tree_foreach2_action(tool_tree *tree, tool_treenode *node, void *userdata)
 {
-	printf("%s\n", node->data);
+	printf("%s\n", (char*)node->data);
 
 	return 1;
 }
@@ -113,7 +113,7 @@ static int tcp_cli_callback(tcpcli *cli, TCPCLI_EVENT event, void *data, size_t 
 
 		case TCPCLI_EVT_RECVMSG:
 		{
-			printf("message:%s\n", data);
+			printf("message:%s\n",(char*)data);
 			break;
 		}
 
@@ -142,7 +142,7 @@ static int tcp_svc_callback(tcpsvc *svc, tcp_client cli, TCPSVC_EVENT event, voi
 
 		case TCPSVC_EVT_CLI_MESSAGE:
 		{
-			printf("TCPSVC_EVT_CLI_MESSAGE, %s\n", data);
+			printf("TCPSVC_EVT_CLI_MESSAGE, %s\n", (char*)data);
 			tcpsvc_sendto(svc, cli, "hello c#\n", strlen("hello c#\n"));
 			break;
 		}
@@ -183,7 +183,7 @@ int main(int argc, char **argv)
 	int maxcli = 5;
 	tcpsvc *svc = new_tcpsvc(NULL, 8888);
 	tcpsvc_setopt(svc, TCPOPT_LINE_BASED, NULL, 0);
-	tcpsvc_setopt(svc, TCPOPT_MAX_CLI, &maxcli, sizeof(int));
+	tcpsvc_setopt(svc, TCPOPT_MAX_CLI, (char*)&maxcli, sizeof(int));
 	tcpsvc_set_event_callback(svc, tcp_svc_callback, NULL);
 	tcpsvc_start(svc);
 

@@ -5,7 +5,9 @@
 #include <pthread.h>
 #ifdef UNIX
 #include <unistd.h>
+#include <sys/select.h>
 #include <sys/types.h>
+#include <sys/time.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -175,7 +177,7 @@ static int process_clifds(tcpsvc *svc, fd_set *rdfds, fd_set *exfds)
 }
 
 // 清除不用监控的fds
-static void cleanup_clifds(tcpsvc *svc, FD_SET *rdfds, FD_SET *wrfds, FD_SET *exfds)
+static void cleanup_clifds(tcpsvc *svc, fd_set *rdfds, fd_set *wrfds, fd_set *exfds)
 {
 	FD_ZERO(rdfds);
 	FD_ZERO(wrfds);
@@ -259,7 +261,7 @@ static void *worker_thread_proc(void *state)
 		else if (ret < 0)
 		{
 			/* error */
-			TLOGE("socket select failed, %d", WSAGetLastError());
+			TLOGE("socket select failed, %d", net_error);
 			switch (errno)
 			{
 				case EBADF: // 存在非法文件描述符

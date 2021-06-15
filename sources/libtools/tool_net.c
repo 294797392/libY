@@ -31,8 +31,8 @@ void initnet()
 void net_closesocket(OS_SOCKET socket)
 {
 #ifdef UNIX
-    shutdown(fd, SHUT_RDWR);
-    close(fd);
+    shutdown(socket, SHUT_RDWR);
+    close(socket);
 #else
     shutdown(socket, SD_BOTH);
     closesocket(socket);
@@ -92,7 +92,7 @@ int net_write(OS_SOCKET fd, void *data, size_t len)
 			}
 			else
 			{
-				TLOGE("pushsvc send failed, %d", ret);
+				TLOGE("pushsvc send failed, %ld", ret);
 				return 1;
 			}
 		}

@@ -2,6 +2,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <fcntl.h>
+#ifdef UNIX
+#include <unistd.h>
+#endif
 
 #include "tool_string.h"
 

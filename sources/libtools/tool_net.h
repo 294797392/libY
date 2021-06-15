@@ -16,7 +16,6 @@
 #include "toolbase.h"
 
 
-
 #ifdef WIN32
 #pragma comment(lib, "Ws2_32.lib")
 #endif
@@ -69,6 +68,16 @@ extern "C" {
      * 写入成功返回0，写入失败返回1
      */
     TOOLSAPI int net_write(OS_SOCKET s, void *data, size_t len);
+
+    /*
+     * 描述：
+     * 获取不同平台下的socket错误编码
+     */
+    #ifdef UNIX
+        #define net_error errno
+    #else
+        #define WSAGetLastError();
+    #endif
 
 #ifdef __cplusplus
 }
