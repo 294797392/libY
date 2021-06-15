@@ -76,7 +76,7 @@ extern "C" {
     #ifdef UNIX
         #define net_error errno
     #else
-        #define WSAGetLastError();
+        #define net_error WSAGetLastError()
     #endif
 
 #ifdef __cplusplus

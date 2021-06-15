@@ -1,3 +1,0 @@
-# CMake Build Script
-
-
