@@ -1,4 +1,4 @@
-#ifndef __TOOL_TCPCLI_H__
+﻿#ifndef __TOOL_TCPCLI_H__
 #define __TOOL_TCPCLI_H__
 
 #include "toolbase.h"

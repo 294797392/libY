@@ -1,4 +1,4 @@
-#include <stdlib.h>
+﻿#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
@@ -71,7 +71,7 @@ static OS_SOCKET maxfd(tcpsvc *svc)
 {
 	OS_SOCKET max = svc->fd;
 
-	for (size_t i = 0; i <= last_fdidx; i++)
+	for (int i = 0; i <= svc->last_fdidx; i++)
 	{
 		OS_SOCKET fd = svc->clifds[i];
 		if(fd == INVALID_CLI_FD)
@@ -311,7 +311,7 @@ static void *worker_thread_proc(void *state)
 						svc->maxfd = maxfd(svc);
 
 						// 通知外部模块
-						notify_event(svc, clifd, TCPSVC_EVT_CLI_CONNECTED, clifd, sizeof(OS_SOCKET));
+						notify_event(svc, clifd, TCPSVC_EVT_CLI_CONNECTED, NULL, 0);
 					}
 				}
 			}

@@ -1,7 +1,7 @@
 ﻿#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
+#include <errno.h>
 #ifdef UNIX
 #else
 #include <WinSock2.h>

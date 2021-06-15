@@ -1,4 +1,4 @@
-#include <stdlib.h>
+﻿#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -162,6 +162,8 @@ static int tcp_svc_callback(tcpsvc *svc, tcp_client cli, TCPSVC_EVENT event, voi
 		default:
 			break;
 	}
+
+	return 1;
 }
 
 int main(int argc, char **argv)
