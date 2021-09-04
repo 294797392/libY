@@ -56,9 +56,9 @@ void rand_string(char *buffer, size_t length)
 
 int string_split(const char *str, const char separator, string_split_options opt, char **tokens, size_t total_tokens)
 {
-    size_t token_pos = 0;          // 当前解析到的token的位置
-	int token_len = 0;          // token的长度
-	int num_tokens = 0;         // 总的token数量
+    size_t token_pos = 0;			// 当前解析到的token的位置
+	int token_len = 0;				// token的长度
+	int num_tokens = 0;				// 总的token数量
 	size_t total = strlen(str);
 	for (size_t i = 0; i < total; i++)
 	{
