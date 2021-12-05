@@ -21,6 +21,7 @@ include_directories(${Y_DIR})
 # 编译libY
 list(APPEND Y_SOURCE ${Y_DIR}/Ybase.c)
 list(APPEND Y_SOURCE ${Y_DIR}/Ythread.c)
+list(APPEND Y_SOURCE ${Y_DIR}/Ystring.c)
 # aux_source_directory(${Y_DIR} Y_SOURCE)
 add_library(Y ${Y_SOURCE})
 target_link_libraries(Y PRIVATE pthread)
