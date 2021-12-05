@@ -1,25 +1,31 @@
 # vim: ff=unix ts=4 sw=4 et ai
 
 cmake_minimum_required(VERSION 3.4)
-project(tools VERSION 1.1 LANGUAGES C)
+project(Y VERSION 1.1 LANGUAGES C)
 
 # 设置编译选项
 # set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99 -Wall -Wno-unused-variable -Wno-unused-but-set-variable -Wno-unused-label -D _GNU_SOURCE")
 # set(CMAKE_BUILD_TYPE "Debug")
-set(LIBTOOLS_DIR ../sources/libtools)
+set(Y_DIR ../sources/libY)
 
-add_definitions(-D UNIX)
+add_definitions(-D Y_ENV_MINGW)
 
 # 检测编译工具链（GCC,MSVC,...）
 
 # 设置要引用的头文件目录
-include_directories(${LIBTOOLS_DIR})
+include_directories(${Y_DIR})
 
 # 全局宏定义
 # add_definitions(-D TOOLS_EXPORT)
 
+# 编译libY
+list(APPEND Y_SOURCE ${Y_DIR}/Ybase.c)
+list(APPEND Y_SOURCE ${Y_DIR}/Ythread.c)
+# aux_source_directory(${Y_DIR} Y_SOURCE)
+add_library(Y ${Y_SOURCE})
+target_link_libraries(Y PRIVATE pthread)
 
-# libtools
-aux_source_directory(${LIBTOOLS_DIR} LIBTOOLS_SOURCE)
-add_executable(tools ${LIBTOOLS_SOURCE})
-target_link_libraries(tools PRIVATE pthread)
+# 编译Yexe
+add_executable(Yexe ${Y_DIR}/main.c)
+target_link_libraries(Yexe PRIVATE Y)
+
