@@ -21,10 +21,9 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{4e41bc07-cf2a-4ca6-93cb-1cdaf734ffbf}</ProjectGuid>
-    <RootNamespace>libtools</RootNamespace>
+    <ProjectGuid>{4c4e469c-eb41-4d35-a667-754ce7bab243}</ProjectGuid>
+    <RootNamespace>windows</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>libY</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -87,15 +86,15 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS;%(PreprocessorDefinitions);HAVE_STRUCT_TIMESPEC;Y_ENV_WIN32</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <CompileAs>CompileAsC</CompileAs>
-      <AdditionalIncludeDirectories>$(SolutionDir)../sources/libY/Ylog</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)../depens;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>;$(SolutionDir)../depens/pthread/lib/x86/</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)../depens/adb;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>AdbWinApi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -118,15 +117,12 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;WIN32;HAVE_STRUCT_TIMESPEC;_WINSOCK_DEPRECATED_NO_WARNINGS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(SolutionDir)../depens/pthread/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(SolutionDir)../depens/pthread/lib/x86/</AdditionalLibraryDirectories>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -137,35 +133,19 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)../depens/pthread/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)../depens/pthread/lib/x86/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>pthreadVSE2.lib;pthreadVCE2.lib;pthreadVC2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\sources\libY\main.c" />
-    <ClCompile Include="..\..\sources\libY\Ybase.c" />
-    <ClCompile Include="..\..\sources\libY\Ylist.c" />
-    <ClCompile Include="..\..\sources\libY\Yqueue.c" />
-    <ClCompile Include="..\..\sources\libY\Ystring.c" />
-    <ClCompile Include="..\..\sources\libY\Ythread.c" />
-    <ClCompile Include="..\..\sources\libY\Ytree.c" />
+    <ClCompile Include="..\..\sources\windows\adb.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\sources\libY\Ybase.h" />
-    <ClInclude Include="..\..\sources\libY\Yerrno.h" />
-    <ClInclude Include="..\..\sources\libY\Yfirstinclude.h" />
-    <ClInclude Include="..\..\sources\libY\Ylist.h" />
-    <ClInclude Include="..\..\sources\libY\Yqueue.h" />
-    <ClInclude Include="..\..\sources\libY\Ystring.h" />
-    <ClInclude Include="..\..\sources\libY\Ythread.h" />
-    <ClInclude Include="..\..\sources\libY\Ytree.h" />
+    <ClInclude Include="..\..\depens\adb\adb_api.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

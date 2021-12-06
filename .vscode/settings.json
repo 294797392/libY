@@ -4,6 +4,10 @@
         "*.rh": "c",
         "iosfwd": "c",
         "xlocbuf": "c",
-        "winbase.h": "c"
+        "winbase.h": "c",
+        "yqueue.h": "c",
+        "yfirstinclude.h": "c",
+        "ylog.h": "c",
+        "xutility": "c"
     }
 }

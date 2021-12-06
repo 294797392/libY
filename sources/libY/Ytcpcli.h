@@ -1,8 +1,7 @@
-﻿#ifndef __TOOL_TCPCLI_H__
-#define __TOOL_TCPCLI_H__
+﻿#ifndef __YTCPCLI_H__
+#define __YTCPCLI_H__
 
-#include "toolbase.h"
-#include "tool_net.h"
+#include "Ybase.h"
 
 typedef struct tcpcli_s tcpcli;
 

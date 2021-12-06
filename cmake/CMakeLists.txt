@@ -14,6 +14,7 @@ add_definitions(-D Y_ENV_MINGW)
 
 # 设置要引用的头文件目录
 include_directories(${Y_DIR})
+include_directories(${Y_DIR}/Ylog)
 
 # 全局宏定义
 # add_definitions(-D TOOLS_EXPORT)
@@ -22,6 +23,9 @@ include_directories(${Y_DIR})
 list(APPEND Y_SOURCE ${Y_DIR}/Ybase.c)
 list(APPEND Y_SOURCE ${Y_DIR}/Ythread.c)
 list(APPEND Y_SOURCE ${Y_DIR}/Ystring.c)
+list(APPEND Y_SOURCE ${Y_DIR}/Yqueue.c)
+list(APPEND Y_SOURCE ${Y_DIR}/Ytree.c)
+list(APPEND Y_SOURCE ${Y_DIR}/Ylist.c)
 # aux_source_directory(${Y_DIR} Y_SOURCE)
 add_library(Y ${Y_SOURCE})
 target_link_libraries(Y PRIVATE pthread)

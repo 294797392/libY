@@ -1,45 +1,53 @@
-﻿#ifndef __TOOL_TREE_H__
-#define __TOOL_TREE_H__
+﻿/***********************************************************************************
+ * @ file    : Yqueue.h
+ * @ author  : oheiheiheiheihei
+ * @ version : 0.9
+ * @ date    : 2021.12.06
+ * @ brief   : 一颗多叉树
+ ************************************************************************************/
 
-#include "toolbase.h"
+#ifndef __YTREE_H__
+#define __YTREE_H__
+
+#include "Ybase.h"
 
 #define MAX_CHILD_COUNT 1024
 
-typedef struct tool_tree_s tool_tree;
-typedef struct tool_treenode_s tool_treenode;
+typedef struct Ytree_s Ytree;
+typedef struct Ytreenode_s Ytreenode;
 
-struct tool_treenode_s
+struct Ytreenode_s
 {
     // 该节点保存的数据
     void *data;
 
     // 子节点列表
-    tool_treenode *children[MAX_CHILD_COUNT];
+    Ytreenode *children[MAX_CHILD_COUNT];
 
     // 子节点数量
     int num_child;
 
     // 父节点
-    tool_treenode *parent;
+    Ytreenode *parent;
 };
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-    typedef void (*tree_free_func)(void *data);
+    typedef void (*Ytree_free_func)(void *data);
 
-	typedef int (*tree_foreach_action)(tool_tree *tree, tool_treenode *node, void *userdata);
+	typedef int (*Ytree_foreach_action)(Ytree *tree, Ytreenode *node, void *userdata);
 
     /*
      * 描述：
      * 实例化一棵树
      */
-    TOOLSAPI tool_tree *new_tree();
+    YAPI Ytree *Y_create_tree();
 
-    TOOLSAPI tool_tree *new_tree2(tree_free_func freefunc);
+    YAPI Ytree *Y_create_tree2(Ytree_free_func freefunc);
 
-    TOOLSAPI tool_treenode *tree_initroot(tool_tree *tree, void *data);
+    YAPI Ytreenode *Y_tree_initroot(Ytree *tree, void *data);
 
     /*
      * 描述：
@@ -50,13 +58,13 @@ extern "C" {
      * @foreach_action：遍历函数
      * @userdata：用户自定义数据
      */
-    TOOLSAPI tool_treenode *tree_newnode(tool_treenode *parent, void *data);
+    YAPI Ytreenode *Y_tree_newnode(Ytreenode *parent, void *data);
 
     /*
      * 描述：
      * 判断该树是否是一颗空树
      */
-    TOOLSAPI int tree_isempty(tool_tree *tree);
+    YAPI int Y_tree_isempty(Ytree *tree);
 
     /*
      * 描述：
@@ -67,7 +75,7 @@ extern "C" {
      * @foreach_action：遍历函数
      * @userdata：用户自定义数据
      */
-    TOOLSAPI void tree_foreach(tool_tree *tree, tree_foreach_action foreach_action, void *userdata);
+    YAPI void Y_tree_foreach(Ytree *tree, Ytree_foreach_action foreach_action, void *userdata);
 
     /*
      * 描述：
@@ -78,7 +86,7 @@ extern "C" {
      * @foreach_action：遍历函数
      * @userdata：用户自定义数据
      */
-    TOOLSAPI void tree_foreach2(tool_tree *tree, tree_foreach_action foreach_action, void *userdata);
+    YAPI void Y_tree_foreach2(Ytree *tree, Ytree_foreach_action foreach_action, void *userdata);
 
     /*
      * 描述：
@@ -88,9 +96,9 @@ extern "C" {
      * @tree：tree对象
      * @node：要删除的节点
      */
-    TOOLSAPI void tree_delete(tool_tree *tree, tool_treenode *node);
+    YAPI void Y_tree_delete(Ytree *tree, Ytreenode *node);
 
-    TOOLSAPI void tree_clear(tool_tree *tree);
+    YAPI void Y_tree_clear(Ytree *tree);
 
 #ifdef __cplusplus
 }

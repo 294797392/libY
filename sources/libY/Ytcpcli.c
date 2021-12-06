@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
-#include <pthread.h>
 #ifdef UNIX
+#include <pthread.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -13,13 +13,6 @@
 #include <fcntl.h>
 #else
 #include <WinSock2.h>
-#endif
-
-// 增加pthread的库引用
-#ifdef WIN32
-#pragma comment(lib, "pthreadVC2.lib")
-#pragma comment(lib, "pthreadVCE2.lib")
-#pragma comment(lib, "pthreadVSE2.lib")
 #endif
 
 #include "toolbase.h"

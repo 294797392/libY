@@ -15,60 +15,51 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\sources\libtools\linked_list.c">
+    <ClCompile Include="..\..\sources\libY\Ybase.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\sources\libtools\main.c">
+    <ClCompile Include="..\..\sources\libY\Ylist.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\sources\libtools\tool_file.c">
+    <ClCompile Include="..\..\sources\libY\Yqueue.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\sources\libtools\tool_string.c">
+    <ClCompile Include="..\..\sources\libY\Ystring.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\sources\libtools\tool_net.c">
+    <ClCompile Include="..\..\sources\libY\Ythread.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\sources\libtools\tool_tree.c">
+    <ClCompile Include="..\..\sources\libY\Ytree.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\sources\libtools\tool_tcpcli.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\sources\libtools\toolbase.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\sources\libtools\tool_tcpsvc.c">
+    <ClCompile Include="..\..\sources\libY\main.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\sources\libtools\linked_list.h">
+    <ClInclude Include="..\..\sources\libY\Ybase.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\sources\libtools\toolbase.h">
+    <ClInclude Include="..\..\sources\libY\Yerrno.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\sources\libtools\tool_file.h">
+    <ClInclude Include="..\..\sources\libY\Yfirstinclude.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\sources\libtools\tool_string.h">
+    <ClInclude Include="..\..\sources\libY\Ylist.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\sources\libtools\tool_net.h">
+    <ClInclude Include="..\..\sources\libY\Yqueue.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\sources\libtools\tool_tree.h">
+    <ClInclude Include="..\..\sources\libY\Ystring.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\sources\libtools\tool_tcpcli.h">
+    <ClInclude Include="..\..\sources\libY\Ythread.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\sources\libtools\toolcode.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\sources\libtools\tool_tcpsvc.h">
+    <ClInclude Include="..\..\sources\libY\Ytree.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

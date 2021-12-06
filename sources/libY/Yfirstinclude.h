@@ -1,4 +1,4 @@
-#ifndef __YFIRSTINCLUDE_H__
+﻿#ifndef __YFIRSTINCLUDE_H__
 #define __YFIRSTINCLUDE_H__
 
 // 封装判断不同平台的宏定义

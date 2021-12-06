@@ -1,4 +1,4 @@
-#ifndef __YTHREAD_H__
+﻿#ifndef __YTHREAD_H__
 #define __YTHREAD_H__
 
 #include "Ybase.h"

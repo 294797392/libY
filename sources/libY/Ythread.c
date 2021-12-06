@@ -1,4 +1,4 @@
-#include "Yfirstinclude.h"
+﻿#include "Yfirstinclude.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -21,7 +21,7 @@ struct Ythread_s
     HANDLE handle;
     DWORD threadid;
 #else
-    pthread_t pthread;
+    pthread_t threadid;
 #endif
 };
 
@@ -54,7 +54,9 @@ Ythread *Y_create_thread(Ythread_entry entry, void *userdata)
         free(thread);
         return NULL;
     }
-#else
+#elif Y_API_UNIX
+    pthread_create(&thread->threadid, NULL, unix_thread_proc, thread);
+	pthread_detach(thread->threadid);
 #endif
 
     return thread;

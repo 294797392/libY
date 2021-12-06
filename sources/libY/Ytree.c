@@ -1,28 +1,30 @@
-﻿#include <stdlib.h>
+﻿#include "Yfirstinclude.h"
+
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-#include "toolcode.h"
-#include "tool_tree.h"
+#include "Yerrno.h"
+#include "Ytree.h"
 
-struct tool_tree_s
+struct Ytree_s
 {
     // 根节点
-    tool_treenode *root;
+    Ytreenode *root;
 
     int foreach_status;
 
     // 释放data的函数
-    tree_free_func free;
+    Ytree_free_func free;
 };
 
-static void foreach_delete(tool_tree *tree, tool_treenode *parent)
+static void foreach_delete(Ytree *tree, Ytreenode *parent)
 {
     if(parent->num_child > 0)
     {
         for (int i = 0; i < parent->num_child; i++)
         {
-            tree_delete(tree, parent->children[i]);
+            Y_tree_delete(tree, parent->children[i]);
         }
     }
 
@@ -34,7 +36,7 @@ static void foreach_delete(tool_tree *tree, tool_treenode *parent)
     free(parent);
 }
 
-static void foreach_node(tool_tree *tree, tool_treenode *parent, tree_foreach_action foreach_action, void *userdata)
+static void foreach_node(Ytree *tree, Ytreenode *parent, Ytree_foreach_action foreach_action, void *userdata)
 {
     if(parent == NULL)
     {
@@ -55,7 +57,7 @@ static void foreach_node(tool_tree *tree, tool_treenode *parent, tree_foreach_ac
             return;
         }
 
-        tool_treenode *node = parent->children[i];
+        Ytreenode *node = parent->children[i];
         tree->foreach_status = foreach_action(tree, node, userdata);
 
         // 继续遍历node的子节点
@@ -63,7 +65,7 @@ static void foreach_node(tool_tree *tree, tool_treenode *parent, tree_foreach_ac
     }
 }
 
-static void foreach_node2(tool_tree *tree, tool_treenode *parent, tree_foreach_action foreach_action, void *userdata)
+static void foreach_node2(Ytree *tree, Ytreenode *parent, Ytree_foreach_action foreach_action, void *userdata)
 {
     if(parent == NULL)
     {
@@ -78,7 +80,7 @@ static void foreach_node2(tool_tree *tree, tool_treenode *parent, tree_foreach_a
     // 先遍历所有的子节点
     for (int i = 0; i < parent->num_child; i++)
     {
-        tool_treenode *node = parent->children[i];
+        Ytreenode *node = parent->children[i];
         if((tree->foreach_status = foreach_action(tree, node, userdata)) == 0)
         {
             return;
@@ -88,25 +90,49 @@ static void foreach_node2(tool_tree *tree, tool_treenode *parent, tree_foreach_a
     // 再遍历每个子节点下的子节点
     for (int i = 0; i < parent->num_child; i++)
     {
-        tool_treenode *node = parent->children[i];
+        Ytreenode *node = parent->children[i];
         foreach_node2(tree, node, foreach_action, userdata);
     }
 }
 
-tool_tree *new_tree()
+Ytree *Y_create_tree()
 {
-    tool_tree *tree = (tool_tree*)calloc(1, sizeof(tool_tree));
+    Ytree *tree = (Ytree*)calloc(1, sizeof(Ytree));
     return tree;
 }
 
-tool_tree *new_tree2(tree_free_func freefunc)
+Ytree *Y_create_tree2(Ytree_free_func freefunc)
 {
-    tool_tree *tree = new_tree();
+    Ytree *tree = Y_create_tree();
     tree->free = freefunc;
     return tree;
 }
 
-void tree_foreach(tool_tree *tree, tree_foreach_action foreach_action, void *userdata)
+Ytreenode *Y_tree_initroot(Ytree *tree, void *data)
+{
+    Ytreenode *node = (Ytreenode*)calloc(1, sizeof(Ytreenode));
+    node->data = data;
+    tree->root = node;
+    return node;
+}
+
+Ytreenode *Y_tree_newnode(Ytreenode *parent, void *data)
+{
+	Ytreenode *node = (Ytreenode*)calloc(1, sizeof(Ytreenode));
+	node->data = data;
+	node->parent = parent;
+	parent->children[parent->num_child] = node;
+	parent->num_child++;
+	return node;
+}
+
+int Y_tree_isempty(Ytree *tree)
+{
+    return tree->root == NULL;
+}
+
+
+void Y_tree_foreach(Ytree *tree, Ytree_foreach_action foreach_action, void *userdata)
 {
     tree->foreach_status = 1;
 
@@ -126,7 +152,7 @@ void tree_foreach(tool_tree *tree, tree_foreach_action foreach_action, void *use
     tree->foreach_status = 1;
 }
 
-void tree_foreach2(tool_tree *tree, tree_foreach_action foreach_action, void *userdata)
+void Y_tree_foreach2(Ytree *tree, Ytree_foreach_action foreach_action, void *userdata)
 {
     tree->foreach_status = 1;
 
@@ -146,30 +172,7 @@ void tree_foreach2(tool_tree *tree, tree_foreach_action foreach_action, void *us
     tree->foreach_status = 1;
 }
 
-tool_treenode *tree_initroot(tool_tree *tree, void *data)
-{
-    tool_treenode *node = (tool_treenode*)calloc(1, sizeof(tool_treenode));
-    node->data = data;
-    tree->root = node;
-    return node;
-}
-
-tool_treenode *tree_newnode(tool_treenode *parent, void *data)
-{
-	tool_treenode *node = (tool_treenode *)calloc(1, sizeof(tool_treenode));
-	node->data = data;
-	node->parent = parent;
-	parent->children[parent->num_child] = node;
-	parent->num_child++;
-	return node;
-}
-
-int tree_isempty(tool_tree *tree)
-{
-    return tree->root == NULL;
-}
-
-void tree_delete(tool_tree *tree, tool_treenode *node)
+void Y_tree_delete(Ytree *tree, Ytreenode *node)
 {
     if(tree->root == node)
     {
@@ -180,7 +183,7 @@ void tree_delete(tool_tree *tree, tool_treenode *node)
     else
     {
         int index = -1;
-        tool_treenode *parent = node->parent;
+        Ytreenode *parent = node->parent;
         for (int i = 0; i < parent->num_child; i++)
         {
             if(parent->children[i] == node)
@@ -200,17 +203,17 @@ void tree_delete(tool_tree *tree, tool_treenode *node)
         parent->num_child--;
 
         size_t total_size = sizeof(parent->children);
-        size_t dst = sizeof(tool_treenode*) * index;            // 要拷贝到的内存的偏移量
-        size_t src = sizeof(tool_treenode*) * (index + 1);      // 从内存的哪个偏移量开始拷贝
+        size_t dst = sizeof(Ytreenode*) * index;            // 要拷贝到的内存的偏移量
+        size_t src = sizeof(Ytreenode*) * (index + 1);      // 从内存的哪个偏移量开始拷贝
         size_t size = total_size - src;                         // 要拷贝的内存的大小
 		memmove(parent->children + index, parent->children + index + 1, size);
     }
 }
 
-void tree_clear(tool_tree *tree)
+void Y_tree_clear(Ytree *tree)
 {
     if(tree->root != NULL)
     {
-        tree_delete(tree, tree->root);
+        Y_tree_delete(tree, tree->root);
     }
 }
