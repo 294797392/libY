@@ -15,12 +15,6 @@
     #else
         #define YAPI __declspec(dllimport)
     #endif
-#elif Y_ENV_MINGW
-    #ifdef Y_EXPORT
-        #define YAPI __declspec(dllexport)
-    #else
-        #define YAPI __declspec(dllimport)
-    #endif
 #else
     #define YAPI
 #endif

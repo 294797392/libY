@@ -9,6 +9,7 @@ project(Y VERSION 1.1 LANGUAGES C)
 set(Y_DIR ../sources/libY)
 
 add_definitions(-D Y_ENV_MINGW)
+add_definitions(-D Y_EXPORT)
 
 # 检测编译工具链（GCC,MSVC,...）
 
