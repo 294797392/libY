@@ -5,6 +5,7 @@
 #include "Ylog.h"
 #include "Yqueue.h"
 #include "Ylist.h"
+#include "Ypool.h"
 
 static void Yqueue_callback_handler(void *userdata, void *element)
 {
@@ -65,6 +66,42 @@ static void demo_Ylist()
 	{
 		char line[1024] = { '\0' };
 		fgets(line, sizeof(line), stdin);
+	}
+}
+
+
+static void demo_Ypool()
+{
+	Ypool *yp = Y_create_pool();
+
+	Yobject *objs[10] = { NULL };
+
+	// 先创建10个对象
+	for (size_t i = 0; i < 10; i++)
+	{
+		Yobject *yo = Y_pool_obtain(yp);
+		char *msg = (char *)calloc(1, 1024);
+		snprintf(msg, 1024, "%d", i);
+		Y_object_set_data(yo, msg);
+		objs[i] = yo;
+	}
+
+	//for (size_t i = 5; i < 10; i++)
+	//{
+	//	Y_pool_recycle(yp, objs[i]);
+	//}
+
+	for (size_t i = 0; i < 10; i++)
+	{
+		Y_pool_recycle(yp, objs[i]);
+	}
+
+
+	for (size_t i = 0; i < 10; i++)
+	{
+		Yobject *yo = Y_pool_obtain(yp);
+		char *msg = (char *)Y_object_get_data(yo);
+		YLOGI("%s", msg);
 	}
 }
 
@@ -271,12 +308,24 @@ static void demo_Ylist()
 // 	return 0;
 // }
 
-
 int main(int argc, char **argv)
 {
+	Ylog_global_init();
+
 	// demo_Yqueue();
 
-	demo_Ylist();
+	//demo_Ylist();
+
+	//demo_Ypool();
+
+	YLOGI("hello libY");
+
+	while (1)
+	{
+		char line[1024] = { '\0' };
+		fgets(line, sizeof(line), stdin);
+		YLOGI("your input is : %s", line);
+	}
 
 	return 0;
 }

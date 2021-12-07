@@ -87,10 +87,10 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS;%(PreprocessorDefinitions);HAVE_STRUCT_TIMESPEC;Y_ENV_WIN32</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS;%(PreprocessorDefinitions);HAVE_STRUCT_TIMESPEC;Y_ENV_WIN32;Y_EXPORT</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <CompileAs>CompileAsC</CompileAs>
-      <AdditionalIncludeDirectories>$(SolutionDir)../sources/libY/Ylog</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)../sources/libY/Ylog;$(SolutionDir)../sources/libY</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -152,6 +152,10 @@
     <ClCompile Include="..\..\sources\libY\main.c" />
     <ClCompile Include="..\..\sources\libY\Ybase.c" />
     <ClCompile Include="..\..\sources\libY\Ylist.c" />
+    <ClCompile Include="..\..\sources\libY\Ylog\Yappender_conosle.c" />
+    <ClCompile Include="..\..\sources\libY\Ylog\Yappender_file.c" />
+    <ClCompile Include="..\..\sources\libY\Ylog\Ylog.c" />
+    <ClCompile Include="..\..\sources\libY\Ypool.c" />
     <ClCompile Include="..\..\sources\libY\Yqueue.c" />
     <ClCompile Include="..\..\sources\libY\Ystring.c" />
     <ClCompile Include="..\..\sources\libY\Ythread.c" />
@@ -162,6 +166,10 @@
     <ClInclude Include="..\..\sources\libY\Yerrno.h" />
     <ClInclude Include="..\..\sources\libY\Yfirstinclude.h" />
     <ClInclude Include="..\..\sources\libY\Ylist.h" />
+    <ClInclude Include="..\..\sources\libY\Ylog\Yappender.h" />
+    <ClInclude Include="..\..\sources\libY\Ylog\Ylog.h" />
+    <ClInclude Include="..\..\sources\libY\Ylog\Ylogbase.h" />
+    <ClInclude Include="..\..\sources\libY\Ypool.h" />
     <ClInclude Include="..\..\sources\libY\Yqueue.h" />
     <ClInclude Include="..\..\sources\libY\Ystring.h" />
     <ClInclude Include="..\..\sources\libY\Ythread.h" />

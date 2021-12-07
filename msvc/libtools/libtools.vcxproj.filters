@@ -36,6 +36,18 @@
     <ClCompile Include="..\..\sources\libY\main.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\sources\libY\Ylog\Yappender_conosle.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sources\libY\Ylog\Yappender_file.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sources\libY\Ylog\Ylog.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sources\libY\Ypool.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\sources\libY\Ybase.h">
@@ -60,6 +72,18 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\sources\libY\Ytree.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sources\libY\Ylog\Yappender.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sources\libY\Ylog\Ylog.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sources\libY\Ylog\Ylogbase.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sources\libY\Ypool.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

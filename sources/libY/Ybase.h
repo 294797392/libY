@@ -1,10 +1,10 @@
-﻿#ifndef __TOOLBASE_H__
-#define __TOOLBASE_H__
+﻿#ifndef __YBASE_H__
+#define __YBASE_H__
 
 #include "Yfirstinclude.h"
 
 #ifdef Y_ENV_WIN32
-    #ifndef YEXPORT
+    #ifdef Y_EXPORT
         #define YAPI __declspec(dllexport)
     #else
         #define YAPI __declspec(dllimport)
@@ -12,12 +12,6 @@
 #else
     #define YAPI
 #endif
-
-#define TLOG(LEVEL, ...) printf("[%s]", LEVEL); printf("[%s][%d] ", __FILE__, __LINE__); printf(__VA_ARGS__); printf("\n")
-#define TLOD(...) TLOG("debug", __VA_ARGS__)
-#define TLOGI(...) TLOG("info", __VA_ARGS__)
-#define TLOGE(...) TLOG("error", __VA_ARGS__)
-#define TLOGW(...) TLOG("warn", __VA_ARGS__)
 
 #ifdef __cplusplus
 extern "C" {
@@ -61,3 +55,5 @@ extern "C" {
 #endif
 
 #endif
+
+

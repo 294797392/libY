@@ -131,7 +131,6 @@ int Y_tree_isempty(Ytree *tree)
     return tree->root == NULL;
 }
 
-
 void Y_tree_foreach(Ytree *tree, Ytree_foreach_action foreach_action, void *userdata)
 {
     tree->foreach_status = 1;
