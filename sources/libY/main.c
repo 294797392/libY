@@ -1,7 +1,15 @@
-﻿#include <stdlib.h>
+﻿#include "Yfirstinclude.h"
+
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
+#ifdef Y_API_WIN32
+#include <Windows.h>
+#elif Y_API_UNIX
+#endif
+
+#include "Ybase.h"
 #include "Ylog.h"
 #include "Yqueue.h"
 #include "Ylist.h"
@@ -10,7 +18,7 @@
 static void Yqueue_callback_handler(void *userdata, void *element)
 {
 	char *line = (char *)element;
-	YLOGI("dequeue, %s", line);
+	YLOGI(YTEXT("dequeue, %s"), line);
 	free(line);
 }
 
@@ -21,7 +29,7 @@ static void demo_Yqueue()
 
 	while (1)
 	{
-		YLOGI("please input element:");
+		YLOGI(YTEXT("please input element:"));
 		char *line = (char *)calloc(1, 1024);
 		fgets(line, sizeof(line), stdin);
 		Y_queue_enqueue(q, line);
@@ -101,7 +109,7 @@ static void demo_Ypool()
 	{
 		Yobject *yo = Y_pool_obtain(yp);
 		char *msg = (char *)Y_object_get_data(yo);
-		YLOGI("%s", msg);
+		YLOGI(YTEXT("%s"), msg);
 	}
 }
 
@@ -308,6 +316,10 @@ static void demo_Ypool()
 // 	return 0;
 // }
 
+
+
+#define CATEGORY	YTEXT("main")
+
 int main(int argc, char **argv)
 {
 	Ylog_global_init();
@@ -318,13 +330,14 @@ int main(int argc, char **argv)
 
 	//demo_Ypool();
 
-	YLOGI("hello libY");
+	YLOGI(YTEXT("hello libY"));
+	YLOGCI(CATEGORY, YTEXT("hello libY"));
 
 	while (1)
 	{
 		char line[1024] = { '\0' };
 		fgets(line, sizeof(line), stdin);
-		YLOGI("your input is : %s", line);
+		YLOGI(YTEXT("your input is : %s"), line);
 	}
 
 	return 0;

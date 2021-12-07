@@ -8,6 +8,7 @@
         "yqueue.h": "c",
         "yfirstinclude.h": "c",
         "ylog.h": "c",
-        "xutility": "c"
+        "xutility": "c",
+        "stdio.h": "c"
     }
 }

@@ -3,6 +3,12 @@
 
 #include "Yfirstinclude.h"
 
+#ifdef Y_API_WIN32
+#include <Windows.h>
+#elif Y_API_UNIX
+#endif
+
+// 定义导出和导入符号
 #ifdef Y_ENV_WIN32
     #ifdef Y_EXPORT
         #define YAPI __declspec(dllexport)
@@ -11,6 +17,20 @@
     #endif
 #else
     #define YAPI
+#endif
+
+// 起个别名而已
+#define Y_API YAPI
+
+// 在unix和win32平台兼容多字节字符
+// YTEXT宏表示让编译器把YTEXT里的字符当成多字节字符处理，也就是一个字符可能需要2-4个字节去存储
+// 多字节字符可以存储汉字
+#ifdef Y_ENV_WIN32
+#define YTEXT(quote)		TEXT(quote)
+#elif Y_ENV_MINGW
+#define YTEXT(quote)		L##quote
+#elif Y_ENV_UNIX
+#define YTEXT(quote)        quote
 #endif
 
 #ifdef __cplusplus

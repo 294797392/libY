@@ -26,13 +26,14 @@ list(APPEND Y_SOURCE ${Y_DIR}/Ystring.c)
 list(APPEND Y_SOURCE ${Y_DIR}/Yqueue.c)
 list(APPEND Y_SOURCE ${Y_DIR}/Ytree.c)
 list(APPEND Y_SOURCE ${Y_DIR}/Ylist.c)
+list(APPEND Y_SOURCE ${Y_DIR}/Ypool.c)
 list(APPEND Y_SOURCE ${Y_DIR}/Ylog/Ylog.c)
-list(APPEND Y_SOURCE ${Y_DIR}/Ylog/Yappender_file.c)
+list(APPEND Y_SOURCE ${Y_DIR}/Ylog/Yappender_conosle.c)
 # aux_source_directory(${Y_DIR} Y_SOURCE)
 add_library(Y ${Y_SOURCE})
 target_link_libraries(Y PRIVATE pthread)
 
 # 编译Yexe
-add_executable(Yexe ${Y_DIR}/main.c)
-target_link_libraries(Yexe PRIVATE Y)
+add_executable(Y1 ${Y_DIR}/main.c)
+target_link_libraries(Y1 PRIVATE Y)
 

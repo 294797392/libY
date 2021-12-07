@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <wchar.h>
 
 #include "Ylogbase.h"
 #include "Yappender.h"
@@ -34,7 +35,11 @@ static void close(void *ctx)
 static void write(void *ctx, const Ymsg *ymsg)
 {
 	Yconsole *console = (Yconsole *)ctx;
-	fprintf(stdout, ymsg->msg);
+	fwprintf(stdout, ymsg->msg);
+#ifdef Y_ENV_MINGW
+	// mingw环境下不能每次都马上输出到控制台，这里每次都flush一下
+	fflush(stdout);
+#endif
 }
 
 static void flush(void *ctx)

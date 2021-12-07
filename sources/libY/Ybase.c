@@ -1,11 +1,13 @@
-﻿#include <stdlib.h>
+﻿#include "Yfirstinclude.h"
+
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <fcntl.h>
 #include <errno.h>
-#if (defined(Y_WIN32)) || (defined(Y_MINGW))
+#ifdef Y_API_WIN32
 #include <Windows.h>
-#elif (defined(UNIX))
+#elif Y_API_UNIX
 #include <unistd.h>
 #endif
 

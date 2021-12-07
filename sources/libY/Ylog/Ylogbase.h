@@ -23,7 +23,7 @@ typedef enum Ylog_level_e
 typedef struct Ymsg_s
 {
     Ylog_level level;
-    char msg[MAX_MSG_SIZE];
+    wchar_t msg[MAX_MSG_SIZE];
 }Ymsg;
 
 #endif

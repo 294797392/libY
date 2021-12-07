@@ -63,21 +63,21 @@ Yqueue *Y_create_queue(void *userdata)
 	Yqueue *queue = (Yqueue *)calloc(1, sizeof(Yqueue));
 	if (!queue)
 	{
-		YLOGE("create Yqueue instance failed");
+		YLOGE(YTEXT("create Yqueue instance failed"));
 		return NULL;
 	}
 
 #ifdef Y_API_WIN32
-	if (!(queue->sem = CreateSemaphore(NULL, 0, MAX_QUEUE_SIZE, "Yqueue")))
+	if (!(queue->sem = CreateSemaphoreW(NULL, 0, MAX_QUEUE_SIZE, YTEXT("Yqueue"))))
 	{
-		YLOGE("CreateSemaphore failed, %d", GetLastError());
+		YLOGE(YTEXT("CreateSemaphore failed, %d"), GetLastError());
 		free(queue);
 		return NULL;
 	}
 #elif Y_API_UNIX
 	if (sem_init(&queue->sem, 0, 0) < 0)
 	{
-		perror("create sem failed\n");
+		YLOGE(YTEXT("create sem failed, %d"), errno);
 		free(queue);
 		return NULL;
 	}

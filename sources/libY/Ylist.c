@@ -150,7 +150,7 @@ void Y_list_insert(Ylist *yl, int index, void *item)
 	// 不能向末尾插入元素
 	if (index > yl->length)
 	{
-		YLOGE("insertions at the end are legal");
+		YLOGE(YTEXT("insertions at the end are legal"));
 		return;
 	}
 
@@ -167,7 +167,7 @@ void Y_list_remove(Ylist *yl, void *item, int free)
 	if (index < 0)
 	{
 		// 元素不存在
-		YLOGE("item not found");
+		YLOGE(YTEXT("item not found"));
 		return;
 	}
 
@@ -178,7 +178,7 @@ void Y_list_removeat(Ylist *yl, int at, int free)
 {
 	if (at < 0 || at > yl->length)
 	{
-		YLOGE("index outof range");
+		YLOGE(YTEXT("index outof range"));
 		return;
 	}
 
