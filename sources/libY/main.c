@@ -316,22 +316,20 @@ static void demo_Ypool()
 // 	return 0;
 // }
 
-
-
 #define CATEGORY	YTEXT("main")
 
 int main(int argc, char **argv)
 {
 	Ylog_global_init();
 
+	//YLOGI(YTEXT("hello libY"));
+	YLOGCI(CATEGORY, YTEXT("hello libY"));
+
 	// demo_Yqueue();
 
 	//demo_Ylist();
 
 	//demo_Ypool();
-
-	YLOGI(YTEXT("hello libY"));
-	YLOGCI(CATEGORY, YTEXT("hello libY"));
 
 	while (1)
 	{
