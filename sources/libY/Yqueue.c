@@ -21,6 +21,8 @@
 
 struct Yqueue_s
 {
+	Yqueue_full_callback full_callback;
+
 	Yqueue_callback callback;
 	Yqueue_state state;
 	void *userdata;
@@ -63,21 +65,21 @@ Yqueue *Y_create_queue(void *userdata)
 	Yqueue *queue = (Yqueue *)calloc(1, sizeof(Yqueue));
 	if (!queue)
 	{
-		YLOGE(YTEXT("create Yqueue instance failed"));
+		//YLOGE(YTEXT("create Yqueue instance failed"));
 		return NULL;
 	}
 
 #ifdef Y_API_WIN32
 	if (!(queue->sem = CreateSemaphoreW(NULL, 0, MAX_QUEUE_SIZE, YTEXT("Yqueue"))))
 	{
-		YLOGE(YTEXT("CreateSemaphore failed, %d"), GetLastError());
+		//YLOGE(YTEXT("CreateSemaphore failed, %d"), GetLastError());
 		free(queue);
 		return NULL;
 	}
 #elif Y_API_UNIX
 	if (sem_init(&queue->sem, 0, 0) < 0)
 	{
-		YLOGE(YTEXT("create sem failed, %d"), errno);
+		//YLOGE(YTEXT("create sem failed, %d"), errno);
 		free(queue);
 		return NULL;
 	}
@@ -93,11 +95,21 @@ Yqueue *Y_create_queue(void *userdata)
 	return queue;
 }
 
+void Y_delete_queue(Yqueue *q)
+{
+	// todo:实现
+}
+
 void Y_queue_start(Yqueue *q, Yqueue_callback callback)
 {
 	q->state = YQUEUE_STATE_RUNNING;
 	q->callback = callback;
 	Y_create_thread(dequeue_thread_process, q);
+}
+
+void Y_queue_set_full_callback(Yqueue *yq, Yqueue_full_callback callback)
+{
+	yq->full_callback = callback;
 }
 
 void Y_queue_enqueue(Yqueue *q, void *element)
@@ -122,13 +134,23 @@ void Y_queue_enqueue(Yqueue *q, void *element)
 		index = 0;
 	}
 
-	/*
-		如果队列里的元素为空，说明被消费完了或者没有被使用过，那么把信号量加1
-		如果队列里的元素不为空，说明还没有被消费到, 丢弃最早的元素
-	*/
 	if (q->elements[index] == NULL)
 	{
+		// 如果队列里的元素为空，说明被消费完了或者没有被使用过，那么把信号量加1
 		increament = 1;
+	}
+	else
+	{
+		// 如果队列里的元素不为空，说明还没有被消费到, 丢弃最早的元素
+		// 此时把丢弃的元素回调给用户，用户需要释放内存空间，不然会造成内存泄漏
+		if(q->full_callback != NULL)
+		{
+			q->full_callback(q->elements[index], q->userdata);
+		}
+		else
+		{
+			//YLOGW(YTEXT("Yqueue缓冲区已满，被丢弃的元素没有做处理，可能会造成内存泄漏"));
+		}
 	}
 	q->elements[index] = element;
 

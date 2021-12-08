@@ -1,0 +1,6 @@
+﻿# mingw环境下的专用配置文件
+
+add_definitions(-D Y_ENV_MINGW)
+add_definitions(-D Y_EXPORT)
+
+list(APPEND Y_LINK_LIBRARIES ws2_32)

@@ -14,6 +14,7 @@
 #include "Yqueue.h"
 #include "Ylist.h"
 #include "Ypool.h"
+#include "Ynet.h"
 
 static void Yqueue_callback_handler(void *userdata, void *element)
 {
@@ -76,7 +77,6 @@ static void demo_Ylist()
 		fgets(line, sizeof(line), stdin);
 	}
 }
-
 
 static void demo_Ypool()
 {
@@ -316,11 +316,19 @@ static void demo_Ypool()
 // 	return 0;
 // }
 
+static void demo_Ynet()
+{
+	Y_initnet();
+
+	Ysocket s = Y_create_tcp_svc(NULL, 1018);
+
+}
+
 #define CATEGORY	YTEXT("main")
 
 int main(int argc, char **argv)
 {
-	Ylog_global_init();
+	Y_log_global_init();
 
 	//YLOGI(YTEXT("hello libY"));
 	YLOGCI(CATEGORY, YTEXT("hello libY"));
@@ -330,6 +338,8 @@ int main(int argc, char **argv)
 	//demo_Ylist();
 
 	//demo_Ypool();
+
+	demo_Ynet();
 
 	while (1)
 	{

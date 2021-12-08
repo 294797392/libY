@@ -6,6 +6,8 @@
 #include <stdarg.h>
 #include <wchar.h>
 
+#include "Ylog.h"
+
 #ifdef Y_API_WIN32
 #include <Windows.h>
 #elif Y_API_UNIX
@@ -40,7 +42,7 @@ static void consume_log_queue_callback(void *userdata, void *element)
 	Y_pool_recycle(pool, yo);
 }
 
-int Ylog_global_init()
+int Y_log_global_init()
 {
 	pool = Y_create_pool();
 
@@ -62,7 +64,7 @@ int Ylog_global_init()
 	return YERR_OK;
 }
 
-void Ylog_write(const wchar_t *category, Ylog_level level, int line, const wchar_t *msg, ...)
+void Y_log_write(const wchar_t *category, Ylog_level level, int line, const wchar_t *msg, ...)
 {
 	Yobject *obj = Y_pool_obtain(pool);
 	Ymsg *ymsg = (Ymsg *)Y_object_get_data(obj);
@@ -103,4 +105,5 @@ void Ylog_write(const wchar_t *category, Ylog_level level, int line, const wchar
 
 	Y_queue_enqueue(consume_log_queue, obj);
 }
+
 

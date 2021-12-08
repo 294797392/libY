@@ -28,7 +28,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -153,7 +153,6 @@
     <ClCompile Include="..\..\sources\libY\Ybase.c" />
     <ClCompile Include="..\..\sources\libY\Ylist.c" />
     <ClCompile Include="..\..\sources\libY\Ylog\Yappender_conosle.c" />
-    <ClCompile Include="..\..\sources\libY\Ylog\Yappender_file.c" />
     <ClCompile Include="..\..\sources\libY\Ylog\Ylog.c" />
     <ClCompile Include="..\..\sources\libY\Ynet.c" />
     <ClCompile Include="..\..\sources\libY\Ypool.c" />

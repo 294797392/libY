@@ -21,7 +21,7 @@
 #include "Ynet.h"
 
 // 如果是win32环境，那么要连接ws2_32库
-#ifdef Y_API_WIN32
+#ifdef Y_ENV_WIN32
 #pragma comment(lib, "Ws2_32.lib")
 #endif
 
@@ -53,7 +53,7 @@ void Y_close_socket(Ysocket s)
 
 int Y_read_socket(Ysocket s, char *data, size_t len)
 {
-	size_t ret, nr;
+	size_t ret;
 	size_t l = len;
 	char *m = data;
 	while (l != 0 && (ret = recv(s, m, l, 0)) != 0)
@@ -79,7 +79,7 @@ int Y_read_socket(Ysocket s, char *data, size_t len)
 
 int Y_write_socket(Ysocket s, char *data, size_t len)
 {
-	size_t ret, nr;
+	size_t ret;
 	size_t l = len;
 	char *m = data;
 	while (l != 0 && (ret = send(s, m, l, 0)) != 0)

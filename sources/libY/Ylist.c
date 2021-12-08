@@ -26,7 +26,7 @@ struct Ylist_s
 // 把元素从从start_index的地方向后移动一个元素
 static void move_right(Ylist *yl, int start_index)
 {
-	for (size_t i = yl->length; i > start_index; i--)
+	for (int i = yl->length; i > start_index; i--)
 	{
 		yl->array[i] = yl->array[i - 1];
 	}
@@ -35,7 +35,7 @@ static void move_right(Ylist *yl, int start_index)
 // 把元素从从start_index的地方向前移动一个元素
 static void move_left(Ylist *yl, int start_index)
 {
-	for (size_t i = start_index; i < yl->length; i++)
+	for (int i = start_index; i < yl->length; i++)
 	{
 		yl->array[i - 1] = yl->array[i];
 	}
@@ -112,7 +112,7 @@ void Y_list_add(Ylist *yl, void *item)
 	yl->array[yl->length++] = item;
 }
 
-void *Y_list_clear(Ylist *yl)
+void Y_list_clear(Ylist *yl)
 {
 	if (yl->freefunc != NULL && yl->length > 0)
 	{
