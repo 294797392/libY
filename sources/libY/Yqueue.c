@@ -30,7 +30,11 @@ struct Yqueue_s
 	int enqueue_index;  /* 当前要入队的索引 */
 	int dequeue_index;  /* 当前要出队的索引 */
 
-	int size;
+	// 队列里每个元素的大小
+	int itemsize;
+
+	// 当前队列里元素的总数量
+	int count;
 
 	// 消费者队列
 	Ythread *dequeue_thread;
@@ -114,12 +118,6 @@ void Y_queue_set_full_callback(Yqueue *yq, Yqueue_full_callback callback)
 
 void Y_queue_enqueue(Yqueue *q, void *element)
 {
-	if (element == NULL)
-	{
-		return;
-	}
-
-	int increament = 0; /* 是否要把信号量加1的标志 */
 #ifdef Y_API_WIN32
 	EnterCriticalSection(&q->cs);
 #elif Y_API_UNIX
@@ -134,45 +132,20 @@ void Y_queue_enqueue(Yqueue *q, void *element)
 		index = 0;
 	}
 
-	if (q->elements[index] == NULL)
-	{
-		// 如果队列里的元素为空，说明被消费完了或者没有被使用过，那么把信号量加1
-		increament = 1;
-	}
-	else
-	{
-		// 如果队列里的元素不为空，说明还没有被消费到, 丢弃最早的元素
-		// 此时把丢弃的元素回调给用户，用户需要释放内存空间，不然会造成内存泄漏
-		if(q->full_callback != NULL)
-		{
-			q->full_callback(q->elements[index], q->userdata);
-		}
-		else
-		{
-			//YLOGW(YTEXT("Yqueue缓冲区已满，被丢弃的元素没有做处理，可能会造成内存泄漏"));
-		}
-	}
 	q->elements[index] = element;
 
 	/* 计算下一个要入队的元素索引 */
 	q->enqueue_index += 1;
 
-	q->size++;
+	q->count++;
 
 #ifdef Y_API_WIN32
 	LeaveCriticalSection(&q->cs);
+	ReleaseSemaphore(q->sem, 1, NULL);
 #elif Y_API_UNIX
 	pthread_mutex_unlock(&q->queue_mutex);
+	sem_post(&q->sem);
 #endif
-
-	if (increament == 1)
-	{
-#ifdef Y_API_WIN32
-		ReleaseSemaphore(q->sem, 1, NULL);
-#elif Y_API_UNIX
-		sem_post(&queue->sem);
-#endif
-	}
 }
 
 void *Y_queue_dequeue(Yqueue *q)
@@ -202,7 +175,7 @@ void *Y_queue_dequeue(Yqueue *q)
 	/* 计算下一个要出队的索引 */
 	q->dequeue_index += 1;
 
-	q->size--;
+	q->count--;
 
 #ifdef Y_API_WIN32
 	LeaveCriticalSection(&q->cs);
@@ -215,5 +188,57 @@ void *Y_queue_dequeue(Yqueue *q)
 
 int Y_queue_size(Yqueue *q)
 {
-	return q->size;
+	return q->count;
+}
+
+
+void Y_queue_set_itemsize(Yqueue *yq, size_t size)
+{
+	yq->itemsize = size;
+}
+
+void *Y_queue_begin_enqueue(Yqueue *yq)
+{
+#ifdef Y_API_WIN32
+	EnterCriticalSection(&yq->cs);
+#elif Y_API_UNIX
+	pthread_mutex_lock(&yq->queue_mutex);
+#endif
+
+	int index = yq->enqueue_index;
+	if (index == MAX_QUEUE_SIZE)
+	{
+		/* 队列满了，从头开始 */
+		yq->enqueue_index = 0;
+		index = 0;
+	}
+
+	void *item = yq->elements[index];
+	if (item == NULL)
+	{
+		item = calloc(1, yq->itemsize);
+		yq->elements[index] = item;
+	}
+
+	/* 计算下一个要入队的元素索引 */
+	yq->enqueue_index += 1;
+
+	yq->count++;
+
+#ifdef Y_API_WIN32
+	LeaveCriticalSection(&yq->cs);
+#elif Y_API_UNIX
+	pthread_mutex_unlock(&yq->queue_mutex);
+#endif
+
+	return item;
+}
+
+void Y_queue_end_enqueue(Yqueue *yq)
+{
+#ifdef Y_API_WIN32
+	ReleaseSemaphore(yq->sem, 1, NULL);
+#elif Y_API_UNIX
+	sem_post(&yq->sem);
+#endif
 }

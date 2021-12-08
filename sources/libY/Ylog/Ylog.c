@@ -6,23 +6,20 @@
 #include <stdarg.h>
 #include <wchar.h>
 
-#include "Ylog.h"
-
 #ifdef Y_API_WIN32
 #include <Windows.h>
 #elif Y_API_UNIX
 #endif
 
 #include "Yerrno.h"
+#include "Ylog.h"
 #include "Ybase.h"
 #include "Yqueue.h"
 #include "Ythread.h"
-#include "Ypool.h"
 #include "Ylogbase.h"
 #include "Yappender.h"
 
 static Yqueue *consume_log_queue = NULL;
-static Ypool *pool = NULL;
 
 static int num_appender = 0;
 extern Yappender Yappender_console;
@@ -30,22 +27,17 @@ static Yappender *appenders[32] = { NULL };
 
 static void consume_log_queue_callback(void *userdata, void *element)
 {
-	Yobject *yo = (Yobject *)element;
-	const Ymsg *ymsg = (const Ymsg *)Y_object_get_data(yo);
+	Ymsg *ymsg = (Ymsg *)element;
 
 	for (int i = 0; i < num_appender; i++)
 	{
 		Yappender *appender = appenders[i];
 		appender->write(appender->context, ymsg);
 	}
-
-	Y_pool_recycle(pool, yo);
 }
 
 int Y_log_global_init()
 {
-	pool = Y_create_pool();
-
 	// 初始化appender
 	num_appender = 1;
 	appenders[0] = &Yappender_console;
@@ -59,6 +51,7 @@ int Y_log_global_init()
 
 	// 启动日志队列
 	consume_log_queue = Y_create_queue(NULL);
+	Y_queue_set_itemsize(consume_log_queue, sizeof(Ymsg));
 	Y_queue_start(consume_log_queue, consume_log_queue_callback);
 
 	return YERR_OK;
@@ -66,20 +59,14 @@ int Y_log_global_init()
 
 void Y_log_write(const wchar_t *category, Ylog_level level, int line, const wchar_t *msg, ...)
 {
-	Yobject *obj = Y_pool_obtain(pool);
-	Ymsg *ymsg = (Ymsg *)Y_object_get_data(obj);
-	if (ymsg == NULL)
-	{
-		ymsg = (Ymsg *)calloc(1, sizeof(Ymsg));
-		Y_object_set_data(obj, ymsg);
-	}
-
 	// 格式化用户输入的日志
 	wchar_t message[MAX_MSG_SIZE] = { '\0' };
 	va_list ap;
 	va_start(ap, msg);
 	vswprintf(message, MAX_MSG_SIZE, msg, ap);
 	va_end(ap);
+
+	Ymsg *ymsg = (Ymsg *)Y_queue_begin_enqueue(consume_log_queue);
 
 	// 格式化最终要输出的日志
 	// 注意宽字符串需要用%ls输出，输出单个宽字符使用%lc
@@ -103,7 +90,7 @@ void Y_log_write(const wchar_t *category, Ylog_level level, int line, const wcha
 
 	ymsg->level = level;
 
-	Y_queue_enqueue(consume_log_queue, obj);
+	Y_queue_end_enqueue(consume_log_queue);
 }
 
 

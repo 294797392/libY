@@ -321,7 +321,6 @@ static void demo_Ynet()
 	Y_initnet();
 
 	Ysocket s = Y_create_tcp_svc(NULL, 1018);
-
 }
 
 #define CATEGORY	YTEXT("main")
@@ -345,7 +344,7 @@ int main(int argc, char **argv)
 	{
 		char line[1024] = { '\0' };
 		fgets(line, sizeof(line), stdin);
-		YLOGI(YTEXT("your input is : %s"), line);
+		YLOGCI(CATEGORY, YTEXT("your input is : %s"), line);
 	}
 
 	return 0;
