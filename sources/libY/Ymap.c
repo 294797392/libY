@@ -7,7 +7,9 @@
 // 默认的hash表长度
 #define DEFAULT_YMAP_SIZE   1024
 
-typedef struct Yentry_s
+typedef struct Yentry_s Yentry;
+
+struct Yentry_s
 {
     void *key;
     void *value;
@@ -16,7 +18,7 @@ typedef struct Yentry_s
     Yentry *next;
 #endif
 
-}Yentry;
+};
 
 struct Ymap_s
 {
@@ -76,6 +78,12 @@ void *Y_map_get(Ymap *ym, void *key)
 {
     int hashcode = ym->hash(key);
     Yentry *entry = ym->entries[hashcode];
+    if (entry == NULL)
+    {
+        // 不存在元素
+        return NULL;
+    }
+
     if(ym->keycmp(entry->key, key))
     {
         // key相等，直接返回
