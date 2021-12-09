@@ -9,6 +9,9 @@
         "yfirstinclude.h": "c",
         "ylog.h": "c",
         "xutility": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "type_traits": "c",
+        "xlocnum": "c",
+        "xtr1common": "c"
     }
 }

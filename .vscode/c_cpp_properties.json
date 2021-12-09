@@ -9,7 +9,8 @@
                 "_DEBUG",
                 "UNICODE",
                 "_UNICODE",
-                "Y_ENV_WIN32"
+                "Y_ENV_WIN32",
+                "Y_MAP_CHAIN"
             ],
             "windowsSdkVersion": "10.0.18362.0",
             "compilerPath": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional\\VC\\Tools\\MSVC\\14.16.27023\\bin\\Hostx64\\x64\\cl.exe",
@@ -27,7 +28,8 @@
                 "_DEBUG",
                 "UNICODE",
                 "_UNICODE",
-                "Y_ENV_MINGW"
+                "Y_ENV_MINGW",
+                "Y_MAP_CHAIN"
             ],
             "windowsSdkVersion": "10.0.18362.0",
             "compilerPath": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Professional\\VC\\Tools\\MSVC\\14.16.27023\\bin\\Hostx64\\x64\\cl.exe",

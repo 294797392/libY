@@ -5,6 +5,8 @@ project(Y VERSION 1.1 LANGUAGES C)
 
 # 全局变量定义
 set(Y_DIR ../sources/libY)
+add_definitions(-D Y_MAP_CHAIN)     # 指定哈希表使用链式扩展法解决哈希冲突问题
+
 
 # 配置不同环境下的CMake文件
 include(CMakeLists.mingw.txt)
@@ -22,6 +24,7 @@ list(APPEND Y_SOURCE ${Y_DIR}/Ytree.c)
 list(APPEND Y_SOURCE ${Y_DIR}/Ylist.c)
 list(APPEND Y_SOURCE ${Y_DIR}/Ypool.c)
 list(APPEND Y_SOURCE ${Y_DIR}/Ynet.c)
+list(APPEND Y_SOURCE ${Y_DIR}/Ymap.c)
 list(APPEND Y_SOURCE ${Y_DIR}/Ylog/Ylog.c)
 list(APPEND Y_SOURCE ${Y_DIR}/Ylog/Yappender_conosle.c)
 # aux_source_directory(${Y_DIR} Y_SOURCE)
@@ -42,6 +45,7 @@ list(APPEND Y_INCLUDE ${Y_DIR}/Yqueue.h)
 list(APPEND Y_INCLUDE ${Y_DIR}/Ystring.h)
 list(APPEND Y_INCLUDE ${Y_DIR}/Ythread.h)
 list(APPEND Y_INCLUDE ${Y_DIR}/Ytree.h)
+list(APPEND Y_INCLUDE ${Y_DIR}/Ymap.h)
 list(APPEND Y_INCLUDE ${Y_DIR}/Ylog/Ylog.h)
 list(APPEND Y_INCLUDE ${Y_DIR}/Ylog/Ylogbase.h)
 
