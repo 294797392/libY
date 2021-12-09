@@ -56,10 +56,6 @@ extern "C" {
 	 * 返回值：
 	 * Yqueue对象
 	 *
-	 * 注意：
-	 * 如果你入队的元素是手动开辟的内存空间，那么你最好调用Y_queue_set_full_callback
-	 * 以便于当有元素溢出队列的时候进行释放内存的操作.
-	 *
 	 * 不要直接调用Y_queue_enqueue和Y_queue_dequeue函数，Y_queue_start会自动调用该函数并通过回调的方式把element返回
 	 * 除非你没有调用Y_queue_start，那么请永远不要直接调用这两个函数
 	 */
@@ -72,7 +68,7 @@ extern "C" {
 	 * 参数：
 	 * @q：要删除的队列
 	 */
-	YAPI void Y_delete_queue(Yqueue *q);
+	YAPI void Y_delete_queue(Yqueue *yq);
 
 	/*
 	 * 描述：
@@ -82,7 +78,7 @@ extern "C" {
 	 * @q：要操作的队列对象
 	 * @callback：每消费了一个元素，就会通过该回调回调给用户，用户可以在该回调里做操作
 	 */
-	YAPI void Y_queue_start(Yqueue *queue, Yqueue_callback callback);
+	YAPI void Y_queue_start(Yqueue *yq, Yqueue_callback callback);
 
 	/*
 	 * 描述：
@@ -102,7 +98,7 @@ extern "C" {
 	 * @q：要入队的队列对象
 	 * @element：要入队的元素
 	 */
-	YAPI void Y_queue_enqueue(Yqueue *queue, void *element);
+	YAPI void Y_queue_enqueue(Yqueue *yq, void *element);
 
 	/*
 	 * 描述：
@@ -114,13 +110,13 @@ extern "C" {
 	 * 返回值：
 	 * 出队的对象
 	 */
-	YAPI void *Y_queue_dequeue(Yqueue *queue);
+	YAPI void *Y_queue_dequeue(Yqueue *yq);
 
 	/*
 	 * 描述：
 	 * 获取当前队列的大小
 	 */
-	YAPI int Y_queue_size(Yqueue *q);
+	YAPI int Y_queue_size(Yqueue *yq);
 
 	/*
 	 * 描述：

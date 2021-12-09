@@ -37,8 +37,6 @@ static void demo_Yqueue()
 	}
 }
 
-
-
 typedef struct Ylist_item_s
 {
 	void *ptr;

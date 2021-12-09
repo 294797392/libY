@@ -44,20 +44,32 @@ static void *unix_thread_proc(void *lpThreadParameter)
 
 Ythread *Y_create_thread(Ythread_entry entry, void *userdata)
 {
-    Ythread *thread = (Ythread*)calloc(1, sizeof(Ythread));
+    Ythread *thread = (Ythread *)calloc(1, sizeof(Ythread));
     thread->entry = entry;
     thread->userdata = userdata;
 
 #ifdef Y_API_WIN32
-    if((thread->handle = CreateThread(NULL, 0, win32_thread_proc, thread, 0, &thread->threadid)) == NULL)
+    if ((thread->handle = CreateThread(NULL, 0, win32_thread_proc, thread, 0, &thread->threadid)) == NULL)
     {
         free(thread);
         return NULL;
     }
 #elif Y_API_UNIX
     pthread_create(&thread->threadid, NULL, unix_thread_proc, thread);
-	pthread_detach(thread->threadid);
+    pthread_detach(thread->threadid);
 #endif
 
     return thread;
 }
+
+void Y_delete_thread(Ythread *thread)
+{
+#ifdef Y_API_WIN32
+    // Windows下使用WaitForSingleObject等待线程运行结束
+    WaitForSingleObject(thread->handle, INFINITE);
+#elif Y_API_UNIX
+    pthread_join(thread->threadid, NULL);
+#endif
+    free(thread);
+}
+

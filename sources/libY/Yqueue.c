@@ -37,7 +37,7 @@ struct Yqueue_s
 	int count;
 
 	// 消费者队列
-	Ythread *dequeue_thread;
+	Ythread *consume_thread;
 
 #ifdef Y_API_WIN32
 	HANDLE sem;				// 信号量对象
@@ -99,9 +99,27 @@ Yqueue *Y_create_queue(void *userdata)
 	return queue;
 }
 
-void Y_delete_queue(Yqueue *q)
+void Y_delete_queue(Yqueue *yq)
 {
-	// todo:实现
+	yq->state = YQUEUE_STATE_IDLE;
+	yq->callback = NULL;
+	yq->full_callback = NULL;
+
+#ifdef Y_API_WIN32
+	ReleaseSemaphore(yq->sem, yq->count, NULL);
+	CloseHandle(yq->sem);
+	DeleteCriticalSection(&yq->cs);
+#elif Y_API_UNIX
+	for (int i = 0; i < yq->count; i++)
+	{
+		sem_post(&yq->sem);
+	}
+	sem_destroy(&yq->sem);
+#endif
+
+	Y_delete_thread(yq->consume_thread);
+
+	free(yq);
 }
 
 void Y_queue_start(Yqueue *q, Yqueue_callback callback)
@@ -116,79 +134,79 @@ void Y_queue_set_full_callback(Yqueue *yq, Yqueue_full_callback callback)
 	yq->full_callback = callback;
 }
 
-void Y_queue_enqueue(Yqueue *q, void *element)
+void Y_queue_enqueue(Yqueue *yq, void *element)
 {
-#ifdef Y_API_WIN32
-	EnterCriticalSection(&q->cs);
-#elif Y_API_UNIX
-	pthread_mutex_lock(&q->queue_mutex);
-#endif
-
-	int index = q->enqueue_index;
+	int index = yq->enqueue_index;
 	if (index == MAX_QUEUE_SIZE)
 	{
 		/* 队列满了，从头开始 */
-		q->enqueue_index = 0;
+		yq->enqueue_index = 0;
 		index = 0;
 	}
 
-	q->elements[index] = element;
+#ifdef Y_API_WIN32
+	EnterCriticalSection(&yq->cs);
+#elif Y_API_UNIX
+	pthread_mutex_lock(&yq->queue_mutex);
+#endif
+
+	yq->elements[index] = element;
+
+	yq->count++;
+
+#ifdef Y_API_WIN32
+	LeaveCriticalSection(&yq->cs);
+	ReleaseSemaphore(yq->sem, 1, NULL);
+#elif Y_API_UNIX
+	pthread_mutex_unlock(&yq->queue_mutex);
+	sem_post(&yq->sem);
+#endif
 
 	/* 计算下一个要入队的元素索引 */
-	q->enqueue_index += 1;
-
-	q->count++;
-
-#ifdef Y_API_WIN32
-	LeaveCriticalSection(&q->cs);
-	ReleaseSemaphore(q->sem, 1, NULL);
-#elif Y_API_UNIX
-	pthread_mutex_unlock(&q->queue_mutex);
-	sem_post(&q->sem);
-#endif
+	yq->enqueue_index += 1;
 }
 
-void *Y_queue_dequeue(Yqueue *q)
+void *Y_queue_dequeue(Yqueue *yq)
 {
-	/* 等待信号量 */
-#ifdef Y_API_WIN32
-	WaitForSingleObject(q->sem, INFINITE);
-	EnterCriticalSection(&q->cs);
-#elif Y_API_UNIX
-	sem_wait(&q->sem);
-	pthread_mutex_lock(&q->queue_mutex);
-#endif
-
 	/* 如果当前要出队的索引是MAX_QUEUE_SIZE，那么重置为0，从头开始继续出队 */
-	int index = q->dequeue_index;
+	int index = yq->dequeue_index;
 	if (index == MAX_QUEUE_SIZE)
 	{
 		index = 0;
-		q->dequeue_index = 0;
+		yq->dequeue_index = 0;
 	}
 
-	void *element = q->elements[index];
+	/* 等待信号量 */
+#ifdef Y_API_WIN32
+	WaitForSingleObject(yq->sem, INFINITE);
+	EnterCriticalSection(&yq->cs);
+#elif Y_API_UNIX
+	sem_wait(&yq->sem);
+	pthread_mutex_lock(&yq->queue_mutex);
+#endif
+
+	void *element = yq->elements[index];
 
 	/* 处理完后置为NULL */
-	q->elements[index] = NULL;
+	yq->elements[index] = NULL;
 
-	/* 计算下一个要出队的索引 */
-	q->dequeue_index += 1;
-
-	q->count--;
+	yq->count--;
 
 #ifdef Y_API_WIN32
-	LeaveCriticalSection(&q->cs);
+	LeaveCriticalSection(&yq->cs);
 #elif Y_API_UNIX
-	pthread_mutex_unlock(&queue->queue_mutex);
+	pthread_mutex_unlock(&yq->queue_mutex);
 #endif
+
+	/* 计算下一个要出队的索引 */
+	yq->dequeue_index += 1;
 
 	return element;
 }
 
-int Y_queue_size(Yqueue *q)
+int Y_queue_size(Yqueue *yq)
 {
-	return q->count;
+	return yq->count;
 }
 
 
@@ -199,12 +217,6 @@ void Y_queue_set_itemsize(Yqueue *yq, size_t size)
 
 void *Y_queue_begin_enqueue(Yqueue *yq)
 {
-#ifdef Y_API_WIN32
-	EnterCriticalSection(&yq->cs);
-#elif Y_API_UNIX
-	pthread_mutex_lock(&yq->queue_mutex);
-#endif
-
 	int index = yq->enqueue_index;
 	if (index == MAX_QUEUE_SIZE)
 	{
@@ -213,15 +225,19 @@ void *Y_queue_begin_enqueue(Yqueue *yq)
 		index = 0;
 	}
 
+#ifdef Y_API_WIN32
+	EnterCriticalSection(&yq->cs);
+#elif Y_API_UNIX
+	pthread_mutex_lock(&yq->queue_mutex);
+#endif
+
+	// 如果下一个要入队的元素为空，那么开辟一段新的内存空间
 	void *item = yq->elements[index];
 	if (item == NULL)
 	{
 		item = calloc(1, yq->itemsize);
 		yq->elements[index] = item;
 	}
-
-	/* 计算下一个要入队的元素索引 */
-	yq->enqueue_index += 1;
 
 	yq->count++;
 
@@ -230,6 +246,9 @@ void *Y_queue_begin_enqueue(Yqueue *yq)
 #elif Y_API_UNIX
 	pthread_mutex_unlock(&yq->queue_mutex);
 #endif
+
+	/* 计算下一个要入队的元素索引 */
+	yq->enqueue_index += 1;
 
 	return item;
 }
