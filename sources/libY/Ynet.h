@@ -64,7 +64,7 @@ extern "C" {
 	 * 返回值：
 	 * 写入成功返回0，写入失败返回-1
 	 */
-	YAPI int Y_write_socket(Ysocket s, char *data, size_t len);
+	YAPI int Y_write_socket(Ysocket s, const char *data, size_t len);
 
 	/*
 	 * 描述：

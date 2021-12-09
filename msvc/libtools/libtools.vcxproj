@@ -28,7 +28,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -159,6 +159,7 @@
     <ClCompile Include="..\..\sources\libY\Ypool.c" />
     <ClCompile Include="..\..\sources\libY\Yqueue.c" />
     <ClCompile Include="..\..\sources\libY\Ystring.c" />
+    <ClCompile Include="..\..\sources\libY\Ytcpcli.c" />
     <ClCompile Include="..\..\sources\libY\Ythread.c" />
     <ClCompile Include="..\..\sources\libY\Ytree.c" />
   </ItemGroup>
@@ -175,6 +176,7 @@
     <ClInclude Include="..\..\sources\libY\Ypool.h" />
     <ClInclude Include="..\..\sources\libY\Yqueue.h" />
     <ClInclude Include="..\..\sources\libY\Ystring.h" />
+    <ClInclude Include="..\..\sources\libY\Ytcpcli.h" />
     <ClInclude Include="..\..\sources\libY\Ythread.h" />
     <ClInclude Include="..\..\sources\libY\Ytree.h" />
   </ItemGroup>

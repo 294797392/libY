@@ -1,4 +1,4 @@
-﻿/***********************************************************************************
+﻿/***************************************************************************************************************************
  * @ file    : Ymap.h
  * @ author  : oheiheiheiheihei
  * @ version : 0.9
@@ -8,7 +8,7 @@
  * @ remark  ：开启Y_MAP_CHAIN宏，指定使用链式扩展法解决hash冲突，使用除留余数计算hash值
  * 为什么叫hash？去肉店买肉的时候，师傅会问，你要hash-er吗？（er是的动词的词缀），就是打不打碎的意思。
  * hash来自于生活。体现到计算机中，hash，就是把输入的东西，字符串也好，其他的什么东西也好（肉或小脆骨），打的越碎越均匀越好。
- ************************************************************************************/
+ **************************************************************************************************************************/
 
 #ifndef __YMAP_H__
 #define __YMAP_H__
@@ -35,6 +35,9 @@ extern "C" {
     // 用来释放value的函数
     typedef void(*Ymap_free_func)(void *value);
 
+    // 遍历哈希表的函数
+    typedef void(*Ymap_foreach_func)(Ymap *ym, void *key, void *value, void *userdata);
+
 
     // 预定义的哈希函数
     // 使用java里的string类型的hash函数
@@ -43,6 +46,8 @@ extern "C" {
     // 预定义的字符串键比较函数
     YAPI int Y_map_keycmp_string(void *key1, void *key2);
 
+    // 预定义的指针类型的键比较函数
+    YAPI int Y_map_keycmp_pointer(void *key1, void *key2);
 
 
 	/*
@@ -63,6 +68,17 @@ extern "C" {
 	 */
     YAPI void Y_delete_map(Ymap *ym);
 
+    /*
+     * 描述：
+     * 查找对应key的value
+     *
+     * 参数：
+     * @ym：要操作的哈希表对象
+     * @key：要查找的键
+     *
+     * 返回值：
+     * key对应的value，注意value可能是NULL
+     */
     YAPI void *Y_map_get(Ymap *ym, void *key);
 
 	/*
@@ -102,6 +118,21 @@ extern "C" {
      * 注意，如果你设置了Ymap_free_func，那么该函数会帮你释放掉所有的value
 	 */
     YAPI void Y_map_clear(Ymap *ym);
+
+    YAPI int Y_map_count(Ymap *ym);
+
+    /*
+     * 描述：
+     * 对hash表进行遍历操作
+     *
+     * 参数：
+     * @ym：要遍历的表
+     * @foreach：遍历函数
+     * @userdata：遍历过程中用户自定义数据
+     *
+     * 注意，哈希表的遍历有可能是无序的
+     */
+    YAPI void Y_map_foreach(Ymap *ym, Ymap_foreach_func foreach, void *userdata);
 
 #ifdef __cplusplus
 }

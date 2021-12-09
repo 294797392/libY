@@ -77,11 +77,11 @@ int Y_read_socket(Ysocket s, char *data, size_t len)
 	return 0;
 }
 
-int Y_write_socket(Ysocket s, char *data, size_t len)
+int Y_write_socket(Ysocket s, const char *data, size_t len)
 {
 	size_t ret;
 	size_t l = len;
-	char *m = data;
+	const char *m = data;
 	while (l != 0 && (ret = send(s, m, l, 0)) != 0)
 	{
 		if (ret == -1)

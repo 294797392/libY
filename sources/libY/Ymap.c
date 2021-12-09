@@ -5,7 +5,9 @@
 #include "ymap.h"
 
 // 默认的hash表长度
-#define DEFAULT_YMAP_SIZE		1024
+#define DEFAULT_YMAP_SIZE		128
+
+// 默认的负载因子
 #define DEFAULT_LOAD_FACTOR		0.7
 
 typedef struct Yentry_s Yentry;
@@ -112,6 +114,11 @@ int Y_map_keycmp_string(void *key1, void *key2)
 	const char *str1 = (const char *)key1;
 	const char *str2 = (const char *)key2;
 	return strncmp(str1, str2, strlen(str1)) ? 0 : 1;
+}
+
+int Y_map_keycmp_pointer(void *key1, void *key2)
+{
+	return key1 == key2 ? 1 : 0;
 }
 
 Ymap *Y_create_map(Ymap_hash_func hash, Ymap_keycmp_func keycmp, Ymap_free_func free)
@@ -283,3 +290,27 @@ void Y_map_clear(Ymap *ym)
 	ym->count = 0;
 }
 
+int Y_map_count(Ymap *ym)
+{
+	return ym->count;
+}
+
+void Y_map_foreach(Ymap *ym, Ymap_foreach_func foreach, void *userdata)
+{
+	if (ym->count == 0)
+	{
+		return;
+	}
+
+#ifdef Y_MAP_CHAIN
+	for (int i = 0; i < ym->count; i++)
+	{
+		Yentry *entry = ym->entries[i];
+		while (entry)
+		{
+			foreach(ym, entry->key, entry->value, userdata);
+			entry = entry->next;
+		}
+	}
+#endif
+}

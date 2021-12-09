@@ -15,9 +15,9 @@
 
 void Ysleep(int mseconds)
 {
-	#if (defined(Y_WIN32)) || (defined(Y_MINGW))
+	#ifdef Y_API_WIN32
     Sleep(mseconds);
-    #elif (defined(Y_UNIX))
+    #elif Y_API_UNIX
     sleep(mseconds / 1000);
     #endif
 }
