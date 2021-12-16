@@ -152,6 +152,7 @@
     <ClCompile Include="..\..\sources\libY\main.c" />
     <ClCompile Include="..\..\sources\libY\Ybase.c" />
     <ClCompile Include="..\..\sources\libY\Ylist.c" />
+    <ClCompile Include="..\..\sources\libY\Ylock.c" />
     <ClCompile Include="..\..\sources\libY\Ylog\Yappender_conosle.c" />
     <ClCompile Include="..\..\sources\libY\Ylog\Ylog.c" />
     <ClCompile Include="..\..\sources\libY\Ymap.c" />
@@ -168,6 +169,7 @@
     <ClInclude Include="..\..\sources\libY\Yerrno.h" />
     <ClInclude Include="..\..\sources\libY\Yfirstinclude.h" />
     <ClInclude Include="..\..\sources\libY\Ylist.h" />
+    <ClInclude Include="..\..\sources\libY\Ylock.h" />
     <ClInclude Include="..\..\sources\libY\Ylog\Yappender.h" />
     <ClInclude Include="..\..\sources\libY\Ylog\Ylog.h" />
     <ClInclude Include="..\..\sources\libY\Ylog\Ylogbase.h" />

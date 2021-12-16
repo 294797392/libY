@@ -115,6 +115,7 @@ void Y_delete_queue(Yqueue *yq)
 		sem_post(&yq->sem);
 	}
 	sem_destroy(&yq->sem);
+	pthread_mutex_destroy(&yq->queue_mutex);
 #endif
 
 	Y_delete_thread(yq->consume_thread);

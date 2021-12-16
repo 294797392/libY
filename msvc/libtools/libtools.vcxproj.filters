@@ -54,6 +54,9 @@
     <ClCompile Include="..\..\sources\libY\Ytcpcli.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\sources\libY\Ylock.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\sources\libY\Ybase.h">
@@ -99,6 +102,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\sources\libY\Ytcpcli.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sources\libY\Ylock.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
