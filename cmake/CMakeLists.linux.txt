@@ -1,1 +1,6 @@
 ﻿# linux环境下的配置
+
+add_definitions(-D Y_ENV_UNIX)
+add_definitions(-D Y_EXPORT)
+
+list(APPEND Y_LINK_LIBRARIES pthread)

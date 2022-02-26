@@ -7,9 +7,9 @@
 // 那为什么还要定义Y_ENV_WIN32,Y_ENV_UNIX呢？
 // 虽然有些平台的API和头文件是一样的，但是很多时候这些平台还是会有一些细微的不同的地方，可以通过这个宏来对这些地方做特殊处理
 // 这些所有的宏也都可以通过cmake去配置，但是如果都通过cmake去配置的话，这样对于编译这个库就很麻烦，因为要记很多不同的宏定义
-#if (defined(Y_ENV_WIN32)) || (defined(Y_ENV_MINGW)) || (defined(Y_ENV_MSYS))
+#if (defined(Y_ENV_WIN32)) || (defined(Y_ENV_MINGW))
 #define Y_API_WIN32
-#elif (defined(Y_UNIX))
+#elif (defined(Y_ENV_UNIX)) || (defined(Y_ENV_MSYS))
 #define Y_API_UNIX
 #endif
 

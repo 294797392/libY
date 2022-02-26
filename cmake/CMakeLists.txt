@@ -6,15 +6,17 @@ project(Y VERSION 1.1 LANGUAGES C)
 # 全局变量定义
 set(Y_DIR ../sources/libY)
 set(Y_SYS ${CMAKE_SYSTEM_NAME})
-add_definitions(-D Y_MAP_CHAIN)     # 指定哈希表使用链式扩展法解决哈希冲突问题
 message(STATUS "Y_SYS = " ${Y_SYS})
 
+add_definitions(-D Y_MAP_CHAIN)                 # 指定哈希表使用链式扩展法解决哈希冲突问题
+
 # 配置不同环境下的CMake文件
-if(${Y_SYS} MATCHES "M*")                       # 不知道为什么在msys环境下 ${Y_SYS} STREQUAL "MSYS"竟然不成立，这里直接暴力使用MATCHES
-    include(CMakeLists.msys.txt)
-elseif(${Y_SYS} MATCHES "MINGW*")
-    include(CMakeLists.mingw.txt)
-else()
+if(${Y_SYS} STREQUAL "MSYS")                       # 不知道为什么在msys环境下 ${Y_SYS} STREQUAL "MSYS"竟然不成立，这里直接暴力使用MATCHES
+include(CMakeLists.msys.txt)
+elseif(${Y_SYS} STREQUAL "MINGW")
+include(CMakeLists.mingw.txt)
+elseif(${Y_SYS} STREQUAL "Linux")
+include(CMakeLists.linux.txt)
 endif()
 
 # 设置要引用的头文件目录
@@ -36,7 +38,7 @@ list(APPEND Y_SOURCE ${Y_DIR}/Ylog/Ylog.c)
 list(APPEND Y_SOURCE ${Y_DIR}/Ylog/Yappender_conosle.c)
 # aux_source_directory(${Y_DIR} Y_SOURCE)
 add_library(Y ${Y_SOURCE})
-target_link_libraries(Y PRIVATE pthread ${Y_LINK_LIBRARIES})
+target_link_libraries(Y PRIVATE ${Y_LINK_LIBRARIES})
 
 # 编译Yexe
 add_executable(Ydemo ${Y_DIR}/main.c)

@@ -20,6 +20,7 @@
         "ythread.h": "c",
         "ypool.h": "c",
         "winsock2.h": "c",
-        "windows.h": "c"
+        "windows.h": "c",
+        "ymap.h": "c"
     }
 }
