@@ -13,9 +13,9 @@
 
 #include "Ybase.h"
 
-#ifdef Y_API_WIN32
+#if (defined(Y_API_WIN32))
 typedef SOCKET Ysocket;
-#elif Y_API_UNIX
+#elif (defined(Y_API_UNIX))
 typedef int Ysocket;
 #endif
 

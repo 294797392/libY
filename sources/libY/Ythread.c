@@ -4,9 +4,10 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifdef Y_API_WIN32
+#if (defined(Y_API_WIN32))
 #include <Windows.h>
-#elif Y_API_UNIX
+#elif (defined(Y_API_UNIX))
+#include <pthread.h>
 #endif
 
 #include "Ybase.h"
@@ -48,13 +49,13 @@ Ythread *Y_create_thread(Ythread_entry entry, void *userdata)
     thread->entry = entry;
     thread->userdata = userdata;
 
-#ifdef Y_API_WIN32
+#if (defined(Y_API_WIN32))
     if ((thread->handle = CreateThread(NULL, 0, win32_thread_proc, thread, 0, &thread->threadid)) == NULL)
     {
         free(thread);
         return NULL;
     }
-#elif Y_API_UNIX
+#elif (defined(Y_API_UNIX))
     pthread_create(&thread->threadid, NULL, unix_thread_proc, thread);
     pthread_detach(thread->threadid);
 #endif
@@ -64,10 +65,10 @@ Ythread *Y_create_thread(Ythread_entry entry, void *userdata)
 
 void Y_delete_thread(Ythread *thread)
 {
-#ifdef Y_API_WIN32
+#if (defined(Y_API_WIN32))
     // Windows下使用WaitForSingleObject等待线程运行结束
     WaitForSingleObject(thread->handle, INFINITE);
-#elif Y_API_UNIX
+#elif (defined(Y_API_UNIX))
     pthread_join(thread->threadid, NULL);
 #endif
     free(thread);

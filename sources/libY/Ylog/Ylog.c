@@ -6,9 +6,9 @@
 #include <stdarg.h>
 #include <wchar.h>
 
-#ifdef Y_API_WIN32
+#if (defined(Y_API_WIN32))
 #include <Windows.h>
-#elif Y_API_UNIX
+#elif (defined(Y_API_UNIX))
 #endif
 
 #include "Yerrno.h"

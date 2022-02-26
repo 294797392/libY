@@ -4,9 +4,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
-#ifdef Y_API_WIN32
+#if (defined(Y_API_WIN32))
 #include <WinSock2.h>
-#elif Y_API_UNIX
+#elif (defined(Y_API_UNIX))
 #include <pthread.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -129,9 +129,9 @@ static void worker_thread_entry(void *state)
 	{
 		fd_set readfds = rdfds;
 
-#ifdef Y_API_WIN32
+#if (defined(Y_API_WIN32))
 		int ret = select(0, &readfds, NULL, NULL, NULL);
-#elif Y_API_UNIX
+#elif (defined(Y_API_UNIX))
 		int ret = select(ycli->fd + 1, &readfds, NULL, NULL, NULL);
 #endif
 		if (ret == 0)

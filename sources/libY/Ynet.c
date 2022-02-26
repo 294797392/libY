@@ -5,9 +5,9 @@
 #include <string.h>
 #include <errno.h>
 
-#ifdef Y_API_WIN32
+#if (defined(Y_API_WIN32))
 #include <WinSock2.h>
-#elif Y_API_UNIX
+#elif (defined(Y_API_UNIX))
 #include <unistd.h>
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -27,10 +27,10 @@
 
 void Y_initnet()
 {
-#ifdef Y_API_WIN32
+#if (defined(Y_API_WIN32))
 	WSADATA data;
 	WSAStartup(MAKEWORD(2, 2), &data);
-#elif Y_API_UNIX
+#elif (defined(Y_API_UNIX))
 	/*
 	 * 如果客户端socket已经关闭，服务端继续向socket写数据，内核会发出SIGPIPE信号。
 	 * 默认的操作是终止进程，但该信号可以被捕获并处理。
@@ -42,10 +42,10 @@ void Y_initnet()
 
 void Y_close_socket(Ysocket s)
 {
-#ifdef Y_API_WIN32
+#if (defined(Y_API_WIN32))
 	shutdown(s, SD_BOTH);
 	closesocket(s);
-#elif Y_API_UNIX
+#elif (defined(Y_API_UNIX))
 	shutdown(s, SHUT_RDWR);
 	close(s);
 #endif
@@ -105,9 +105,9 @@ int Y_write_socket(Ysocket s, const char *data, size_t len)
 
 int Y_socket_error()
 {
-#ifdef Y_API_WIN32
+#if (defined(Y_API_WIN32))
 	return WSAGetLastError();
-#elif Y_API_UNIX
+#elif (defined(Y_API_UNIX))
 	return errno;
 #endif
 }

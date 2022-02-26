@@ -4,13 +4,15 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifdef Y_API_WIN32
+
+#if (defined(Y_API_WIN32))
 #include <Windows.h>
-#elif Y_API_UNIX
+#elif (defined(Y_API_UNIX))
 #endif
 
 #include "Ylog.h"
 #include "Ypool.h"
+#include "Ylock.h"
 
 #define MAX_POOL_SIZE		512
 
@@ -31,10 +33,7 @@ struct Ypool_s
 
 	Yobject *spool;
 
-#ifdef Y_API_WIN32
-	CRITICAL_SECTION lock;
-#elif Y_API_UNIX
-#endif
+	Ylock lock;
 };
 
 Ypool *Y_create_pool()
@@ -42,21 +41,14 @@ Ypool *Y_create_pool()
 	Ypool *yp = (Ypool *)calloc(1, sizeof(Ypool));
 	yp->max_size = MAX_POOL_SIZE;
 	yp->size = 0;
-#ifdef Y_API_WIN32
-	InitializeCriticalSection(&yp->lock);
-#elif Y_API_UNIX
-	pthread_mutex_init(&yp->lock, NULL);
-#endif
+	Y_create_lock(yp->lock);
 	return yp;
 }
 
 Yobject *Y_pool_obtain(Ypool *yp)
 {
-#ifdef Y_API_WIN32
-	EnterCriticalSection(&yp->lock);
-#elif Y_API_UNIX
-	pthread_mutex_lock(&yp->lock, NULL);
-#endif
+	Y_lock_lock(yp->lock);
+
 	Yobject *yo = NULL;
 	if (yp->spool != NULL)
 	{
@@ -66,11 +58,8 @@ Yobject *Y_pool_obtain(Ypool *yp)
 		yo->next = NULL;
 		yp->size--;
 	}
-#ifdef Y_API_WIN32
-	LeaveCriticalSection(&yp->lock);
-#elif Y_API_UNIX
-	pthread_mutex_unlock(&yp->lock, NULL);
-#endif
+
+	Y_lock_unlock(yp->lock);
 
 	if (yo != NULL)
 	{
@@ -85,11 +74,8 @@ Yobject *Y_pool_obtain(Ypool *yp)
 
 void Y_pool_recycle(Ypool *yp, Yobject *yo)
 {
-#ifdef Y_API_WIN32
-	EnterCriticalSection(&yp->lock);
-#elif Y_API_UNIX
-	pthread_mutex_lock(&yp->lock, NULL);
-#endif
+	Y_lock_lock(yp->lock);
+
 	if (yp->size < yp->max_size)
 	{
 		yo->next = yp->spool;
@@ -100,11 +86,8 @@ void Y_pool_recycle(Ypool *yp, Yobject *yo)
 	{
 		//YLOGE("Ypool is full");
 	}
-#ifdef Y_API_WIN32
-	LeaveCriticalSection(&yp->lock);
-#elif Y_API_UNIX
-	pthread_mutex_unlock(&yp->lock, NULL);
-#endif
+
+	Y_lock_unlock(yp->lock);
 }
 
 void *Y_object_get_data(Yobject *yo)

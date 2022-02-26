@@ -5,11 +5,17 @@ project(Y VERSION 1.1 LANGUAGES C)
 
 # 全局变量定义
 set(Y_DIR ../sources/libY)
+set(Y_SYS ${CMAKE_SYSTEM_NAME})
 add_definitions(-D Y_MAP_CHAIN)     # 指定哈希表使用链式扩展法解决哈希冲突问题
-
+message(STATUS "Y_SYS = " ${Y_SYS})
 
 # 配置不同环境下的CMake文件
-include(CMakeLists.mingw.txt)
+if(${Y_SYS} MATCHES "M*")                       # 不知道为什么在msys环境下 ${Y_SYS} STREQUAL "MSYS"竟然不成立，这里直接暴力使用MATCHES
+    include(CMakeLists.msys.txt)
+elseif(${Y_SYS} MATCHES "MINGW*")
+    include(CMakeLists.mingw.txt)
+else()
+endif()
 
 # 设置要引用的头文件目录
 include_directories(${Y_DIR})
@@ -52,7 +58,6 @@ list(APPEND Y_INCLUDE ${Y_DIR}/Ylog/Ylog.h)
 list(APPEND Y_INCLUDE ${Y_DIR}/Ylog/Ylogbase.h)
 list(APPEND Y_INCLUDE ${Y_DIR}/Ylock.h)
 list(APPEND Y_INCLUDE ${Y_DIR}/Ysem.h)
-
 
 # 拷贝头文件到libYinc
 file(COPY ${Y_INCLUDE} DESTINATION ${Y_DIR}/../libYinc)

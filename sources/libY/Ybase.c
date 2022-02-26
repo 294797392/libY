@@ -5,9 +5,9 @@
 #include <string.h>
 #include <fcntl.h>
 #include <errno.h>
-#ifdef Y_API_WIN32
+#if (defined(Y_API_WIN32))
 #include <Windows.h>
-#elif Y_API_UNIX
+#elif (defined(Y_API_UNIX))
 #include <unistd.h>
 #endif
 
@@ -15,11 +15,11 @@
 
 void Ysleep(int mseconds)
 {
-	#ifdef Y_API_WIN32
+	#if (defined(Y_API_WIN32))
     Sleep(mseconds);
-    #elif Y_API_UNIX
+	#elif (defined(Y_API_UNIX))
     sleep(mseconds / 1000);
-    #endif
+	#endif
 }
 
 #ifdef UNIX

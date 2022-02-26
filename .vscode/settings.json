@@ -15,6 +15,11 @@
         "xtr1common": "c",
         "xmemory": "cpp",
         "xstring": "cpp",
-        "initializer_list": "c"
+        "initializer_list": "c",
+        "ybase.h": "c",
+        "ythread.h": "c",
+        "ypool.h": "c",
+        "winsock2.h": "c",
+        "windows.h": "c"
     }
 }
