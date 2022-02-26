@@ -5,17 +5,12 @@
 #include <string.h>
 #include <errno.h>
 
-#ifdef Y_API_WIN32
-#include <Windows.h>
-#elif Y_API_UNIX
-#include <pthread.h>
-#include <semaphore.h>
-#endif
-
 #include "Ybase.h"
 #include "Ylog.h"
 #include "Yqueue.h"
 #include "Ythread.h"
+#include "Ylock.h"
+#include "Ysem.h"
 
 #define MAX_QUEUE_SIZE 4096
 
@@ -36,19 +31,18 @@ struct Yqueue_s
 	// 当前队列里元素的总数量
 	int count;
 
-	// 消费者队列
-	Ythread *consume_thread;
+	// 消费者线程列表
+	Ythread **consume_threads;
+	int num_thread;
 
-#ifdef Y_API_WIN32
-	HANDLE sem;				// 信号量对象
-	CRITICAL_SECTION cs;	// 临界区对象
-#elif Y_API_UNIX
-	sem_t sem;
-	pthread_mutex_t queue_mutex;
-#endif
+	// 队列锁
+	Ylock lock;
+
+	// 信号量
+	Ysem sem;
 };
 
-static void dequeue_thread_process(void *state)
+static void consume_thread_process(void *state)
 {
 	Yqueue *q = (Yqueue *)state;
 	while (q->state == YQUEUE_STATE_RUNNING)
@@ -64,39 +58,22 @@ static void dequeue_thread_process(void *state)
 	}
 }
 
-Yqueue *Y_create_queue(void *userdata)
+Yqueue *Y_create_queue(void *userdata, size_t itemsize)
 {
-	Yqueue *queue = (Yqueue *)calloc(1, sizeof(Yqueue));
-	if (!queue)
+	Yqueue *yq = (Yqueue *)calloc(1, sizeof(Yqueue));
+	if (!yq)
 	{
 		//YLOGE(YTEXT("create Yqueue instance failed"));
 		return NULL;
 	}
 
-#ifdef Y_API_WIN32
-	if (!(queue->sem = CreateSemaphoreW(NULL, 0, MAX_QUEUE_SIZE, YTEXT("Yqueue"))))
-	{
-		//YLOGE(YTEXT("CreateSemaphore failed, %d"), GetLastError());
-		free(queue);
-		return NULL;
-	}
-#elif Y_API_UNIX
-	if (sem_init(&queue->sem, 0, 0) < 0)
-	{
-		//YLOGE(YTEXT("create sem failed, %d"), errno);
-		free(queue);
-		return NULL;
-	}
-#endif
+	yq->itemsize = itemsize;
+	yq->state = YQUEUE_STATE_IDLE;
+	yq->userdata = userdata;
+	Y_create_lock(yq->lock);
+	Y_create_sem(yq->sem, MAX_QUEUE_SIZE);
 
-	queue->state = YQUEUE_STATE_IDLE;
-	queue->userdata = userdata;
-#ifdef Y_API_WIN32
-	InitializeCriticalSection(&queue->cs);
-#elif Y_API_UNIX
-	pthread_mutex_init(&queue->queue_mutex, NULL);
-#endif
-	return queue;
+	return yq;
 }
 
 void Y_delete_queue(Yqueue *yq)
@@ -104,30 +81,29 @@ void Y_delete_queue(Yqueue *yq)
 	yq->state = YQUEUE_STATE_IDLE;
 	yq->callback = NULL;
 	yq->full_callback = NULL;
+	Y_delete_lock(yq->lock);
+	Y_delete_sem(yq->sem);
 
-#ifdef Y_API_WIN32
-	ReleaseSemaphore(yq->sem, yq->count, NULL);
-	CloseHandle(yq->sem);
-	DeleteCriticalSection(&yq->cs);
-#elif Y_API_UNIX
-	for (int i = 0; i < yq->count; i++)
+	for(int i = 0; i < yq->num_thread; i++)
 	{
-		sem_post(&yq->sem);
+		Y_delete_thread(yq->consume_threads[i]);
 	}
-	sem_destroy(&yq->sem);
-	pthread_mutex_destroy(&yq->queue_mutex);
-#endif
 
-	Y_delete_thread(yq->consume_thread);
-
+	// 此时消费者线程肯定运行完了，所有元素也肯定都被消费了
 	free(yq);
 }
 
-void Y_queue_start(Yqueue *q, Yqueue_callback callback)
+void Y_queue_start(Yqueue *yq, int num_thread, Yqueue_callback callback)
 {
-	q->state = YQUEUE_STATE_RUNNING;
-	q->callback = callback;
-	Y_create_thread(dequeue_thread_process, q);
+	yq->state = YQUEUE_STATE_RUNNING;
+	yq->callback = callback;
+	yq->num_thread = num_thread;
+	yq->consume_threads = (Ythread**)calloc(num_thread, sizeof(Ythread*));
+
+	for(int i = 0; i < num_thread; i++)
+	{
+		yq->consume_threads[i] = Y_create_thread(consume_thread_process, yq);
+	}
 }
 
 void Y_queue_set_full_callback(Yqueue *yq, Yqueue_full_callback callback)
@@ -135,40 +111,13 @@ void Y_queue_set_full_callback(Yqueue *yq, Yqueue_full_callback callback)
 	yq->full_callback = callback;
 }
 
-void Y_queue_enqueue(Yqueue *yq, void *element)
-{
-	int index = yq->enqueue_index;
-	if (index == MAX_QUEUE_SIZE)
-	{
-		/* 队列满了，从头开始 */
-		yq->enqueue_index = 0;
-		index = 0;
-	}
-
-#ifdef Y_API_WIN32
-	EnterCriticalSection(&yq->cs);
-#elif Y_API_UNIX
-	pthread_mutex_lock(&yq->queue_mutex);
-#endif
-
-	yq->elements[index] = element;
-
-	yq->count++;
-
-#ifdef Y_API_WIN32
-	LeaveCriticalSection(&yq->cs);
-	ReleaseSemaphore(yq->sem, 1, NULL);
-#elif Y_API_UNIX
-	pthread_mutex_unlock(&yq->queue_mutex);
-	sem_post(&yq->sem);
-#endif
-
-	/* 计算下一个要入队的元素索引 */
-	yq->enqueue_index += 1;
-}
-
 void *Y_queue_dequeue(Yqueue *yq)
 {
+	// 等待生产者线程的数据
+	Y_sem_wait(yq->sem);
+
+	Y_lock_lock(yq->lock);
+
 	/* 如果当前要出队的索引是MAX_QUEUE_SIZE，那么重置为0，从头开始继续出队 */
 	int index = yq->dequeue_index;
 	if (index == MAX_QUEUE_SIZE)
@@ -177,30 +126,14 @@ void *Y_queue_dequeue(Yqueue *yq)
 		yq->dequeue_index = 0;
 	}
 
-	/* 等待信号量 */
-#ifdef Y_API_WIN32
-	WaitForSingleObject(yq->sem, INFINITE);
-	EnterCriticalSection(&yq->cs);
-#elif Y_API_UNIX
-	sem_wait(&yq->sem);
-	pthread_mutex_lock(&yq->queue_mutex);
-#endif
-
 	void *element = yq->elements[index];
-
-	/* 处理完后置为NULL */
-	yq->elements[index] = NULL;
 
 	yq->count--;
 
-#ifdef Y_API_WIN32
-	LeaveCriticalSection(&yq->cs);
-#elif Y_API_UNIX
-	pthread_mutex_unlock(&yq->queue_mutex);
-#endif
-
 	/* 计算下一个要出队的索引 */
 	yq->dequeue_index += 1;
+
+	Y_lock_unlock(yq->lock);
 
 	return element;
 }
@@ -210,14 +143,10 @@ int Y_queue_size(Yqueue *yq)
 	return yq->count;
 }
 
-
-void Y_queue_set_itemsize(Yqueue *yq, size_t size)
+void *Y_queue_prepare_enqueue(Yqueue *yq)
 {
-	yq->itemsize = size;
-}
+	Y_lock_lock(yq->lock);
 
-void *Y_queue_begin_enqueue(Yqueue *yq)
-{
 	int index = yq->enqueue_index;
 	if (index == MAX_QUEUE_SIZE)
 	{
@@ -225,12 +154,6 @@ void *Y_queue_begin_enqueue(Yqueue *yq)
 		yq->enqueue_index = 0;
 		index = 0;
 	}
-
-#ifdef Y_API_WIN32
-	EnterCriticalSection(&yq->cs);
-#elif Y_API_UNIX
-	pthread_mutex_lock(&yq->queue_mutex);
-#endif
 
 	// 如果下一个要入队的元素为空，那么开辟一段新的内存空间
 	void *item = yq->elements[index];
@@ -242,23 +165,15 @@ void *Y_queue_begin_enqueue(Yqueue *yq)
 
 	yq->count++;
 
-#ifdef Y_API_WIN32
-	LeaveCriticalSection(&yq->cs);
-#elif Y_API_UNIX
-	pthread_mutex_unlock(&yq->queue_mutex);
-#endif
-
 	/* 计算下一个要入队的元素索引 */
 	yq->enqueue_index += 1;
+
+	Y_lock_unlock(yq->lock);
 
 	return item;
 }
 
-void Y_queue_end_enqueue(Yqueue *yq)
+void Y_queue_commit_enqueue(Yqueue *yq)
 {
-#ifdef Y_API_WIN32
-	ReleaseSemaphore(yq->sem, 1, NULL);
-#elif Y_API_UNIX
-	sem_post(&yq->sem);
-#endif
+	Y_sem_post(yq->sem);
 }

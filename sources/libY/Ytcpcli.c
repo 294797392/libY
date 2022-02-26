@@ -21,12 +21,14 @@
 #include "Ylog.h"
 #include "Ybase.h"
 #include "Ythread.h"
+#include "Yqueue.h"
 #include "Ytcpcli.h"
 
 #define SELECT_TIMEOUT_MSEC         500							// 指定select轮询间隔时间，单位毫秒
 #define RECONNECT_INTERVAL			2000						// 指定重连服务器的间隔时间，单位毫秒
 #define MAX_IPADDR_LEN				64
 #define MAX_DATA_ERROR_TIMES		3							// 当接收或者发送数据失败超过3次后触发DISCONNECT回调
+#define DEFAULT_CONSUMER_THREADS	5							// 最多同时有5个线程处理接收到的数据包		
 
 #define TCP_SEND_OR_RECV(func)			if (func == 0)													\
 										{																\
@@ -49,6 +51,11 @@
 
 #define CATE    YTEXT("Ytcpcli")
 
+typedef struct Ypacket_s
+{
+	char *buf;
+}Ypacket;
+
 struct Ytcpcli_s
 {
 	// 当前是否正在工作
@@ -64,6 +71,9 @@ struct Ytcpcli_s
 
 	// 当前接收或者发送数据的失败的次数
 	int error_times;
+
+	// 消费数据包的队列
+	Yqueue *consume_packet_queue;
 };
 
 
@@ -146,7 +156,13 @@ static void worker_thread_entry(void *state)
 			/* one or more fd has io event */
 			if (FD_ISSET(ycli->fd, &readfds))
 			{
-				notify_event(ycli, Y_TCPCLI_EVT_READ);
+				// 先读取头部数据
+				char head[4] = {'\0'};
+				if(Y_read_socket(ycli->fd, head, sizeof(head)) < 0)
+				{
+					YLOGCE(CATE, YTEXT("receive data failed, %d"), Y_socket_error());
+					break;
+				}
 			}
 		}
 	}
@@ -155,12 +171,25 @@ static void worker_thread_entry(void *state)
 	YLOGCI(CATE, YTEXT("tcpcli thread exit"));
 }
 
+static void consume_packet_handler(void *userdata, void *element)
+{
+	Ytcpcli *ycli = (Ytcpcli*)userdata;
+
+	// 接收到的数据包
+	Ypacket *ypkt = (Ypacket*)element;
+}
+
 Ytcpcli *Y_create_tcpcli(const char *ipaddr, int port)
 {
 	Ytcpcli *ycli = (Ytcpcli *)calloc(1, sizeof(Ytcpcli));
 	ycli->fd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 	ycli->svcport = port;
 	strncpy(ycli->ipaddr, ipaddr, sizeof(ycli->ipaddr));
+
+	// 创建数据包消费队列
+	ycli->consume_packet_queue = Y_create_queue(ycli, sizeof(Ypacket));
+	Y_queue_start(ycli->consume_packet_queue, DEFAULT_CONSUMER_THREADS, consume_packet_handler);
+
 	return ycli;
 }
 
@@ -203,9 +232,4 @@ void Y_tcpcli_set_event_callback(Ytcpcli *ycli, Ytcpcli_event_callback callback,
 int Y_tcpcli_send(Ytcpcli *ycli, const char *data, size_t size)
 {
 	TCP_SEND_OR_RECV(Y_write_socket(ycli->fd, data, size));
-}
-
-int Y_tcpcli_recv(Ytcpcli *ycli, char *buf, size_t size)
-{
-	TCP_SEND_OR_RECV(Y_read_socket(ycli->fd, buf, size));
 }

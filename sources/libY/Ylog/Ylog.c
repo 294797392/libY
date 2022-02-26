@@ -50,9 +50,8 @@ int Y_log_global_init()
 	}
 
 	// 启动日志队列
-	consume_log_queue = Y_create_queue(NULL);
-	Y_queue_set_itemsize(consume_log_queue, sizeof(Ymsg));
-	Y_queue_start(consume_log_queue, consume_log_queue_callback);
+	consume_log_queue = Y_create_queue(NULL, sizeof(Ymsg));
+	Y_queue_start(consume_log_queue, 1, consume_log_queue_callback);
 
 	return YERR_OK;
 }
@@ -66,7 +65,7 @@ void Y_log_write(const wchar_t *category, Ylog_level level, int line, const wcha
 	vswprintf(message, MAX_MSG_SIZE, msg, ap);
 	va_end(ap);
 
-	Ymsg *ymsg = (Ymsg *)Y_queue_begin_enqueue(consume_log_queue);
+	Ymsg *ymsg = (Ymsg *)Y_queue_prepare_enqueue(consume_log_queue);
 
 	// 格式化最终要输出的日志
 	// 注意宽字符串需要用%ls输出，输出单个宽字符使用%lc
@@ -90,7 +89,7 @@ void Y_log_write(const wchar_t *category, Ylog_level level, int line, const wcha
 
 	ymsg->level = level;
 
-	Y_queue_end_enqueue(consume_log_queue);
+	Y_queue_commit_enqueue(consume_log_queue);
 }
 
 

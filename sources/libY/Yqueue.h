@@ -3,18 +3,7 @@
  * @ author  : oheiheiheiheihei
  * @ version : 0.9
  * @ date    : 2021.12.06
- * @ brief   : 多线程缓冲队列，先进先出，使用环形缓冲区
- * @ remark  :
- * 该队列支持一个线程enqueue，一个线程dequeue。是典型的生产者 - 消费者模式
- *
- * 该队列使用单独的线程消费元素，并提供消费者callback给调用者使用
- * 入队和出队是在不同线程进行，互不影响
- * 
- * 队列有着固定的大小，类似于环形缓冲区
- * 如果队列满了而此时还在继续入队，那么丢弃最早入队的元素，并把入队的元素从头开始插入
- *
- * 不要直接调用Y_queue_enqueue和Y_queue_dequeue函数，Y_queue_start会自动调用该函数并通过回调的方式把element返回
- * 除非你没有调用Y_queue_start，那么请永远不要直接调用这两个函数
+ * @ brief   : 使用环形缓冲区实现一个生产者 - 消费者模型的队列
  ************************************************************************************/
 
 #ifndef __YQUEUE_H__
@@ -52,6 +41,7 @@ extern "C" {
 	 *
 	 * 参数：
 	 * @userdata：用户自定义对象，在回调里会当成参数回调给用户
+	 * @itemsize：队列里每个元素的大小
 	 *
 	 * 返回值：
 	 * Yqueue对象
@@ -59,7 +49,7 @@ extern "C" {
 	 * 不要直接调用Y_queue_enqueue和Y_queue_dequeue函数，Y_queue_start会自动调用该函数并通过回调的方式把element返回
 	 * 除非你没有调用Y_queue_start，那么请永远不要直接调用这两个函数
 	 */
-	YAPI Yqueue *Y_create_queue(void *userdata);
+	YAPI Yqueue *Y_create_queue(void *userdata, size_t itemsize);
 
 	/*
 	 * 描述：
@@ -76,9 +66,10 @@ extern "C" {
 	 *
 	 * 参数：
 	 * @q：要操作的队列对象
+	 * @num_thread：消费者线程的数量
 	 * @callback：每消费了一个元素，就会通过该回调回调给用户，用户可以在该回调里做操作
 	 */
-	YAPI void Y_queue_start(Yqueue *yq, Yqueue_callback callback);
+	YAPI void Y_queue_start(Yqueue *yq, int num_thread, Yqueue_callback callback);
 
 	/*
 	 * 描述：
@@ -89,16 +80,6 @@ extern "C" {
 	 * @callback：当缓冲区溢出的时候，回调溢出的元素
 	 */
 	YAPI void Y_queue_set_full_callback(Yqueue *yq, Yqueue_full_callback callback);
-
-	/*
-	 * 描述：
-	 * 入队函数
-	 *
-	 * 参数：
-	 * @q：要入队的队列对象
-	 * @element：要入队的元素
-	 */
-	YAPI void Y_queue_enqueue(Yqueue *yq, void *element);
 
 	/*
 	 * 描述：
@@ -120,17 +101,6 @@ extern "C" {
 
 	/*
 	 * 描述：
-	 * 设置队列里每个元素的内存大小
-	 * Y_queue_begin_enqueue函数会用设置的这个大小去开辟内存空间
-	 *
-	 * 参数：
-	 * @yq：要设置的对象
-	 * @size：每个元素所占用的内存大小
-	 */
-	YAPI void Y_queue_set_itemsize(Yqueue *yq, size_t size);
-
-	/*
-	 * 描述：
 	 * 入队函数
 	 * 返回环形缓冲区中下一个入队的元素的地址
 	 * 如果环形缓冲区中下一个入队的元素的地址不为空，那么直接返回元素的地址，否则会先开辟一段内存然后再返回，这样做到内存重复利用的功能
@@ -147,7 +117,7 @@ extern "C" {
 	 * 返回值：
 	 * 环形缓冲区中下一个入队的元素
 	 */
-	YAPI void *Y_queue_begin_enqueue(Yqueue *yq);
+	YAPI void *Y_queue_prepare_enqueue(Yqueue *yq);
 
 	/*
 	 * 描述：
@@ -156,7 +126,7 @@ extern "C" {
 	 * 参数：
 	 * @yq：要入队的对象
 	 */
-	YAPI void Y_queue_end_enqueue(Yqueue *yq);
+	YAPI void Y_queue_commit_enqueue(Yqueue *yq);
 
 #ifdef __cplusplus
 	extern "C" {

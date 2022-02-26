@@ -28,15 +28,15 @@ static void Yqueue_callback_handler(void *userdata, void *element)
 
 static void demo_Yqueue()
 {
-	Yqueue *q = Y_create_queue(NULL);
-	Y_queue_start(q, Yqueue_callback_handler);
+	Yqueue *q = Y_create_queue(NULL, 1024);
+	Y_queue_start(q, 1, Yqueue_callback_handler);
 
 	while (1)
 	{
 		YLOGI(YTEXT("please input element:"));
-		char *line = (char *)calloc(1, 1024);
+		char *line = (char*)Y_queue_prepare_enqueue(q);
 		fgets(line, sizeof(line), stdin);
-		Y_queue_enqueue(q, line);
+		Y_queue_commit_enqueue(q);
 	}
 }
 
@@ -141,15 +141,6 @@ static void Ytcpcli_event_handler(Ytcpcli *ycli, Ytcpcli_event yevt, void *userd
 	case Y_TCPCLI_EVT_DISCONNECTED:
 	{
 		YLOGCI(CATEGORY, YTEXT("disconnect"));
-		break;
-	}
-
-	case Y_TCPCLI_EVT_READ:
-	{
-		YLOGCI(CATEGORY, YTEXT("read"));
-		char buf[2] = { '\0' };
-		Y_tcpcli_recv(ycli, buf, 1);
-		printf("%s\n", buf);
 		break;
 	}
 
