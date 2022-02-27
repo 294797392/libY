@@ -44,7 +44,7 @@ list(APPEND Y_SOURCE ${Y_DIR}/Ylog/Ylog.c)
 list(APPEND Y_SOURCE ${Y_DIR}/Ylog/Yappender_conosle.c)
 # aux_source_directory(${Y_DIR} Y_SOURCE)
 add_library(Y ${Y_SOURCE})
-target_link_libraries(Y PRIVATE pthread ${Y_LINK_LIBRARIES})
+target_link_libraries(Y PRIVATE ${Y_LINK_LIBRARIES})
 
 # 编译Yexe
 add_executable(Ydemo ${Y_DIR}/main.c)

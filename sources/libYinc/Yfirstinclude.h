@@ -9,7 +9,11 @@
 // 这些所有的宏也都可以通过cmake去配置，但是如果都通过cmake去配置的话，这样对于编译这个库就很麻烦，因为要记很多不同的宏定义
 #if (defined(Y_ENV_WIN32)) || (defined(Y_ENV_MINGW))
 #define Y_API_WIN32
+<<<<<<< HEAD
 #elif (defined(Y_UNIX)) || (defined(Y_ENV_MSYS))
+=======
+#elif (defined(Y_ENV_UNIX)) || (defined(Y_ENV_MSYS))
+>>>>>>> 8421e8643c880cf5b22887a27c108d828164b7f9
 #define Y_API_UNIX
 #endif
 
