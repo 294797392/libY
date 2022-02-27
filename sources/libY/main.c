@@ -16,6 +16,8 @@
 #include "Ypool.h"
 #include "Ynet.h"
 #include "Ytcpcli.h"
+#include "Ytcpsvc.h"
+#include "Yfile.h"
 
 #define CATEGORY	YTEXT("main")
 
@@ -118,11 +120,11 @@ static void demo_Ynet()
 {
 	Y_initnet();
 
-	Ysocket s = Y_create_tcp_svc(NULL, 1018);
+	// Ysocket s = Y_create_tcp_svc(NULL, 1018);
 }
 
 
-static void Ytcpcli_event_handler(Ytcpcli *ycli, Ytcpcli_event yevt, void *userdata)
+static void Ytcpcli_event_handler(Ytcpcli *ycli, Ytcpcli_event yevt, void *data, size_t datasize, void *userdata)
 {
 	switch (yevt)
 	{
@@ -166,6 +168,29 @@ static void demo_Ytcpcli()
 	}
 }
 
+
+
+static int Ytcpsvc_event_handler(Ytcpsvc *svc, Ysocket client, Ytcpsvc_event event, void *data, size_t datasize, void *userdata)
+{
+
+}
+
+static void demo_Ytcpsvc()
+{
+	Y_initnet();
+
+	Ytcpsvc *svc = Y_create_tcpsvc("127.0.0.1", 1018);
+	Y_tcpsvc_set_event_callback(svc, Ytcpsvc_event_handler, svc);
+	Y_tcpsvc_start(svc);
+
+	while (1)
+	{
+		char line[1024] = { '\0' };
+		fgets(line, sizeof(line), stdin);
+	}
+}
+
+
 int main(int argc, char **argv)
 {
 	Y_log_global_init();
@@ -181,7 +206,17 @@ int main(int argc, char **argv)
 
 	//demo_Ynet();
 
-	demo_Ytcpcli();
+	// demo_Ytcpcli();
+
+	// demo_Ytcpsvc();
+
+	int num_line;
+	char **lines = Y_file_read_lines("E:\\oheiheiheiheihei\\tools\\msvc\\Debug\\CMakeCache.txt", &num_line);
+	for(int i = 0; i<num_line;i++)
+	{
+		printf("%s\n", lines[i]);
+		fflush(stdout);
+	}
 
 	while (1)
 	{

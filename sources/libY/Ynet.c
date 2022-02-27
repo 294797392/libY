@@ -112,32 +112,32 @@ int Y_socket_error()
 #endif
 }
 
-Ysocket Y_create_tcp_svc(const char *bindto, int port)
-{
-	Ysocket s = socket(PF_INET, SOCK_STREAM, 0);
-	struct sockaddr_in bdaddr;
-	bdaddr.sin_family = PF_INET;
-	bdaddr.sin_port = htons(port);
-	bdaddr.sin_addr.s_addr = bindto == NULL ? INADDR_ANY : inet_addr(bindto);
-	memset(&(bdaddr.sin_zero), 0, sizeof(bdaddr.sin_zero));
+// Ysocket Y_create_tcp_svc(const char *bindto, int port)
+// {
+// 	Ysocket s = socket(PF_INET, SOCK_STREAM, 0);
+// 	struct sockaddr_in bdaddr;
+// 	bdaddr.sin_family = PF_INET;
+// 	bdaddr.sin_port = htons(port);
+// 	bdaddr.sin_addr.s_addr = bindto == NULL ? INADDR_ANY : inet_addr(bindto);
+// 	memset(&(bdaddr.sin_zero), 0, sizeof(bdaddr.sin_zero));
 
-	// 绑定到指定网络接口
-	if (bind(s, (struct sockaddr *)&bdaddr, sizeof(struct sockaddr)) < 0)
-	{
-		YLOGE(YTEXT("Y_create_tcp_svc bind failed, %d"), Y_socket_error());
-		Y_close_socket(s);
-		return -1;
-	}
+// 	// 绑定到指定网络接口
+// 	if (bind(s, (struct sockaddr *)&bdaddr, sizeof(struct sockaddr)) < 0)
+// 	{
+// 		YLOGE(YTEXT("Y_create_tcp_svc bind failed, %d"), Y_socket_error());
+// 		Y_close_socket(s);
+// 		return -1;
+// 	}
 
-	if (listen(s, 5) < 0)
-	{
-		YLOGE(YTEXT("Y_create_tcp_svc bind failed, %d"), Y_socket_error());
-		Y_close_socket(s);
-		return -1;
-	}
+// 	if (listen(s, 5) < 0)
+// 	{
+// 		YLOGE(YTEXT("Y_create_tcp_svc bind failed, %d"), Y_socket_error());
+// 		Y_close_socket(s);
+// 		return -1;
+// 	}
 
-	return s;
-}
+// 	return s;
+// }
 
 
 

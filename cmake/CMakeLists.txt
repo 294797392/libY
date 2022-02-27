@@ -6,14 +6,18 @@ project(Y VERSION 1.1 LANGUAGES C)
 # 全局变量定义
 set(Y_DIR ../sources/libY)
 set(Y_SYS ${CMAKE_SYSTEM_NAME})
-add_definitions(-D Y_MAP_CHAIN)     # 指定哈希表使用链式扩展法解决哈希冲突问题
 message(STATUS "Y_SYS = " ${Y_SYS})
 
+# 宏定义选项
+add_definitions(-D Y_MAP_CHAIN)                 # 指定哈希表使用链式扩展法解决哈希冲突问题
+
 # 配置不同环境下的CMake文件
-if(${Y_SYS} MATCHES "M*")                       # 不知道为什么在msys环境下 ${Y_SYS} STREQUAL "MSYS"竟然不成立，这里直接暴力使用MATCHES
+if(${MSYS})
     include(CMakeLists.msys.txt)
-elseif(${Y_SYS} MATCHES "MINGW*")
+elseif(${MINGW})
     include(CMakeLists.mingw.txt)
+elseif(${UNIX})
+    include(CMakeLists.linux.txt)
 else()
 endif()
 
@@ -30,8 +34,12 @@ list(APPEND Y_SOURCE ${Y_DIR}/Ytree.c)
 list(APPEND Y_SOURCE ${Y_DIR}/Ylist.c)
 list(APPEND Y_SOURCE ${Y_DIR}/Ypool.c)
 list(APPEND Y_SOURCE ${Y_DIR}/Ynet.c)
+list(APPEND Y_SOURCE ${Y_DIR}/Ytcp.c)
 list(APPEND Y_SOURCE ${Y_DIR}/Ytcpcli.c)
+list(APPEND Y_SOURCE ${Y_DIR}/Ytcpsvc.c)
 list(APPEND Y_SOURCE ${Y_DIR}/Ymap.c)
+list(APPEND Y_SOURCE ${Y_DIR}/Yconv.c)
+list(APPEND Y_SOURCE ${Y_DIR}/Yfile.c)
 list(APPEND Y_SOURCE ${Y_DIR}/Ylog/Ylog.c)
 list(APPEND Y_SOURCE ${Y_DIR}/Ylog/Yappender_conosle.c)
 # aux_source_directory(${Y_DIR} Y_SOURCE)
@@ -47,7 +55,9 @@ list(APPEND Y_INCLUDE ${Y_DIR}/Yfirstinclude.h)
 list(APPEND Y_INCLUDE ${Y_DIR}/Yerrno.h)
 list(APPEND Y_INCLUDE ${Y_DIR}/Ybase.h)
 list(APPEND Y_INCLUDE ${Y_DIR}/Ynet.h)
+list(APPEND Y_INCLUDE ${Y_DIR}/Ytcp.h)
 list(APPEND Y_INCLUDE ${Y_DIR}/Ytcpcli.h)
+list(APPEND Y_INCLUDE ${Y_DIR}/Ytcpsvc.h)
 list(APPEND Y_INCLUDE ${Y_DIR}/Ypool.h)
 list(APPEND Y_INCLUDE ${Y_DIR}/Yqueue.h)
 list(APPEND Y_INCLUDE ${Y_DIR}/Ystring.h)
@@ -58,6 +68,8 @@ list(APPEND Y_INCLUDE ${Y_DIR}/Ylog/Ylog.h)
 list(APPEND Y_INCLUDE ${Y_DIR}/Ylog/Ylogbase.h)
 list(APPEND Y_INCLUDE ${Y_DIR}/Ylock.h)
 list(APPEND Y_INCLUDE ${Y_DIR}/Ysem.h)
+list(APPEND Y_INCLUDE ${Y_DIR}/Yconv.h)
+list(APPEND Y_INCLUDE ${Y_DIR}/Yfile.h)
 
 # 拷贝头文件到libYinc
 file(COPY ${Y_INCLUDE} DESTINATION ${Y_DIR}/../libYinc)

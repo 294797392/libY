@@ -30,7 +30,7 @@ extern "C" {
 	}Ytcpcli_event;
 
 	// TCP客户端的事件回调函数
-	typedef void (*Ytcpcli_event_callback)(Ytcpcli *ycli, Ytcpcli_event yevt, void *userdata);
+	typedef void (*Ytcpcli_event_callback)(Ytcpcli *ycli, Ytcpcli_event yevt, void *data, size_t datasize, void *userdata);
 
 	/*
 	 * 描述：

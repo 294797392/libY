@@ -28,7 +28,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -151,6 +151,8 @@
   <ItemGroup>
     <ClCompile Include="..\..\sources\libY\main.c" />
     <ClCompile Include="..\..\sources\libY\Ybase.c" />
+    <ClCompile Include="..\..\sources\libY\Yconv.c" />
+    <ClCompile Include="..\..\sources\libY\Yfile.c" />
     <ClCompile Include="..\..\sources\libY\Ylist.c" />
     <ClCompile Include="..\..\sources\libY\Ylock.c" />
     <ClCompile Include="..\..\sources\libY\Ylog\Yappender_conosle.c" />
@@ -160,13 +162,17 @@
     <ClCompile Include="..\..\sources\libY\Ypool.c" />
     <ClCompile Include="..\..\sources\libY\Yqueue.c" />
     <ClCompile Include="..\..\sources\libY\Ystring.c" />
+    <ClCompile Include="..\..\sources\libY\Ytcp.c" />
     <ClCompile Include="..\..\sources\libY\Ytcpcli.c" />
+    <ClCompile Include="..\..\sources\libY\Ytcpsvc.c" />
     <ClCompile Include="..\..\sources\libY\Ythread.c" />
     <ClCompile Include="..\..\sources\libY\Ytree.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\sources\libY\Ybase.h" />
+    <ClInclude Include="..\..\sources\libY\Yconv.h" />
     <ClInclude Include="..\..\sources\libY\Yerrno.h" />
+    <ClInclude Include="..\..\sources\libY\Yfile.h" />
     <ClInclude Include="..\..\sources\libY\Yfirstinclude.h" />
     <ClInclude Include="..\..\sources\libY\Ylist.h" />
     <ClInclude Include="..\..\sources\libY\Ylock.h" />
@@ -178,7 +184,9 @@
     <ClInclude Include="..\..\sources\libY\Ypool.h" />
     <ClInclude Include="..\..\sources\libY\Yqueue.h" />
     <ClInclude Include="..\..\sources\libY\Ystring.h" />
+    <ClInclude Include="..\..\sources\libY\Ytcp.h" />
     <ClInclude Include="..\..\sources\libY\Ytcpcli.h" />
+    <ClInclude Include="..\..\sources\libY\Ytcpsvc.h" />
     <ClInclude Include="..\..\sources\libY\Ythread.h" />
     <ClInclude Include="..\..\sources\libY\Ytree.h" />
   </ItemGroup>

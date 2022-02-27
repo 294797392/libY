@@ -11,6 +11,18 @@
 
 #include "Yfirstinclude.h"
 
+#if (defined(Y_API_WIN32))
+#include <Windows.h>
+#elif (defined(Y_API_UNIX))
+#include <unistd.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <signal.h>
+#include <fcntl.h>
+#endif
+
 #include "Ybase.h"
 
 #if (defined(Y_API_WIN32))
@@ -83,7 +95,7 @@ extern "C" {
 	 * 返回值：
 	 * socket实例
 	 */
-	YAPI Ysocket Y_create_tcp_svc(const char *bindto, int port);
+	// YAPI Ysocket Y_create_tcp_svc(const char *bindto, int port);
 
 #ifdef __cplusplus
 }

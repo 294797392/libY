@@ -22,6 +22,7 @@
 #include "Ybase.h"
 #include "Ythread.h"
 #include "Yqueue.h"
+#include "Ytcp.h"
 #include "Ytcpcli.h"
 
 #define SELECT_TIMEOUT_MSEC         500							// 指定select轮询间隔时间，单位毫秒
@@ -40,7 +41,7 @@
 											if (ycli->error_times > MAX_DATA_ERROR_TIMES)				\
 											{															\
 												Y_tcpcli_disconnect(ycli);								\
-												notify_event(ycli, Y_TCPCLI_EVT_DISCONNECTED);			\
+												notify_event(ycli, Y_TCPCLI_EVT_DISCONNECTED, NULL, 0);			\
 											}															\
 											else														\
 											{															\
@@ -50,11 +51,6 @@
 										}																\
 
 #define CATE    YTEXT("Ytcpcli")
-
-typedef struct Ypacket_s
-{
-	char *buf;
-}Ypacket;
 
 struct Ytcpcli_s
 {
@@ -76,12 +72,11 @@ struct Ytcpcli_s
 	Yqueue *consume_packet_queue;
 };
 
-
-static void notify_event(Ytcpcli *ycli, Ytcpcli_event evt)
+static void notify_event(Ytcpcli *ycli, Ytcpcli_event evt, void *data, size_t datasize)
 {
 	if (ycli->evt_cb != NULL)
 	{
-		ycli->evt_cb(ycli, evt, ycli->userdata);
+		ycli->evt_cb(ycli, evt, data, datasize, ycli->userdata);
 	}
 }
 
@@ -98,7 +93,7 @@ static void worker_thread_entry(void *state)
 	mbstowcs(wipaddr, ycli->ipaddr, MAX_IPADDR_LEN);
 
 	// 首先通知外部模块，正在连接
-	notify_event(ycli, Y_TCPCLI_EVT_CONNECTING);
+	notify_event(ycli, Y_TCPCLI_EVT_CONNECTING, NULL, 0);
 
 	// 连接指定服务器
 	while (ycli->working)
@@ -112,7 +107,7 @@ static void worker_thread_entry(void *state)
 		}
 		else
 		{
-			notify_event(ycli, Y_TCPCLI_EVT_CONNECTED);
+			notify_event(ycli, Y_TCPCLI_EVT_CONNECTED, NULL, 0);
 			break;
 		}
 	}
@@ -156,13 +151,11 @@ static void worker_thread_entry(void *state)
 			/* one or more fd has io event */
 			if (FD_ISSET(ycli->fd, &readfds))
 			{
-				// 先读取头部数据
-				char head[4] = {'\0'};
-				if(Y_read_socket(ycli->fd, head, sizeof(head)) < 0)
-				{
-					YLOGCE(CATE, YTEXT("receive data failed, %d"), Y_socket_error());
-					break;
-				}
+				// 收一个完整的数据包，然后放到队列里
+				// fixme:如果收包速度比处理包的速度快，那么还没处理的包会被覆盖掉，因为用的是环形缓冲区
+				Ypacket *packet = (Ypacket*)Y_queue_prepare_enqueue(ycli->consume_packet_queue);
+				Y_tcp_receive_packet(ycli->fd, packet);
+				Y_queue_commit_enqueue(ycli->consume_packet_queue);
 			}
 		}
 	}
@@ -176,7 +169,9 @@ static void consume_packet_handler(void *userdata, void *element)
 	Ytcpcli *ycli = (Ytcpcli*)userdata;
 
 	// 接收到的数据包
-	Ypacket *ypkt = (Ypacket*)element;
+	Ypacket *packet = (Ypacket*)element;
+
+	notify_event(ycli, Y_TCPCLI_PACKET_RECEIVED, packet, 0);
 }
 
 Ytcpcli *Y_create_tcpcli(const char *ipaddr, int port)

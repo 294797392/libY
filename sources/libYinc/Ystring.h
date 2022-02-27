@@ -51,7 +51,7 @@ extern "C" {
      * @num：字符串数组的长度
      * @tokens：分割后的字符串数据
      */
-    YAPI void Ystr_split_print(int num, char **tokens);
+    YAPI void Ystr_split_print(char **tokens, int num);
 
     /*
      * 描述：
@@ -61,7 +61,7 @@ extern "C" {
      * @num_tokens：字符串数组的长度
      * @tokens：要释放的字符串数组
      */
-    YAPI void Ystr_split_free(size_t num_tokens, char **tokens);
+    YAPI void Ystr_split_free(char **tokens, size_t num_tokens);
 
 #ifdef __cplusplus
 }

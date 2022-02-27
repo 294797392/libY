@@ -105,7 +105,7 @@ int Ystr_split(const char *str, const char separator, Ystr_split_opts opt, char 
 	return num_tokens;
 }
 
-void Ystr_split_print(int num, char **tokens)
+void Ystr_split_print(char **tokens, int num)
 {
     for(int i = 0; i < num; i++)
 	{
@@ -113,7 +113,7 @@ void Ystr_split_print(int num, char **tokens)
 	}
 }
 
-void Ystr_split_free(size_t num_tokens, char **tokens)
+void Ystr_split_free(char **tokens, size_t num_tokens)
 {
     for (size_t i = 0; i < num_tokens; i++)
 	{

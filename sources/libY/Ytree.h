@@ -47,6 +47,15 @@ extern "C" {
 
     YAPI Ytree *Y_create_tree2(Ytree_free_func freefunc);
 
+    /*
+     * 描述：
+     * 删除并释放一棵树所占用的所有资源
+     * 
+     * 参数：
+     * @tree：要删除的tree对象
+     */
+    YAPI void Y_delete_tree(Ytree *tree);
+
     YAPI Ytreenode *Y_tree_initroot(Ytree *tree, void *data);
 
     /*

@@ -108,6 +108,16 @@ Ytree *Y_create_tree2(Ytree_free_func freefunc)
     return tree;
 }
 
+void Y_delete_tree(Ytree *tree)
+{
+    if(tree->root != NULL)
+    {
+        Y_tree_delete(tree, tree->root);
+    }
+
+    free(tree);
+}
+
 Ytreenode *Y_tree_initroot(Ytree *tree, void *data)
 {
     Ytreenode *node = (Ytreenode*)calloc(1, sizeof(Ytreenode));
@@ -201,6 +211,7 @@ void Y_tree_delete(Ytree *tree, Ytreenode *node)
         foreach_delete(tree, node);
         parent->num_child--;
 
+        // fixme:优化删除逻辑
         size_t total_size = sizeof(parent->children);
         size_t dst = sizeof(Ytreenode*) * index;            // 要拷贝到的内存的偏移量
         size_t src = sizeof(Ytreenode*) * (index + 1);      // 从内存的哪个偏移量开始拷贝
