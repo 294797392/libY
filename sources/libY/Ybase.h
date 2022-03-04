@@ -21,7 +21,7 @@
     #ifdef Y_EXPORT
         #define YAPI __declspec(dllexport)
     #else
-        #define YAPI __declspec(dllimport)
+        #define YAPI
     #endif
 #else
     #define YAPI
