@@ -22,6 +22,7 @@
 #include "Ybase.h"
 #include "Ythread.h"
 #include "Yqueue.h"
+#include "Ysem.h"
 #include "Ytcp.h"
 #include "Ytcpcli.h"
 
@@ -70,6 +71,10 @@ struct Ytcpcli_s
 
 	// 消费数据包的队列
 	Yqueue *consume_packet_queue;
+
+	Ysem *sync_sem;
+	int sync_connect;
+	Ytcpcli_event status;
 };
 
 static void notify_event(Ytcpcli *ycli, Ytcpcli_event evt, void *data, size_t datasize)
@@ -196,6 +201,20 @@ void Y_delete_tcpcli(Ytcpcli *ycli)
 
 void Y_tcpcli_connect(Ytcpcli *ycli)
 {
+	if (ycli->working)
+	{
+		return;
+	}
+
+	ycli->sync_connect = 1;
+	ycli->working = 1;
+	ycli->thread = Y_create_thread(worker_thread_entry, ycli);
+}
+
+void Y_tcpcli_connect_async(Ytcpcli *ycli)
+{
+	pthread_cond_wait();
+	pthread_cond_signal()
 	// 直接开启后台工作线程
 	if (ycli->working)
 	{

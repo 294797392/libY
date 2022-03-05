@@ -72,7 +72,7 @@ void Y_log_write(const wchar_t *category, Ylog_level level, int line, const wcha
 
 	if (category == NULL)
 	{
-#ifdef Y_ENV_MINGW
+#if (defined(Y_ENV_UNIX)) || (defined(Y_ENV_MINGW))
 		// mingw环境下没法把__FILE__预定义宏转成多字节字符，暂时先直接使用单字节字符输出
 		const wchar_t *format = YTEXT("[%s][%d]%ls\r\n\0");
 		swprintf(ymsg->msg, MAX_MSG_SIZE, format, __FILE__, line , message);

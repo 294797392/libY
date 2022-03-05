@@ -100,6 +100,7 @@ void Y_queue_start(Yqueue *yq, int num_thread, Yqueue_callback callback)
 	yq->num_thread = num_thread;
 	yq->consume_threads = (Ythread**)calloc(num_thread, sizeof(Ythread*));
 
+
 	for(int i = 0; i < num_thread; i++)
 	{
 		yq->consume_threads[i] = Y_create_thread(consume_thread_process, yq);

@@ -24,7 +24,7 @@
 static void Yqueue_callback_handler(void *userdata, void *element)
 {
 	char *line = (char *)element;
-	YLOGI(YTEXT("dequeue, %s"), line);
+	printf("dequeue, %s\n", line);
 	free(line);
 }
 
@@ -35,7 +35,7 @@ static void demo_Yqueue()
 
 	while (1)
 	{
-		YLOGI(YTEXT("please input element:"));
+		printf("please input element:\n");
 		char *line = (char*)Y_queue_prepare_enqueue(q);
 		fgets(line, sizeof(line), stdin);
 		Y_queue_commit_enqueue(q);
@@ -62,7 +62,7 @@ static void demo_Ylist()
 	{
 		Ylist_item *item = (Ylist_item *)calloc(1, sizeof(Ylist_item));
 		char *line = (char *)calloc(1, 1024);
-		snprintf(line, 1024, "%d", i);
+		snprintf(line, 1024, "%ld", i);
 		item->line = line;
 		Y_list_add(yl, item);
 	}
@@ -92,7 +92,7 @@ static void demo_Ypool()
 	{
 		Yobject *yo = Y_pool_obtain(yp);
 		char *msg = (char *)calloc(1, 1024);
-		snprintf(msg, 1024, "%d", i);
+		snprintf(msg, 1024, "%ld", i);
 		Y_object_set_data(yo, msg);
 		objs[i] = yo;
 	}
@@ -178,7 +178,6 @@ static int Ytcpsvc_event_handler(Ytcpsvc *svc, Ysocket client, Ytcpsvc_event eve
 static void demo_Ytcpsvc()
 {
 	Y_initnet();
-
 	Ytcpsvc *svc = Y_create_tcpsvc("127.0.0.1", 1018);
 	Y_tcpsvc_set_event_callback(svc, Ytcpsvc_event_handler, svc);
 	Y_tcpsvc_start(svc);
@@ -190,13 +189,12 @@ static void demo_Ytcpsvc()
 	}
 }
 
-
 int main(int argc, char **argv)
 {
 	Y_log_global_init();
 
 	//YLOGI(YTEXT("hello libY"));
-	YLOGCI(CATEGORY, YTEXT("hello libY"));
+	// YLOGCI(CATEGORY, YTEXT("hello libY"));
 
 	// demo_Yqueue();
 
@@ -208,15 +206,15 @@ int main(int argc, char **argv)
 
 	// demo_Ytcpcli();
 
-	// demo_Ytcpsvc();
+	demo_Ytcpsvc();
 
-	int num_line;
-	char **lines = Y_file_read_lines("E:\\oheiheiheiheihei\\tools\\msvc\\Debug\\CMakeCache.txt", &num_line);
-	for(int i = 0; i<num_line;i++)
-	{
-		printf("%s\n", lines[i]);
-		fflush(stdout);
-	}
+	// int num_line;
+	// char **lines = Y_file_read_lines("E:\\oheiheiheiheihei\\tools\\msvc\\Debug\\CMakeCache.txt", &num_line);
+	// for(int i = 0; i<num_line;i++)
+	// {
+	// 	printf("%s\n", lines[i]);
+	// 	fflush(stdout);
+	// }
 
 	while (1)
 	{

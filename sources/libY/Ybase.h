@@ -38,7 +38,7 @@
 #elif (defined(Y_ENV_MINGW))
 #define YTEXT(quote)		L##quote
 #elif (defined(Y_ENV_UNIX))
-#define YTEXT(quote)        quote
+#define YTEXT(quote)        L##quote
 #else
 #define YTEXT(quote)        quote
 #endif
