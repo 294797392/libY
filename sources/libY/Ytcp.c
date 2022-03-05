@@ -51,10 +51,15 @@ int Y_tcp_send_packet(Ysocket fd, int seq, int cmd, char *data, size_t datasize)
         return -1;
     }
 
+    printf("asdads\n");
+
     // 打包数据
-    if(Y_write_socket(fd, data, datasize) < 0)
+    if(data != NULL && datasize > 0)
     {
-        return -1;
+        if(Y_write_socket(fd, data, datasize) < 0)
+        {
+            return -1;
+        }
     }
 
     return 0;

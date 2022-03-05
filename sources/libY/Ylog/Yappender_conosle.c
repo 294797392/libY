@@ -21,28 +21,29 @@ typedef struct Yconsole_s
 	FILE *fd;
 }Yconsole;
 
-static void *open(const char *uri)
+static void *Y_console_appender_open(const char *uri)
 {
 	Yconsole *console = (Yconsole *)calloc(1, sizeof(Yconsole));
 	return console;
 }
 
-static void close(void *ctx)
+static void Y_console_appender_close(void *ctx)
 {
 	Yconsole *console = (Yconsole *)ctx;
 }
 
-static void write(void *ctx, const Ymsg *ymsg)
+static void Y_console_appender_write(void *ctx, const Ymsg *ymsg)
 {
 	Yconsole *console = (Yconsole *)ctx;
-	fwprintf(stdout, ymsg->msg);
-#ifdef Y_ENV_MINGW
+	// fwprintf(stdout, ymsg->msg);
+	fprintf(stdout, "%s", ymsg->msg);
+#if (defined(Y_ENV_MINGW))
 	// mingw环境下不能每次都马上输出到控制台，这里每次都flush一下
 	fflush(stdout);
 #endif
 }
 
-static void flush(void *ctx)
+static void Y_console_appender_flush(void *ctx)
 {
 	Yconsole *console = (Yconsole *)ctx;
 	fflush(stdout);
@@ -50,10 +51,10 @@ static void flush(void *ctx)
 
 struct Yappender_s Yappender_console =
 {
-	.open = open,
-	.close = close,
-	.write = write,
-	.flush = flush
+	.open = Y_console_appender_open,
+	.close = Y_console_appender_close,
+	.write = Y_console_appender_write,
+	.flush = Y_console_appender_flush
 };
 
 

@@ -59,6 +59,17 @@ extern "C" {
 	/*
 	 * 描述：
 	 * 连接服务器
+	 * 注意，该函数为阻塞函数，如果连不上，会尝试重新连接，一直到连上为止
+	 *
+	 * 参数：
+	 * @ipaddr：要连接的ip地址
+	 * @port：要连接的端口号
+	 */
+	YAPI void Y_tcpcli_connect(Ytcpcli *ycli);
+
+	/*
+	 * 描述：
+	 * 连接服务器
 	 * 注意，该函数为非阻塞函数，如果连不上，会尝试重新连接，一直到连上为止
 	 * 连上后会通过事件回调通知调用者
 	 *
@@ -66,7 +77,7 @@ extern "C" {
 	 * @ipaddr：要连接的ip地址
 	 * @port：要连接的端口号
 	 */
-	YAPI void Y_tcpcli_connect(Ytcpcli *ycli);
+	YAPI void Y_tcpcli_connect_async(Ytcpcli *Ycli);
 
 	YAPI void Y_tcpcli_disconnect(Ytcpcli *ycli);
 
@@ -84,7 +95,7 @@ extern "C" {
 	 * 返回值：
 	 * 发送完成返回size，失败返回-1
 	 */
-	YAPI int Y_tcpcli_send(Ytcpcli *ycli, const char *data, size_t size);
+	YAPI int Y_tcpcli_send(Ytcpcli *ycli, int seq, int cmd, char *data, size_t size);
 
 #ifdef __cplusplus
 }

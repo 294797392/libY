@@ -27,8 +27,8 @@ Yevent *Y_create_event()
     Yevent *ye = (Yevent*)calloc(1, sizeof(Yevent));
 #if (defined(Y_API_WIN32))
 #elif (defined(Y_API_UNIX))
-    ye->mutex = pthread_mutex_init(&ye->mutex, NULL);
-    ye->cond = pthread_cond_init(&ye->cond, NULL);
+    pthread_mutex_init(&ye->mutex, NULL);
+    pthread_cond_init(&ye->cond, NULL);
 #endif
     return ye;
 }
@@ -37,8 +37,8 @@ void Y_delete_event(Yevent *ye)
 {
 #if (defined(Y_API_WIN32))
 #elif (defined(Y_API_UNIX))
-    pthread_mutex_destory(&ye->mutex);
-    pthread_cond_destory(&ye->cond);
+    pthread_mutex_destroy(&ye->mutex);
+    pthread_cond_destroy(&ye->cond);
 #endif
     free(ye);
 }
@@ -52,7 +52,7 @@ void Y_event_wait(Yevent *ye)
     // 参考：https://blog.csdn.net/zzran/article/details/8830213
     if(!ye->signaled)
     {
-        pthread_cond_wait(&ye->cond);
+        pthread_cond_wait(&ye->cond, &ye->mutex);
     }
     pthread_mutex_unlock(&ye->mutex);
 #endif

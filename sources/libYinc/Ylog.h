@@ -4,6 +4,7 @@
  * @ version : 0.9
  * @ date    : 2021.12.06 13:15
  * @ brief   : 一个简易的日志记录器，支持多线程
+ * @ remark  : wprintf and printf cannot use in same env
  ************************************************************************************/
 
 #ifndef __YLOG_H__
@@ -42,7 +43,7 @@ extern "C" {
 	 */
 	YAPI int Y_log_global_init();
 
-	YAPI void Y_log_write(const wchar_t *category, Ylog_level level, int line, const wchar_t *msg, ...);
+	YAPI void Y_log_write(const YCHAR *category, Ylog_level level, int line, const YCHAR *msg, ...);
 
 #ifdef __cplusplus
 }

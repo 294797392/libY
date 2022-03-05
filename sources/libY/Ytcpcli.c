@@ -23,6 +23,7 @@
 #include "Ythread.h"
 #include "Yqueue.h"
 #include "Ysem.h"
+#include "Yevent.h"
 #include "Ytcp.h"
 #include "Ytcpcli.h"
 
@@ -72,9 +73,7 @@ struct Ytcpcli_s
 	// 消费数据包的队列
 	Yqueue *consume_packet_queue;
 
-	Ysem *sync_sem;
-	int sync_connect;
-	Ytcpcli_event status;
+	Yevent *sync_event;
 };
 
 static void notify_event(Ytcpcli *ycli, Ytcpcli_event evt, void *data, size_t datasize)
@@ -94,8 +93,6 @@ static void worker_thread_entry(void *state)
 	bdaddr.sin_port = htons(ycli->svcport);
 	bdaddr.sin_addr.s_addr = inet_addr(ycli->ipaddr);
 	memset(&(bdaddr.sin_zero), 0, sizeof(bdaddr.sin_zero));
-	wchar_t wipaddr[MAX_IPADDR_LEN] = { '\0' };
-	mbstowcs(wipaddr, ycli->ipaddr, MAX_IPADDR_LEN);
 
 	// 首先通知外部模块，正在连接
 	notify_event(ycli, Y_TCPCLI_EVT_CONNECTING, NULL, 0);
@@ -106,7 +103,7 @@ static void worker_thread_entry(void *state)
 		int rc = connect(ycli->fd, (struct sockaddr *)&bdaddr, sizeof(struct sockaddr_in));
 		if (rc == -1)
 		{
-			YLOGCW(CATE, YTEXT("connect svc failed, %ls:%d, retry..."), wipaddr, ycli->svcport);
+			YLOGCW(CATE, YTEXT("connect svc failed, %s:%d, retry..."), ycli->ipaddr, ycli->svcport);
 			Ysleep(RECONNECT_INTERVAL);
 			continue;
 		}
@@ -118,9 +115,15 @@ static void worker_thread_entry(void *state)
 	}
 
 	// 运行到这里说明连接服务器成功
-	YLOGCI(CATE, YTEXT("svc connect success..., %ls:%d"), wipaddr, ycli->svcport);
+	YLOGCI(CATE, YTEXT("svc connect success..., %ls:%d"), ycli->ipaddr, ycli->svcport);
 
-	// 使用selecte模型监控网络事件
+	// 如果sync_event不为空, 那么说明是同步连接, 需要通知等待事件
+	if(ycli->sync_event)
+	{
+		Y_event_signal(ycli->sync_event);
+	}
+
+	// 使用select模型监控网络事件
 	fd_set rdfds;
 	FD_ZERO(&rdfds);
 	FD_SET(ycli->fd, &rdfds);
@@ -206,15 +209,14 @@ void Y_tcpcli_connect(Ytcpcli *ycli)
 		return;
 	}
 
-	ycli->sync_connect = 1;
 	ycli->working = 1;
+	ycli->sync_event = Y_create_event();
 	ycli->thread = Y_create_thread(worker_thread_entry, ycli);
+	Y_event_wait(ycli->sync_event);
 }
 
 void Y_tcpcli_connect_async(Ytcpcli *ycli)
 {
-	pthread_cond_wait();
-	pthread_cond_signal()
 	// 直接开启后台工作线程
 	if (ycli->working)
 	{
@@ -243,7 +245,7 @@ void Y_tcpcli_set_event_callback(Ytcpcli *ycli, Ytcpcli_event_callback callback,
 	ycli->userdata = userdata;
 }
 
-int Y_tcpcli_send(Ytcpcli *ycli, const char *data, size_t size)
+int Y_tcpcli_send(Ytcpcli *ycli, int seq, int cmd, char *data, size_t size)
 {
-	TCP_SEND_OR_RECV(Y_write_socket(ycli->fd, data, size));
+	return Y_tcp_send_packet(ycli->fd, seq, cmd, data, size);
 }

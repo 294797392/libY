@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <errno.h>
 
 #if (defined(Y_API_WIN32))
 #include <Windows.h>
@@ -163,8 +164,8 @@ static void demo_Ytcpcli()
 	{
 		char line[1024] = { '\0' };
 		fgets(line, sizeof(line), stdin);
-		Y_tcpcli_send(ycli, line, strlen(line) - 1);
-		Y_tcpcli_send(ycli, "\r\n", 2);
+		// Y_tcpcli_send(ycli, line, strlen(line) - 1);
+		// Y_tcpcli_send(ycli, "\r\n", 2);
 	}
 }
 
@@ -189,6 +190,14 @@ static void demo_Ytcpsvc()
 	}
 }
 
+static void demo_Ylog()
+{
+	while (1)
+	{
+		YLOGI(YTEXT("test log, %d"), errno);
+	}
+}
+
 int main(int argc, char **argv)
 {
 	Y_log_global_init();
@@ -204,9 +213,11 @@ int main(int argc, char **argv)
 
 	//demo_Ynet();
 
-	// demo_Ytcpcli();
+	demo_Ytcpcli();
 
-	demo_Ytcpsvc();
+	// demo_Ytcpsvc();
+
+	// demo_Ylog();
 
 	// int num_line;
 	// char **lines = Y_file_read_lines("E:\\oheiheiheiheihei\\tools\\msvc\\Debug\\CMakeCache.txt", &num_line);

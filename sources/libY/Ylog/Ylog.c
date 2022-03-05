@@ -56,13 +56,13 @@ int Y_log_global_init()
 	return YERR_OK;
 }
 
-void Y_log_write(const wchar_t *category, Ylog_level level, int line, const wchar_t *msg, ...)
+void Y_log_write(const YCHAR *category, Ylog_level level, int line, const YCHAR *msg, ...)
 {
 	// 格式化用户输入的日志
-	wchar_t message[MAX_MSG_SIZE] = { '\0' };
+	char message[MAX_MSG_SIZE] = { '\0' };
 	va_list ap;
 	va_start(ap, msg);
-	vswprintf(message, MAX_MSG_SIZE, msg, ap);
+	vsnprintf(message, MAX_MSG_SIZE, msg, ap);
 	va_end(ap);
 
 	Ymsg *ymsg = (Ymsg *)Y_queue_prepare_enqueue(consume_log_queue);
@@ -72,24 +72,53 @@ void Y_log_write(const wchar_t *category, Ylog_level level, int line, const wcha
 
 	if (category == NULL)
 	{
-#if (defined(Y_ENV_UNIX)) || (defined(Y_ENV_MINGW))
-		// mingw环境下没法把__FILE__预定义宏转成多字节字符，暂时先直接使用单字节字符输出
-		const wchar_t *format = YTEXT("[%s][%d]%ls\r\n\0");
-		swprintf(ymsg->msg, MAX_MSG_SIZE, format, __FILE__, line , message);
-#else
-		const wchar_t *format = YTEXT("[%ls][%d]%ls\r\n\0");
-		swprintf(ymsg->msg, MAX_MSG_SIZE, format, YTEXT(__FILE__), line , message);
-#endif
+		const char *format = YTEXT("[%s][%d]%s\r\n\0");
+		snprintf(ymsg->msg, MAX_MSG_SIZE, format, YTEXT(__FILE__), line , message);
 	}
 	else
 	{
-		const wchar_t *format = YTEXT("[%ls][%d]%ls\r\n\0");
-		swprintf(ymsg->msg, MAX_MSG_SIZE, format, category, line, message);
+		const char *format = YTEXT("[%s][%d]%s\r\n\0");
+		snprintf(ymsg->msg, MAX_MSG_SIZE, format, category, line, message);
 	}
 
 	ymsg->level = level;
 
 	Y_queue_commit_enqueue(consume_log_queue);
 }
+
+// {
+// 	// 格式化用户输入的日志
+// 	wchar_t message[MAX_MSG_SIZE] = { '\0' };
+// 	va_list ap;
+// 	va_start(ap, msg);
+// 	vswprintf(message, MAX_MSG_SIZE, msg, ap);
+// 	va_end(ap);
+
+// 	Ymsg *ymsg = (Ymsg *)Y_queue_prepare_enqueue(consume_log_queue);
+
+// 	// 格式化最终要输出的日志
+// 	// 注意宽字符串需要用%ls输出，输出单个宽字符使用%lc
+
+// 	if (category == NULL)
+// 	{
+// #if (defined(Y_ENV_UNIX)) || (defined(Y_ENV_MINGW))
+// 		// mingw环境下没法把__FILE__预定义宏转成多字节字符，暂时先直接使用单字节字符输出
+// 		const wchar_t *format = YTEXT("[%s][%d]%ls\r\n\0");
+// 		swprintf(ymsg->msg, MAX_MSG_SIZE, format, __FILE__, line , message);
+// #else
+// 		const wchar_t *format = YTEXT("[%ls][%d]%ls\r\n\0");
+// 		swprintf(ymsg->msg, MAX_MSG_SIZE, format, YTEXT(__FILE__), line , message);
+// #endif
+// 	}
+// 	else
+// 	{
+// 		const wchar_t *format = YTEXT("[%ls][%d]%ls\r\n\0");
+// 		swprintf(ymsg->msg, MAX_MSG_SIZE, format, category, line, message);
+// 	}
+
+// 	ymsg->level = level;
+
+// 	Y_queue_commit_enqueue(consume_log_queue);
+// }
 
 
