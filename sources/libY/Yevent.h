@@ -3,67 +3,49 @@
  * @ author  : oheiheiheiheihei
  * @ version : 0.9
  * @ date    : 2022.03.05 13:17
- * @ brief   : 封裝
+ * @ brief   : 封裝类似于C#里AutoResetEvent的功能
+ * @ remark  ：linux条件变量参考：https://blog.csdn.net/zzran/article/details/8830213
  ************************************************************************************/
-#ifndef __YLOCK_H__
-#define __YLOCK_H__
+#ifndef __YEVENT_H__
+#define __YEVENT_H__
 
 #include "Ybase.h"
-
-#if (defined(Y_API_WIN32))
-#include <Windows.h>
-#elif (defined(Y_API_UNIX))
-#include <pthread.h>
-#endif
-
-#if (defined(Y_API_WIN32))
-typedef CRITICAL_SECTION Ycond;
-#define Y_create_lock(Y_lock)             InitializeCriticalSection(&Y_lock)
-#define Y_delete_lock(Y_lock)             DeleteCriticalSection(&Y_lock)
-#define Y_lock_lock(Y_lock)               EnterCriticalSection(&Y_lock)
-#define Y_lock_unlock(Y_lock)             LeaveCriticalSection(&Y_lock)
-#elif (defined(Y_API_UNIX))
-typedef pthread_cond_t Ycond;
-#define Y_create_lock(Y_lock)             pthread_mutex_init(&Y_lock, NULL)
-#define Y_delete_lock(Y_lock)             pthread_mutex_destroy(&Y_lock)
-#define Y_lock_lock(Y_lock)               pthread_mutex_lock(&Y_lock)
-#define Y_lock_unlock(Y_lock)             pthread_mutex_unlock(&Y_lock)
-#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-    typedef struct Ylock_s Ylock;
+    // 事件对象
+    typedef struct Yevent_s Yevent;
 
-    YAPI Ylock *Y_create_lock();
-
-    /*
-     * 描述：
-     * 删除一把锁
-     * 
-     * 参数：
-     * @yl：要删除的锁
-     */
-    YAPI void Y_delete_lock(Ylock *yl);
+    YAPI Yevent *Y_create_event();
 
     /*
      * 描述：
-     * 执行锁操作
+     * 删除一个事件
      * 
      * 参数：
-     * @yl：要锁住的锁
+     * @ye：要删除的事件
      */
-    YAPI void Y_lock_lock(Ylock *yl);
+    YAPI void Y_delete_event(Yevent *ye);
 
     /*
      * 描述：
-     * 执行解锁操作
+     * 等待一个事件触发
      * 
      * 参数：
-     * @yl：要解锁的锁
+     * @ye：要等待的事件
      */
-    YAPI void Y_lock_unlock(Ylock *yl);
+    YAPI void Y_event_wait(Yevent *ye);
+
+    /*
+     * 描述：
+     * 触发一个事件
+     * 
+     * 参数：
+     * @ye：要触发的事件
+     */
+    YAPI void Y_event_signal(Yevent *ye);
 
 #ifdef __cplusplus
 }
