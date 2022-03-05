@@ -3,6 +3,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#if (defined(Y_API_WIN32))
+#elif (defined(Y_API_UNIX))
+#include <sys/stat.h>
+#endif
 
 #include "Ylog.h"
 #include "Ylist.h"
@@ -11,6 +15,12 @@
 
 #define MAX_LINES                   1024
 #define MAX_LINE_SIZE               16384
+
+#if (defined(Y_API_WIN32))
+#elif (defined(Y_API_UNIX))
+#define N_BITS 3
+static const char *PERMISSIONS[] = { "---","--x","-w-","-wx","r--","r-x","rw-","rwx"};
+#endif
 
 const char *Y_file_read(const char *path)
 {
@@ -62,3 +72,41 @@ void Y_file_free_lines(char **lines, int num_line)
         free(lines[line]);
     }
 }
+
+int Y_file_write_all(const char *path, const char *content, size_t size)
+{
+    FILE *f = fopen(path, "w");
+    if(f == NULL)
+    {
+        YLOGE(YTEXT("open file failed, %s"), path);
+        return -1;
+    }
+
+    fwrite(content, 1, size, f);
+    fflush(f);
+    fclose(f);
+}
+
+#if (defined(Y_API_WIN32))
+#elif (defined(Y_API_UNIX))
+int Y_file_read_linux_perm(const char *path, char *permissions)
+{
+	struct stat stats;
+    if(stat(path, &stats) < 0)
+    {
+        YLOGE(YTEXT("stat failed"));
+        return -1;
+    }
+
+    unsigned int i,mask = 0700;
+    for(i = 3; i; --i)
+    {
+        char perm[128] = {'\0'};
+        snprintf(perm, sizeof(perm), "%3s", PERMISSIONS[(stats.st_mode & mask) >> (i - 1) * N_BITS]);
+        strcat(permissions, perm);
+        mask >>= N_BITS;
+    }
+
+    return 0;
+}
+#endif

@@ -225,6 +225,10 @@ int main(int argc, char **argv)
 {
 	Y_log_global_init();
 
+	char perm[1024] = {'\0'};
+	Y_file_read_linux_perm("/home/oheiheiheiheihei/code/oheiheiheiheihei/tools/cmake/Ydemo", perm);
+	printf("%s\n", perm);
+
 	//YLOGI(YTEXT("hello libY"));
 	// YLOGCI(CATEGORY, YTEXT("hello libY"));
 

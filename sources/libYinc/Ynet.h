@@ -60,7 +60,7 @@ extern "C" {
 	 * @len：缓冲区长度
 	 *
 	 * 返回值：
-	 * 读取成功返回0，读取失败返回-1
+	 * 读取成功返回读取到的字节数，读取失败返回-1
 	 */
 	YAPI int Y_read_socket(Ysocket s, char *data, size_t len);
 

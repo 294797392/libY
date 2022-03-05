@@ -51,6 +51,13 @@ extern "C" {
 
     YAPI void Y_file_free_lines(char **lines, int num_line);
 
+    YAPI int Y_file_write_all(const char *path, const char *content, size_t size);
+
+#if (defined(Y_API_WIN32))
+#elif (defined(Y_API_UNIX))
+    YAPI int Y_file_read_linux_perm(const char *path, char *permissions);
+#endif
+
 #ifdef __cplusplus
 }
 #endif

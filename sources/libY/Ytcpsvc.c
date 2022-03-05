@@ -76,7 +76,12 @@ static void client_thread_proc(void *state)
 	{
 		// fixme:需要设计接收缓冲区模型
 		Ypacket *packet = (Ypacket*)calloc(1, sizeof(Ypacket));
-		Y_tcp_receive_packet(client->fd, packet);
+		if(Y_tcp_receive_packet(client->fd, packet) < 0)
+		{
+			YLOGE(YTEXT("receive client packet failed, exit"));
+			free(packet);
+			return;
+		}
 		notify_event(client->svc, client->fd, Y_TCPSVC_EVT_PACKET_RECEIVED, packet, 0);
 		free(packet);
 	}

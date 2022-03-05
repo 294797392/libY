@@ -11,7 +11,7 @@
 int Y_tcp_receive_packet(Ysocket fd, Ypacket *packet)
 {
     char head[32] = {'\0'};
-    if(Y_read_socket(fd, head, sizeof(head)) < 0)
+    if(Y_read_socket(fd, head, sizeof(head)) != sizeof(head))
     {
         return -1;
     }
@@ -30,13 +30,17 @@ int Y_tcp_receive_packet(Ysocket fd, Ypacket *packet)
     packet->seq = seq;
     packet->cmd = cmd;
     packet->code = code;
-    packet->data = (char*)malloc(size);
     packet->size = size;
 
-    // 收数据
-    if(Y_read_socket(fd, packet->data, packet->size) < 0)
+    if(size > 0)
     {
-        return -1;
+        packet->data = (char*)malloc(size);
+
+        // 收数据
+        if(Y_read_socket(fd, packet->data, packet->size) != size)
+        {
+            return -1;
+        }
     }
 
     return 0;

@@ -55,6 +55,7 @@ int Y_read_socket(Ysocket s, char *data, size_t len)
 {
 	size_t ret;
 	size_t l = len;
+	int read = 0;
 	char *m = data;
 	while (l != 0 && (ret = recv(s, m, l, 0)) != 0)
 	{
@@ -73,8 +74,9 @@ int Y_read_socket(Ysocket s, char *data, size_t len)
 
 		l -= ret;
 		m += ret;
+		read += ret;
 	}
-	return 0;
+	return read;
 }
 
 int Y_write_socket(Ysocket s, const char *data, size_t len)
