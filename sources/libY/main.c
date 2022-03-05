@@ -16,9 +16,11 @@
 #include "Ylist.h"
 #include "Ypool.h"
 #include "Ynet.h"
+#include "Ytcp.h"
 #include "Ytcpcli.h"
 #include "Ytcpsvc.h"
 #include "Yfile.h"
+#include "Ythread.h"
 
 #define CATEGORY	YTEXT("main")
 
@@ -159,7 +161,7 @@ static void demo_Ytcpcli()
 	Ytcpcli *ycli = Y_create_tcpcli("127.0.0.1", 1018);
 	Y_tcpcli_set_event_callback(ycli, Ytcpcli_event_handler, ycli);
 	Y_tcpcli_connect(ycli);
-
+	Y_tcpcli_send(ycli, 123, -456, 789, "123", 3);
 	while (1)
 	{
 		char line[1024] = { '\0' };
@@ -169,11 +171,22 @@ static void demo_Ytcpcli()
 	}
 }
 
-
-
 static int Ytcpsvc_event_handler(Ytcpsvc *svc, Ysocket client, Ytcpsvc_event event, void *data, size_t datasize, void *userdata)
 {
+	switch (event)
+	{
+	case Y_TCPSVC_EVT_PACKET_RECEIVED:
+	{
+		Ypacket *packet = (Ypacket *)data;
+		YLOGI(YTEXT("packet received, seq = %d, cmd = %d, code = %d, msg = %s"), packet->seq, packet->cmd, packet->code, packet->data);
+		break;
+	}
 
+	default:
+		break;
+	}
+
+	return 0;
 }
 
 static void demo_Ytcpsvc()
@@ -198,6 +211,16 @@ static void demo_Ylog()
 	}
 }
 
+static void Ytcpsvc_thread_proc(void *userdata)
+{
+	 demo_Ytcpsvc();
+}
+
+static void Ytcpcli_thread_proc(void *userdata)
+{
+	demo_Ytcpcli();
+}
+
 int main(int argc, char **argv)
 {
 	Y_log_global_init();
@@ -213,9 +236,8 @@ int main(int argc, char **argv)
 
 	//demo_Ynet();
 
-	demo_Ytcpcli();
-
-	// demo_Ytcpsvc();
+	Y_create_thread(Ytcpsvc_thread_proc, NULL);
+	Y_create_thread(Ytcpcli_thread_proc, NULL);
 
 	// demo_Ylog();
 

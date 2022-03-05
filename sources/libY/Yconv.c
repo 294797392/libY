@@ -24,17 +24,19 @@ static long long convert(char *bytes, int offset, int count)
 short Y_conv_bytes2short(char *bytes, int offset)
 {
     return (short)(bytes[offset] | (bytes[offset + 1] << 8));
-    // return (short)convert(bytes, offset, 2);
 }
 
 int Y_conv_bytes2int(char *bytes, int offset)
 {
-    return bytes[offset] | (bytes[offset + 1] << 8) | (bytes[offset + 2] << 16) | (bytes[offset + 3] << 24);
-    // return (int)convert(bytes, offset, 4);
+    // 这里必须转成unsigned char，不然如果bytes里出现一个字节出现负数的话，转换会有问题
+    // 暂时不知道原因...
+    return (unsigned char)bytes[offset] | ((unsigned char)bytes[offset + 1] << 8) | ((unsigned char)bytes[offset + 2] << 16) | ((unsigned char)bytes[offset + 3] << 24);
 }
 
 void Y_conv_int2bytes(int value, char *bytes, int offset)
 {
-    // 直接用int值修改数组里某个元素的地址里的值
-    *(char*)bytes[offset] = value;
+    bytes[offset] = value & 0xFF;
+    bytes[offset + 1] = value >> 8 & 0xFF;
+    bytes[offset + 2] = value >> 16 & 0xFF;
+    bytes[offset + 3] = value >> 24 & 0xFF;
 }

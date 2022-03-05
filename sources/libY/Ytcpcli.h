@@ -95,7 +95,7 @@ extern "C" {
 	 * 返回值：
 	 * 发送完成返回size，失败返回-1
 	 */
-	YAPI int Y_tcpcli_send(Ytcpcli *ycli, int seq, int cmd, char *data, size_t size);
+	YAPI int Y_tcpcli_send(Ytcpcli *ycli, int seq, int cmd, int code, char *data, int size);
 
 #ifdef __cplusplus
 }

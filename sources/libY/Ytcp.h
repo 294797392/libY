@@ -28,8 +28,9 @@ extern "C" {
     {
         int seq;            // 数据包序号
         int cmd;            // 命令类型
+		int code;			// 返回结果
         char *data;         // 数据
-        size_t size;        // 数据大小
+        int size;        // 数据大小
     }Ypacket;
 
 	/*
@@ -46,7 +47,7 @@ extern "C" {
 	 */
 	YAPI int Y_tcp_receive_packet(Ysocket fd, Ypacket *packet);
 
-	YAPI int Y_tcp_send_packet(Ysocket fd, int seq, int cmd, char *data, size_t datasize);
+	YAPI int Y_tcp_send_packet(Ysocket fd, int seq, int cmd, int code, char *data, int datasize);
 
 #ifdef __cplusplus
 }

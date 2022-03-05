@@ -13,10 +13,10 @@
 
 struct Yevent_s
 {
-    int signaled;                   // 是否收到了信号
-
 #if (defined(Y_API_WIN32))
+    HANDLE event;
 #elif (defined(Y_API_UNIX))
+    int signaled;                   // 是否收到了信号
     pthread_mutex_t mutex;
     pthread_cond_t cond;
 #endif
@@ -26,6 +26,7 @@ Yevent *Y_create_event()
 {
     Yevent *ye = (Yevent*)calloc(1, sizeof(Yevent));
 #if (defined(Y_API_WIN32))
+    ye->event = CreateEvent(NULL, TRUE, FALSE, NULL);
 #elif (defined(Y_API_UNIX))
     pthread_mutex_init(&ye->mutex, NULL);
     pthread_cond_init(&ye->cond, NULL);
@@ -36,6 +37,7 @@ Yevent *Y_create_event()
 void Y_delete_event(Yevent *ye)
 {
 #if (defined(Y_API_WIN32))
+    CloseHandle(ye->event);
 #elif (defined(Y_API_UNIX))
     pthread_mutex_destroy(&ye->mutex);
     pthread_cond_destroy(&ye->cond);
@@ -46,6 +48,7 @@ void Y_delete_event(Yevent *ye)
 void Y_event_wait(Yevent *ye)
 {
 #if (defined(Y_API_WIN32))
+    WaitForSingleObject(ye->event, INFINITE);
 #elif (defined(Y_API_UNIX))
     pthread_mutex_lock(&ye->mutex);
     // 这里判断的目的是当有多个线程等待信号的时候, 防止当信号已经触发之后, 还在等待空信号的问题
@@ -61,6 +64,7 @@ void Y_event_wait(Yevent *ye)
 void Y_event_signal(Yevent *ye)
 {
 #if (defined(Y_API_WIN32))
+    SetEvent(ye->event);
 #elif (defined(Y_API_UNIX))
     pthread_mutex_lock(&ye->mutex);
     ye->signaled = 1;

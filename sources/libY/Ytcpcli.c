@@ -245,7 +245,7 @@ void Y_tcpcli_set_event_callback(Ytcpcli *ycli, Ytcpcli_event_callback callback,
 	ycli->userdata = userdata;
 }
 
-int Y_tcpcli_send(Ytcpcli *ycli, int seq, int cmd, char *data, size_t size)
+int Y_tcpcli_send(Ytcpcli *ycli, int seq, int cmd, int code, char *data, int size)
 {
-	return Y_tcp_send_packet(ycli->fd, seq, cmd, data, size);
+	return Y_tcp_send_packet(ycli->fd, seq, cmd, code, data, size);
 }

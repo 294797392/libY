@@ -28,7 +28,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -152,6 +152,7 @@
     <ClCompile Include="..\..\sources\libY\main.c" />
     <ClCompile Include="..\..\sources\libY\Ybase.c" />
     <ClCompile Include="..\..\sources\libY\Yconv.c" />
+    <ClCompile Include="..\..\sources\libY\Yevent.c" />
     <ClCompile Include="..\..\sources\libY\Yfile.c" />
     <ClCompile Include="..\..\sources\libY\Ylist.c" />
     <ClCompile Include="..\..\sources\libY\Ylock.c" />
@@ -172,6 +173,7 @@
     <ClInclude Include="..\..\sources\libY\Ybase.h" />
     <ClInclude Include="..\..\sources\libY\Yconv.h" />
     <ClInclude Include="..\..\sources\libY\Yerrno.h" />
+    <ClInclude Include="..\..\sources\libY\Yevent.h" />
     <ClInclude Include="..\..\sources\libY\Yfile.h" />
     <ClInclude Include="..\..\sources\libY\Yfirstinclude.h" />
     <ClInclude Include="..\..\sources\libY\Ylist.h" />

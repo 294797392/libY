@@ -19,6 +19,7 @@ int Y_tcp_receive_packet(Ysocket fd, Ypacket *packet)
     int seq = Y_conv_bytes2int(head, 0);
     int cmd = Y_conv_bytes2int(head, 4);
     int size = Y_conv_bytes2int(head, 8);
+    int code = Y_conv_bytes2int(head, 12);
 
     // fixme:接收缓冲区管理的逻辑先写的简单点，后续需要写一个缓冲池来对内存进行复用
     if(packet->data != NULL)
@@ -26,6 +27,9 @@ int Y_tcp_receive_packet(Ysocket fd, Ypacket *packet)
         free(packet->data);
     }
 
+    packet->seq = seq;
+    packet->cmd = cmd;
+    packet->code = code;
     packet->data = (char*)malloc(size);
     packet->size = size;
 
@@ -38,7 +42,7 @@ int Y_tcp_receive_packet(Ysocket fd, Ypacket *packet)
     return 0;
 }
 
-int Y_tcp_send_packet(Ysocket fd, int seq, int cmd, char *data, size_t datasize)
+int Y_tcp_send_packet(Ysocket fd, int seq, int cmd, int code, char *data, int datasize)
 {
     char head[32] = {'\0'};
 
@@ -46,12 +50,11 @@ int Y_tcp_send_packet(Ysocket fd, int seq, int cmd, char *data, size_t datasize)
     Y_conv_int2bytes(seq, head, 0);
     Y_conv_int2bytes(cmd, head, 4);
     Y_conv_int2bytes(datasize, head, 8);
+    Y_conv_int2bytes(code, head, 12);
     if(Y_write_socket(fd, head, sizeof(head)) < 0)
     {
         return -1;
     }
-
-    printf("asdads\n");
 
     // 打包数据
     if(data != NULL && datasize > 0)
