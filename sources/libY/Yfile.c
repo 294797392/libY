@@ -12,68 +12,47 @@
 #include "Ylist.h"
 #include "Ystring.h"
 #include "Ylog/Ylog.h"
+#include "Yfile.h"
+#include "Yreader.h"
 
-#define MAX_LINES                   1024
+#define DEFAULT_LINES               64
 #define MAX_LINE_SIZE               16384
 
-#if (defined(Y_API_WIN32))
-#elif (defined(Y_API_UNIX))
+// 读取linux文件权限所需要的宏定义
 #define N_BITS 3
 static const char *PERMISSIONS[] = { "---","--x","-w-","-wx","r--","r-x","rw-","rwx"};
-#endif
 
-const char *Y_file_read(const char *path)
+const char *Y_file_read(const char *path, int *size)
 {
     // 先使用fstat函数获取文件大小，然后开辟内存读取
-    // fstat()
+    struct stat status;
+    if(fstat(path, &status) < 0)
+    {
+        YLOGE(YTEXT("Y_file_read fstat failed, error = %d, path = %s"), errno, path);
+        return NULL;
+    }
+
+    *size = status.st_size;
+
+    FILE *file = fopen(path, "r");
+    if(file == NULL)
+    {
+        YLOGE(YTEXT("Y_file_read fopen failed, error = %d, path = %s"), errno, path);
+        return NULL;
+    }
+
+    char *content = calloc(status.st_size, 1);
+    fread(content, 1, status.st_size, file);
+    fclose(file);
+    return content;
 }
 
 void Y_file_free(const char *content)
 {
-
+    free(content);
 }
 
-
-char **Y_file_read_lines(const char *path, int *num_line)
-{
-    FILE *f = fopen(path, "r");
-    if(f == NULL)
-    {
-        YLOGE(YTEXT("open file failed, %s"), path);
-        return NULL;
-    }
-
-    char **lines = (char**)calloc(MAX_LINES, sizeof(char*));
-
-    int line_num = 0;
-    while(!feof(f))
-    {
-        char *line = (char*)calloc(1, MAX_LINE_SIZE);
-        fgets(line, MAX_LINE_SIZE, f);
-        Ystr_trim_right(line, '\n');
-        lines[line_num++] = line;
-    }
-    *num_line = line_num;
-
-    fclose(f);
-
-    return lines;
-}
-
-void Y_file_free_lines(char **lines, int num_line)
-{
-    // for(int line = 0; line < num_line; line++)
-    // {
-    //     free(lines[line]);
-    // }
-
-    for(int line = 0; line < MAX_LINES; line++)
-    {
-        free(lines[line]);
-    }
-}
-
-int Y_file_write_all(const char *path, const char *content, size_t size)
+int Y_file_write(const char *path, const char *content)
 {
     FILE *f = fopen(path, "w");
     if(f == NULL)
@@ -82,9 +61,47 @@ int Y_file_write_all(const char *path, const char *content, size_t size)
         return -1;
     }
 
-    fwrite(content, 1, size, f);
+    size_t len = strlen(content);
+
+    fwrite(content, 1, len, f);
     fflush(f);
     fclose(f);
+
+    return 0;
+}
+
+char **Y_file_read_lines(const char *path, int *numlines)
+{
+    Yreader *reader = Y_create_reader(path);
+    if(reader == NULL)
+    {
+        return NULL;
+    }
+
+    int totalline = DEFAULT_LINES;
+    int linecount = 0;
+    char **lines = (char**)calloc(totalline, sizeof(char*));
+    int linesize;
+    char *line = NULL;
+    while((line = Y_reader_readline(reader, &linesize)))
+    {
+        if(linecount == totalline)
+        {
+            totalline = totalline * 2;
+            lines = (char**)realloc(lines, totalline * sizeof(char*));
+        }
+        lines[linecount++] = line;
+    }
+    *numlines = linecount;
+    return lines;
+}
+
+void Y_file_free_lines(char **lines, int numlines)
+{
+    for(int line = 0; line < numlines; line++)
+    {
+        free(lines[line]);
+    }
 }
 
 #if (defined(Y_API_WIN32))

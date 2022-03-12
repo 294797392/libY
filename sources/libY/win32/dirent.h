@@ -1,12 +1,12 @@
 ﻿/***********************************************************************************
- * @ file    : Yfile.h
+ * @ file    : Ydirent.h
  * @ author  : oheiheiheiheihei
  * @ version : 0.9
- * @ date    : 2022.01.29 10:10
- * @ brief   : 封装文件操作函数
+ * @ date    : 2022.03.06 16:30
+ * @ brief   : 模拟linux下的dirent函数和结构体
  ************************************************************************************/
-#ifndef __YFILE_H__
-#define __YFILE_H__
+#ifndef __YDIRENT_H__
+#define __YDIRENT_H__
 
 #include "Ybase.h"
 
@@ -29,8 +29,14 @@ extern "C" {
      */
     YAPI const char *Y_file_read(const char *path, int *size);
 
-
-    YAPI int Y_file_write(const char *path, const char *content, size_t size);
+    /*
+     * 描述：
+     * 释放使用Y_file_read函数读取的文件内容
+     * 
+     * 参数：
+     * @path：文件内容
+     */
+    YAPI void Y_file_free(const char *content);
 
     /*
      * 描述：
@@ -42,18 +48,11 @@ extern "C" {
      * 返回值：
      * 行数组
      */
-    YAPI char **Y_file_read_lines(const char *path, int *numlines);
+    YAPI char **Y_file_read_lines(const char *path, int *num_line);
 
-    YAPI void Y_file_free_lines(char **lines, int numlines);
+    YAPI void Y_file_free_lines(char **lines, int num_line);
 
-    /*
-     * 描述：
-     * 释放使用Y_file_read函数读取的文件内容
-     * 
-     * 参数：
-     * @path：文件内容
-     */
-    YAPI void Y_file_free(const char *content);
+    YAPI int Y_file_write_all(const char *path, const char *content, size_t size);
 
 #if (defined(Y_API_WIN32))
 #elif (defined(Y_API_UNIX))
@@ -65,3 +64,5 @@ extern "C" {
 #endif
 
 #endif
+
+

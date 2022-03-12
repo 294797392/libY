@@ -162,6 +162,7 @@
     <ClCompile Include="..\..\sources\libY\Ynet.c" />
     <ClCompile Include="..\..\sources\libY\Ypool.c" />
     <ClCompile Include="..\..\sources\libY\Yqueue.c" />
+    <ClCompile Include="..\..\sources\libY\Yreader.c" />
     <ClCompile Include="..\..\sources\libY\Ystring.c" />
     <ClCompile Include="..\..\sources\libY\Ytcp.c" />
     <ClCompile Include="..\..\sources\libY\Ytcpcli.c" />
@@ -185,6 +186,7 @@
     <ClInclude Include="..\..\sources\libY\Ynet.h" />
     <ClInclude Include="..\..\sources\libY\Ypool.h" />
     <ClInclude Include="..\..\sources\libY\Yqueue.h" />
+    <ClInclude Include="..\..\sources\libY\Yreader.h" />
     <ClInclude Include="..\..\sources\libY\Ystring.h" />
     <ClInclude Include="..\..\sources\libY\Ytcp.h" />
     <ClInclude Include="..\..\sources\libY\Ytcpcli.h" />

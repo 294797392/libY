@@ -221,13 +221,24 @@ static void Ytcpcli_thread_proc(void *userdata)
 	demo_Ytcpcli();
 }
 
+static void demo_Y_file()
+{
+	int numlines;
+	char **lines = Y_file_read_lines("E:\\oheiheiheiheihei\\tools\\msvc\\Debug\\CopyOfCMakeCache.txt", &numlines);
+
+	for (int i = 0; i < numlines; i++)
+	{
+		printf("%s\n", lines[i]);
+	}
+}
+
 int main(int argc, char **argv)
 {
 	Y_log_global_init();
 
-	char perm[1024] = {'\0'};
-	Y_file_read_linux_perm("/home/oheiheiheiheihei/code/oheiheiheiheihei/tools/cmake/Ydemo", perm);
-	printf("%s\n", perm);
+	//char perm[1024] = {'\0'};
+	//Y_file_read_linux_perm("/home/oheiheiheiheihei/code/oheiheiheiheihei/tools/cmake/Ydemo", perm);
+	//printf("%s\n", perm);
 
 	//YLOGI(YTEXT("hello libY"));
 	// YLOGCI(CATEGORY, YTEXT("hello libY"));
@@ -240,10 +251,12 @@ int main(int argc, char **argv)
 
 	//demo_Ynet();
 
-	Y_create_thread(Ytcpsvc_thread_proc, NULL);
-	Y_create_thread(Ytcpcli_thread_proc, NULL);
+	//Y_create_thread(Ytcpsvc_thread_proc, NULL);
+	//Y_create_thread(Ytcpcli_thread_proc, NULL);
 
 	// demo_Ylog();
+
+	demo_Y_file();
 
 	// int num_line;
 	// char **lines = Y_file_read_lines("E:\\oheiheiheiheihei\\tools\\msvc\\Debug\\CMakeCache.txt", &num_line);

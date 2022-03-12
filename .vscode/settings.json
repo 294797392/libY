@@ -23,6 +23,9 @@
         "windows.h": "c",
         "ynet.h": "c",
         "fcntl.h": "c",
-        "stat.h": "c"
+        "stat.h": "c",
+        "ybuilder.h": "c",
+        "stdlib.h": "c",
+        "xlocale": "c"
     }
 }
