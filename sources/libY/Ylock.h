@@ -8,6 +8,8 @@
 #ifndef __YLOCK_H__
 #define __YLOCK_H__
 
+#include "Yfirstinclude.h"
+
 #include "Ybase.h"
 
 #if (defined(Y_API_WIN32))

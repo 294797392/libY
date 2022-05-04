@@ -32,6 +32,15 @@ extern "C" {
 
     /*
      * 描述：
+     * 释放使用Y_file_read函数读取的文件内容
+     * 
+     * 参数：
+     * @path：文件内容
+     */
+    YAPI void Y_file_free(const char *content);
+
+    /*
+     * 描述：
      * 写入一个文本文件
      * 
      * 参数：
@@ -56,15 +65,6 @@ extern "C" {
     YAPI char **Y_file_read_lines(const char *path, int *numlines);
 
     YAPI void Y_file_free_lines(char **lines, int numlines);
-
-    /*
-     * 描述：
-     * 释放使用Y_file_read函数读取的文件内容
-     * 
-     * 参数：
-     * @path：文件内容
-     */
-    YAPI void Y_file_free(const char *content);
 
 #if (defined(Y_API_WIN32))
 #elif (defined(Y_API_UNIX))

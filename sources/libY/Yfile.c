@@ -14,6 +14,7 @@
 #include "Ylog/Ylog.h"
 #include "Yfile.h"
 #include "Yreader.h"
+#include "Yerrno.h"
 
 #define DEFAULT_LINES               64
 #define MAX_LINE_SIZE               16384
@@ -26,7 +27,7 @@ const char *Y_file_read(const char *path, int *size)
 {
     // 先使用fstat函数获取文件大小，然后开辟内存读取
     struct stat status;
-    if(fstat(path, &status) < 0)
+    if (fstat(path, &status) < 0)
     {
         YLOGE(YTEXT("Y_file_read fstat failed, error = %d, path = %s"), errno, path);
         return NULL;

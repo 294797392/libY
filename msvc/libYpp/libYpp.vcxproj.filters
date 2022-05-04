@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\sources\libYpp\Modular\ModuleFactory.cpp">
+      <Filter>Modular</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sources\libYpp\Modular\ModuleBase.cpp">
+      <Filter>Modular</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sources\libYpp\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\sources\libYpp\Modular\ModuleFactory.h">
+      <Filter>Modular</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sources\libYpp\Modular\ModuleBase.h">
+      <Filter>Modular</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sources\libYpp\libYpp.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Modular">
+      <UniqueIdentifier>{5836b006-0146-40b8-8b87-1eed73fddd74}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -130,7 +130,7 @@ extern "C" {
 	YAPI void Y_queue_commit_enqueue(Yqueue *yq);
 
 #ifdef __cplusplus
-	extern "C" {
+}
 #endif
 
 #endif
