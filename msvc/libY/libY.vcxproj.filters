@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\sources\libY\main.c" />
+    <ClCompile Include="..\..\sources\libY\Ybase.c" />
+    <ClCompile Include="..\..\sources\libY\Yevent.c" />
+    <ClCompile Include="..\..\sources\libY\Ylist.c" />
+    <ClCompile Include="..\..\sources\libY\Ylock.c" />
+    <ClCompile Include="..\..\sources\libY\Ymap.c" />
+    <ClCompile Include="..\..\sources\libY\Ypool.c" />
+    <ClCompile Include="..\..\sources\libY\Yqueue.c" />
+    <ClCompile Include="..\..\sources\libY\Ystring.c" />
+    <ClCompile Include="..\..\sources\libY\Ythread.c" />
+    <ClCompile Include="..\..\sources\libY\Ytree.c" />
+    <ClCompile Include="..\..\sources\libY\Ylog\Yappender_conosle.c">
+      <Filter>Ylog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sources\libY\Ylog\Ylog.c">
+      <Filter>Ylog</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\sources\libY\Ybase.h" />
+    <ClInclude Include="..\..\sources\libY\Yerrno.h" />
+    <ClInclude Include="..\..\sources\libY\Yevent.h" />
+    <ClInclude Include="..\..\sources\libY\Ylist.h" />
+    <ClInclude Include="..\..\sources\libY\Ylock.h" />
+    <ClInclude Include="..\..\sources\libY\Ymap.h" />
+    <ClInclude Include="..\..\sources\libY\Ypool.h" />
+    <ClInclude Include="..\..\sources\libY\Yqueue.h" />
+    <ClInclude Include="..\..\sources\libY\Ystring.h" />
+    <ClInclude Include="..\..\sources\libY\Ythread.h" />
+    <ClInclude Include="..\..\sources\libY\Ytree.h" />
+    <ClInclude Include="..\..\sources\libY\Ylog\Yappender.h">
+      <Filter>Ylog</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sources\libY\Ylog\Ylog.h">
+      <Filter>Ylog</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sources\libY\Ylog\Ylogbase.h">
+      <Filter>Ylog</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sources\libY\Ysem.h" />
+    <ClInclude Include="..\..\sources\libY\libY.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Ylog">
+      <UniqueIdentifier>{a4e0e3bb-eeb4-4a66-8752-3d9dd07f86dd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,12 +1,10 @@
-﻿#include "Yfirstinclude.h"
-
-#include <stdlib.h>
+﻿#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-#if (defined(Y_API_WIN32))
+#if (defined(Y_WIN32))
 #include <Windows.h>
-#elif (defined(Y_API_UNIX))
+#elif (defined(Y_UNIX))
 #include <pthread.h>
 #endif
 
@@ -18,7 +16,7 @@ struct Ythread_s
     void *userdata;
     Ythread_entry entry;
 
-#ifdef Y_API_WIN32
+#ifdef Y_WIN32
     HANDLE handle;
     DWORD threadid;
 #else
@@ -26,7 +24,7 @@ struct Ythread_s
 #endif
 };
 
-#ifdef Y_API_WIN32
+#ifdef Y_WIN32
 static DWORD WINAPI win32_thread_proc(LPVOID lpThreadParameter)
 #else
 static void *unix_thread_proc(void *lpThreadParameter)
@@ -36,7 +34,7 @@ static void *unix_thread_proc(void *lpThreadParameter)
 
     thread->entry(thread->userdata);
 
-#ifdef Y_API_WIN32
+#ifdef Y_WIN32
     return 0;
 #else
     return NULL;
@@ -49,13 +47,13 @@ Ythread *Y_create_thread(Ythread_entry entry, void *userdata)
     thread->entry = entry;
     thread->userdata = userdata;
 
-#if (defined(Y_API_WIN32))
+#if (defined(Y_WIN32))
     if ((thread->handle = CreateThread(NULL, 0, win32_thread_proc, thread, 0, &thread->threadid)) == NULL)
     {
         free(thread);
         return NULL;
     }
-#elif (defined(Y_API_UNIX))
+#elif (defined(Y_UNIX))
     pthread_create(&thread->threadid, NULL, unix_thread_proc, thread);
     pthread_detach(thread->threadid);
 #endif
@@ -65,10 +63,10 @@ Ythread *Y_create_thread(Ythread_entry entry, void *userdata)
 
 void Y_delete_thread(Ythread *thread)
 {
-#if (defined(Y_API_WIN32))
+#if (defined(Y_WIN32))
     // Windows下使用WaitForSingleObject等待线程运行结束
     WaitForSingleObject(thread->handle, INFINITE);
-#elif (defined(Y_API_UNIX))
+#elif (defined(Y_UNIX))
     pthread_join(thread->threadid, NULL);
 #endif
     free(thread);

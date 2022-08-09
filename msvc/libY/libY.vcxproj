@@ -87,7 +87,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS;%(PreprocessorDefinitions);HAVE_STRUCT_TIMESPEC;Y_ENV_WIN32;Y_EXPORT;Y_MAP_CHAIN</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS;%(PreprocessorDefinitions);HAVE_STRUCT_TIMESPEC;Y_WIN32;Y_EXPORT;Y_MAP_CHAIN</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <CompileAs>CompileAsC</CompileAs>
       <AdditionalIncludeDirectories>$(SolutionDir)../sources/libY/Ylog;$(SolutionDir)../sources/libY</AdditionalIncludeDirectories>
@@ -151,46 +151,33 @@
   <ItemGroup>
     <ClCompile Include="..\..\sources\libY\main.c" />
     <ClCompile Include="..\..\sources\libY\Ybase.c" />
-    <ClCompile Include="..\..\sources\libY\Yconv.c" />
     <ClCompile Include="..\..\sources\libY\Yevent.c" />
-    <ClCompile Include="..\..\sources\libY\Yfile.c" />
     <ClCompile Include="..\..\sources\libY\Ylist.c" />
     <ClCompile Include="..\..\sources\libY\Ylock.c" />
     <ClCompile Include="..\..\sources\libY\Ylog\Yappender_conosle.c" />
     <ClCompile Include="..\..\sources\libY\Ylog\Ylog.c" />
     <ClCompile Include="..\..\sources\libY\Ymap.c" />
-    <ClCompile Include="..\..\sources\libY\Ynet.c" />
     <ClCompile Include="..\..\sources\libY\Ypool.c" />
     <ClCompile Include="..\..\sources\libY\Yqueue.c" />
-    <ClCompile Include="..\..\sources\libY\Yreader.c" />
     <ClCompile Include="..\..\sources\libY\Ystring.c" />
-    <ClCompile Include="..\..\sources\libY\Ytcp.c" />
-    <ClCompile Include="..\..\sources\libY\Ytcpcli.c" />
-    <ClCompile Include="..\..\sources\libY\Ytcpsvc.c" />
     <ClCompile Include="..\..\sources\libY\Ythread.c" />
     <ClCompile Include="..\..\sources\libY\Ytree.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\sources\libY\libY.h" />
     <ClInclude Include="..\..\sources\libY\Ybase.h" />
-    <ClInclude Include="..\..\sources\libY\Yconv.h" />
     <ClInclude Include="..\..\sources\libY\Yerrno.h" />
     <ClInclude Include="..\..\sources\libY\Yevent.h" />
-    <ClInclude Include="..\..\sources\libY\Yfile.h" />
-    <ClInclude Include="..\..\sources\libY\Yfirstinclude.h" />
     <ClInclude Include="..\..\sources\libY\Ylist.h" />
     <ClInclude Include="..\..\sources\libY\Ylock.h" />
     <ClInclude Include="..\..\sources\libY\Ylog\Yappender.h" />
     <ClInclude Include="..\..\sources\libY\Ylog\Ylog.h" />
     <ClInclude Include="..\..\sources\libY\Ylog\Ylogbase.h" />
     <ClInclude Include="..\..\sources\libY\Ymap.h" />
-    <ClInclude Include="..\..\sources\libY\Ynet.h" />
     <ClInclude Include="..\..\sources\libY\Ypool.h" />
     <ClInclude Include="..\..\sources\libY\Yqueue.h" />
-    <ClInclude Include="..\..\sources\libY\Yreader.h" />
+    <ClInclude Include="..\..\sources\libY\Ysem.h" />
     <ClInclude Include="..\..\sources\libY\Ystring.h" />
-    <ClInclude Include="..\..\sources\libY\Ytcp.h" />
-    <ClInclude Include="..\..\sources\libY\Ytcpcli.h" />
-    <ClInclude Include="..\..\sources\libY\Ytcpsvc.h" />
     <ClInclude Include="..\..\sources\libY\Ythread.h" />
     <ClInclude Include="..\..\sources\libY\Ytree.h" />
   </ItemGroup>

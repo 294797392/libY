@@ -10,8 +10,6 @@
 #ifndef __YPOOL_H__
 #define __YPOOL_H__
 
-#include "Yfirstinclude.h"
-
 #include "Ybase.h"
 
 typedef struct Yobject_s Yobject;

@@ -6,8 +6,6 @@
  * @ brief   : 用来向控制台输出日志的appender
  ************************************************************************************/
 
-#include "Yfirstinclude.h"
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

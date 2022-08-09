@@ -1,13 +1,11 @@
-﻿#include "Yfirstinclude.h"
-
-#include <stdlib.h>
+﻿#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
 
-#if (defined(Y_API_WIN32))
+#if (defined(Y_WIN32))
 #include <Windows.h>
-#elif (defined(Y_API_UNIX))
+#elif (defined(Y_UNIX))
 #endif
 
 #include "Ybase.h"
@@ -15,11 +13,6 @@
 #include "Yqueue.h"
 #include "Ylist.h"
 #include "Ypool.h"
-#include "Ynet.h"
-#include "Ytcp.h"
-#include "Ytcpcli.h"
-#include "Ytcpsvc.h"
-#include "Yfile.h"
 #include "Ythread.h"
 
 #define CATEGORY	YTEXT("main")
@@ -119,116 +112,11 @@ static void demo_Ypool()
 	}
 }
 
-static void demo_Ynet()
-{
-	Y_initnet();
-
-	// Ysocket s = Y_create_tcp_svc(NULL, 1018);
-}
-
-
-static void Ytcpcli_event_handler(Ytcpcli *ycli, Ytcpcli_event yevt, void *data, size_t datasize, void *userdata)
-{
-	switch (yevt)
-	{
-	case Y_TCPCLI_EVT_CONNECTING:
-	{
-		YLOGCI(CATEGORY, YTEXT("connecting"));
-		break;
-	}
-
-	case Y_TCPCLI_EVT_CONNECTED:
-	{
-		YLOGCI(CATEGORY, YTEXT("connected"));
-		break;
-	}
-
-	case Y_TCPCLI_EVT_DISCONNECTED:
-	{
-		YLOGCI(CATEGORY, YTEXT("disconnect"));
-		break;
-	}
-
-	default:
-		break;
-	}
-}
-
-static void demo_Ytcpcli()
-{
-	Y_initnet();
-
-	Ytcpcli *ycli = Y_create_tcpcli("127.0.0.1", 1018);
-	Y_tcpcli_set_event_callback(ycli, Ytcpcli_event_handler, ycli);
-	Y_tcpcli_connect(ycli);
-	Y_tcpcli_send(ycli, 123, -456, 789, "123", 3);
-	while (1)
-	{
-		char line[1024] = { '\0' };
-		fgets(line, sizeof(line), stdin);
-		// Y_tcpcli_send(ycli, line, strlen(line) - 1);
-		// Y_tcpcli_send(ycli, "\r\n", 2);
-	}
-}
-
-static int Ytcpsvc_event_handler(Ytcpsvc *svc, Ysocket client, Ytcpsvc_event event, void *data, size_t datasize, void *userdata)
-{
-	switch (event)
-	{
-	case Y_TCPSVC_EVT_PACKET_RECEIVED:
-	{
-		Ypacket *packet = (Ypacket *)data;
-		YLOGI(YTEXT("packet received, seq = %d, cmd = %d, code = %d, msg = %s"), packet->seq, packet->cmd, packet->code, packet->data);
-		break;
-	}
-
-	default:
-		break;
-	}
-
-	return 0;
-}
-
-static void demo_Ytcpsvc()
-{
-	Y_initnet();
-	Ytcpsvc *svc = Y_create_tcpsvc("127.0.0.1", 1018);
-	Y_tcpsvc_set_event_callback(svc, Ytcpsvc_event_handler, svc);
-	Y_tcpsvc_start(svc);
-
-	while (1)
-	{
-		char line[1024] = { '\0' };
-		fgets(line, sizeof(line), stdin);
-	}
-}
-
 static void demo_Ylog()
 {
 	while (1)
 	{
 		YLOGI(YTEXT("test log, %d"), errno);
-	}
-}
-
-static void Ytcpsvc_thread_proc(void *userdata)
-{
-	 demo_Ytcpsvc();
-}
-
-static void Ytcpcli_thread_proc(void *userdata)
-{
-	demo_Ytcpcli();
-}
-
-static void demo_Y_file()
-{
-	int numlines;
-	char **lines = Y_file_read_lines("E:\\oheiheiheiheihei\\tools\\msvc\\Debug\\CopyOfCMakeCache.txt", &numlines);
-
-	for (int i = 0; i < numlines; i++)
-	{
-		printf("%s\n", lines[i]);
 	}
 }
 
@@ -255,8 +143,6 @@ int main(int argc, char **argv)
 	//Y_create_thread(Ytcpcli_thread_proc, NULL);
 
 	// demo_Ylog();
-
-	demo_Y_file();
 
 	// int num_line;
 	// char **lines = Y_file_read_lines("E:\\oheiheiheiheihei\\tools\\msvc\\Debug\\CMakeCache.txt", &num_line);

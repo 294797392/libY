@@ -72,6 +72,7 @@ list(APPEND Y_INCLUDE ${Y_DIR}/Ysem.h)
 list(APPEND Y_INCLUDE ${Y_DIR}/Yconv.h)
 list(APPEND Y_INCLUDE ${Y_DIR}/Yfile.h)
 list(APPEND Y_INCLUDE ${Y_DIR}/Yevent.h)
+list(APPEND Y_INCLUDE ${Y_DIR}/libY.h)
 
 # 拷贝头文件到libYinc
 file(COPY ${Y_INCLUDE} DESTINATION ${Y_DIR}/../libYinc)

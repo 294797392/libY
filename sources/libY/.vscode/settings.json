@@ -6,6 +6,17 @@
         "types.h": "c",
         "fcntl.h": "c",
         "tool_tcpcli.h": "c",
-        "tool_net.h": "c"
+        "tool_net.h": "c",
+        "stdlib.h": "c",
+        "ylist.h": "c",
+        "windows.h": "c",
+        "ybase.h": "c",
+        "string.h": "c",
+        "errno.h": "c",
+        "ylog.h": "c",
+        "ysem.h": "c",
+        "time.h": "c",
+        "ystring.h": "c",
+        "yerrno.h": "c"
     }
 }

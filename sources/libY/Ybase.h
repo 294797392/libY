@@ -1,11 +1,9 @@
 ﻿#ifndef __YBASE_H__
 #define __YBASE_H__
 
-#include "Yfirstinclude.h"
-
-#if (defined(Y_API_WIN32))
+#if (defined(Y_WIN32))
 #include <Windows.h>
-#elif (defined(Y_API_UNIX))
+#elif (defined(Y_UNIX))
 #include <unistd.h>
 #endif
 

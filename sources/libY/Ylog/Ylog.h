@@ -10,8 +10,6 @@
 #ifndef __YLOG_H__
 #define __YLOG_H__
 
-#include "Yfirstinclude.h"
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

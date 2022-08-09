@@ -1,13 +1,11 @@
-﻿#include "Yfirstinclude.h"
-
-#include <stdlib.h>
+﻿#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <fcntl.h>
 #include <errno.h>
-#if (defined(Y_API_WIN32))
+#if (defined(Y_WIN32))
 #include <Windows.h>
-#elif (defined(Y_API_UNIX))
+#elif (defined(Y_UNIX))
 #include <unistd.h>
 #endif
 
@@ -15,9 +13,9 @@
 
 void Ysleep(int mseconds)
 {
-	#if (defined(Y_API_WIN32))
+	#if (defined(Y_WIN32))
     Sleep(mseconds);
-	#elif (defined(Y_API_UNIX))
+	#elif (defined(Y_UNIX))
     sleep(mseconds / 1000);
 	#endif
 }

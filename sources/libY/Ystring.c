@@ -1,11 +1,9 @@
-﻿#include "Yfirstinclude.h"
-
-#include <stdlib.h>
+﻿#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
 #include <fcntl.h>
-#ifdef Y_API_UNIX
+#ifdef Y_UNIX
 #include <unistd.h>
 #endif
 
