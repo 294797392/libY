@@ -1,7 +1,25 @@
 ﻿#ifndef __LIBY_H__
 #define __LIBY_H__
 
-#include "libY/Ybase.h"
-#include "libY/Ymap.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "Ybase.h"
+#include "Yerrno.h"
+#include "Yevent.h"
+#include "Ylist.h"
+#include "Ylock.h"
+#include "Ymap.h"
+#include "Ypool.h"
+#include "Yqueue.h"
+#include "Ysem.h"
+#include "Ystring.h"
+#include "Ythread.h"
+#include "Ytree.h"
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

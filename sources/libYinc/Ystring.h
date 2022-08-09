@@ -1,8 +1,6 @@
 ﻿#ifndef __YSTRING_H__
 #define __YSTRING_H__
 
-#include "Yfirstinclude.h"
-
 #include "Ybase.h"
 
 #ifdef __cplusplus

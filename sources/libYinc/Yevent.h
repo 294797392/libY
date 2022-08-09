@@ -1,4 +1,4 @@
-/***********************************************************************************
+﻿/***********************************************************************************
  * @ file    : Yevent.h
  * @ author  : oheiheiheiheihei
  * @ version : 0.9
@@ -45,7 +45,7 @@ extern "C" {
      * 参数：
      * @ye：要触发的事件
      */
-    YAPI void Y_event_signal(Yevent *ye);
+    YAPI void Y_event_set(Yevent *ye);
 
 #ifdef __cplusplus
 }

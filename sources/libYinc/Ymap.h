@@ -6,14 +6,11 @@
  * @ brief   : 实现一个哈希表
  * @ ref     ：https://zhuanlan.zhihu.com/p/95156642
  * @ remark  ：开启Y_MAP_CHAIN宏，指定使用链式扩展法解决hash冲突，使用除留余数计算hash值
- * 为什么叫hash？去肉店买肉的时候，师傅会问，你要hash-er吗？（er是的动词的词缀），就是打不打碎的意思。
- * hash来自于生活。体现到计算机中，hash，就是把输入的东西，字符串也好，其他的什么东西也好（肉或小脆骨），打的越碎越均匀越好。
+ * 散列表：把数据分散着排列，分开排列
  **************************************************************************************************************************/
 
 #ifndef __YMAP_H__
 #define __YMAP_H__
-
-#include "Yfirstinclude.h"
 
 #include "Ybase.h"
 
@@ -119,6 +116,16 @@ extern "C" {
 	 */
     YAPI void Y_map_clear(Ymap *ym);
 
+	/*
+	 * 描述：
+	 * 获取hash表里的元素的个数
+	 *
+     * 参数：
+     * @ym：要获取元素个数的hash表
+     * 
+     * 返回值：
+     * hash表里元素的个数
+	 */
     YAPI int Y_map_count(Ymap *ym);
 
     /*

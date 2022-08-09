@@ -5,6 +5,8 @@
  * @ date    : 2021.12.06
  * @ brief   : 实现一个动态数组
  ************************************************************************************/
+#ifndef __YLIST_H__
+#define __YLIST_H__
 
 #include "Ybase.h"
 
@@ -62,7 +64,7 @@ extern "C" {
      * 参数：
      * @yl：要操作的集合
      */
-    YAPI void *Y_list_clear(Ylist *yl);
+    YAPI void Y_list_clear(Ylist *yl);
 
     /*
      * 描述：
@@ -124,4 +126,6 @@ extern "C" {
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif

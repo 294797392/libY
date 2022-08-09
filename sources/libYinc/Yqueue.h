@@ -10,8 +10,6 @@
 #ifndef __YQUEUE_H__
 #define __YQUEUE_H__
 
-#include "Yfirstinclude.h"
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -130,7 +128,7 @@ extern "C" {
 	YAPI void Y_queue_commit_enqueue(Yqueue *yq);
 
 #ifdef __cplusplus
-	extern "C" {
+}
 #endif
 
 #endif
