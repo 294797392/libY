@@ -167,7 +167,7 @@ static void remove_tree_node(ybstree_node *parent)
 		// 2. 找到要删除的节点的后记节点，把后记节点与要删除的节点进行替换。后记节点：大于该节点的最小节点
 		// 这里使用后记节点去对要删除的节点进行替换
 		ybstree_node *precursor_node = find_precursor_node(parent);
-		if(precursor_node->right == NULL)
+		if(precursor_node->right != NULL)
 		{
 			// 这里已经找到了前驱节点，前驱节点是不存在左节点的
 			// 所以只判断右节点有没有值就可以了
