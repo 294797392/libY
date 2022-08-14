@@ -1,5 +1,5 @@
-﻿#ifndef __YBASE_H__
-#define __YBASE_H__
+﻿#ifndef __Y_H__
+#define __Y_H__
 
 #if (defined(Y_WIN32))
 #include <Windows.h>

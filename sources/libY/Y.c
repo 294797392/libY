@@ -9,7 +9,7 @@
 #include <unistd.h>
 #endif
 
-#include "Ybase.h"
+#include "Y.h"
 
 void Ysleep(int mseconds)
 {
