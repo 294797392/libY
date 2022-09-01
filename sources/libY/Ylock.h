@@ -8,7 +8,7 @@
 #ifndef __YLOCK_H__
 #define __YLOCK_H__
 
-#include "Ybase.h"
+#include "Y.h"
 
 #if (defined(Y_WIN32))
 #include <Windows.h>

@@ -8,7 +8,7 @@
 #ifndef __YSEM_H__
 #define __YSEM_H__
 
-#include "Ybase.h"
+#include "Y.h"
 
 
 #if (defined(Y_WIN32))

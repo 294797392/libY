@@ -8,7 +8,7 @@
 #ifndef __YLIST_H__
 #define __YLIST_H__
 
-#include "Ybase.h"
+#include "Y.h"
 
 typedef struct Ylist_s Ylist;
 

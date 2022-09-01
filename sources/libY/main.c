@@ -8,7 +8,6 @@
 #elif (defined(Y_UNIX))
 #endif
 
-#include "Ybase.h"
 #include "Ylog.h"
 #include "Yqueue.h"
 #include "Ylist.h"
@@ -122,7 +121,7 @@ static void demo_Ylog()
 
 int main(int argc, char **argv)
 {
-	Y_log_global_init();
+	Y_log_init();
 
 	//char perm[1024] = {'\0'};
 	//Y_file_read_linux_perm("/home/oheiheiheiheihei/code/oheiheiheiheihei/tools/cmake/Ydemo", perm);

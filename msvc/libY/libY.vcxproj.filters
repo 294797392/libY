@@ -2,7 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\..\sources\libY\main.c" />
-    <ClCompile Include="..\..\sources\libY\Ybase.c" />
     <ClCompile Include="..\..\sources\libY\Yevent.c" />
     <ClCompile Include="..\..\sources\libY\Ylist.c" />
     <ClCompile Include="..\..\sources\libY\Ylock.c" />
@@ -18,9 +17,14 @@
     <ClCompile Include="..\..\sources\libY\Ylog\Ylog.c">
       <Filter>Ylog</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\sources\libY\Ymodular\Yfactory.c">
+      <Filter>Ymodular</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sources\libY\Ymodular\Ymodule.c">
+      <Filter>Ymodular</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\sources\libY\Ybase.h" />
     <ClInclude Include="..\..\sources\libY\Yerrno.h" />
     <ClInclude Include="..\..\sources\libY\Yevent.h" />
     <ClInclude Include="..\..\sources\libY\Ylist.h" />
@@ -37,15 +41,21 @@
     <ClInclude Include="..\..\sources\libY\Ylog\Ylog.h">
       <Filter>Ylog</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\sources\libY\Ylog\Ylogbase.h">
-      <Filter>Ylog</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\sources\libY\Ysem.h" />
     <ClInclude Include="..\..\sources\libY\libY.h" />
+    <ClInclude Include="..\..\sources\libY\Ymodular\Yfactory.h">
+      <Filter>Ymodular</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sources\libY\Ymodular\Ymodule.h">
+      <Filter>Ymodular</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Ylog">
       <UniqueIdentifier>{a4e0e3bb-eeb4-4a66-8752-3d9dd07f86dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ymodular">
+      <UniqueIdentifier>{a330aa74-7fab-47fe-a586-de80ab7d1b77}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

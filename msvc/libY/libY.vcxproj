@@ -150,13 +150,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\sources\libY\main.c" />
-    <ClCompile Include="..\..\sources\libY\Ybase.c" />
     <ClCompile Include="..\..\sources\libY\Yevent.c" />
     <ClCompile Include="..\..\sources\libY\Ylist.c" />
     <ClCompile Include="..\..\sources\libY\Ylock.c" />
     <ClCompile Include="..\..\sources\libY\Ylog\Yappender_conosle.c" />
     <ClCompile Include="..\..\sources\libY\Ylog\Ylog.c" />
     <ClCompile Include="..\..\sources\libY\Ymap.c" />
+    <ClCompile Include="..\..\sources\libY\Ymodular\Yfactory.c" />
+    <ClCompile Include="..\..\sources\libY\Ymodular\Ymodule.c" />
     <ClCompile Include="..\..\sources\libY\Ypool.c" />
     <ClCompile Include="..\..\sources\libY\Yqueue.c" />
     <ClCompile Include="..\..\sources\libY\Ystring.c" />
@@ -165,15 +166,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\sources\libY\libY.h" />
-    <ClInclude Include="..\..\sources\libY\Ybase.h" />
     <ClInclude Include="..\..\sources\libY\Yerrno.h" />
     <ClInclude Include="..\..\sources\libY\Yevent.h" />
     <ClInclude Include="..\..\sources\libY\Ylist.h" />
     <ClInclude Include="..\..\sources\libY\Ylock.h" />
     <ClInclude Include="..\..\sources\libY\Ylog\Yappender.h" />
     <ClInclude Include="..\..\sources\libY\Ylog\Ylog.h" />
-    <ClInclude Include="..\..\sources\libY\Ylog\Ylogbase.h" />
     <ClInclude Include="..\..\sources\libY\Ymap.h" />
+    <ClInclude Include="..\..\sources\libY\Ymodular\Yfactory.h" />
+    <ClInclude Include="..\..\sources\libY\Ymodular\Ymodule.h" />
     <ClInclude Include="..\..\sources\libY\Ypool.h" />
     <ClInclude Include="..\..\sources\libY\Yqueue.h" />
     <ClInclude Include="..\..\sources\libY\Ysem.h" />

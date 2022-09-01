@@ -1,7 +1,7 @@
 ﻿#ifndef __YSTRING_H__
 #define __YSTRING_H__
 
-#include "Ybase.h"
+#include "Y.h"
 
 #ifdef __cplusplus
 extern "C" {

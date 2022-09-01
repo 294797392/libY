@@ -9,7 +9,7 @@
 #ifndef __YTHREAD_H__
 #define __YTHREAD_H__
 
-#include "Ybase.h"
+#include "Y.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -8,7 +8,7 @@
 #include <pthread.h>
 #endif
 
-#include "Ybase.h"
+#include "Y.h"
 #include "Ythread.h"
 
 struct Ythread_s

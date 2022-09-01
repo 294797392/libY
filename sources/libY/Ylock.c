@@ -3,7 +3,6 @@
 #elif defined(Y_UNIX)
 #endif
 
-#include "Ybase.h"
 #include "Ylock.h"
 
 // struct Ylock_s

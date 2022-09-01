@@ -12,7 +12,7 @@
 #ifndef __YMAP_H__
 #define __YMAP_H__
 
-#include "Ybase.h"
+#include "Y.h"
 
 #ifdef __cplusplus
 extern "C" {

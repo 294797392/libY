@@ -9,12 +9,11 @@
 #elif (defined(Y_UNIX))
 #endif
 
+#include "Y.h"
 #include "Yerrno.h"
 #include "Ylog.h"
-#include "Ybase.h"
 #include "Yqueue.h"
 #include "Ythread.h"
-#include "Ylogbase.h"
 #include "Yappender.h"
 
 static Yqueue *consume_log_queue = NULL;
@@ -34,7 +33,7 @@ static void consume_log_queue_callback(void *userdata, void *element)
 	}
 }
 
-int Y_log_global_init()
+int Y_log_init()
 {
 	// 初始化appender
 	num_appender = 1;

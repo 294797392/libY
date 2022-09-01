@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "Ylogbase.h"
+#include "Ylog.h"
 
 typedef struct Yappender_s
 {

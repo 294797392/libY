@@ -10,7 +10,7 @@
 #ifndef __YPOOL_H__
 #define __YPOOL_H__
 
-#include "Ybase.h"
+#include "Y.h"
 
 typedef struct Yobject_s Yobject;
 typedef struct Ypool_s Ypool;

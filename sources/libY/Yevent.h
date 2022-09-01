@@ -9,7 +9,7 @@
 #ifndef __YEVENT_H__
 #define __YEVENT_H__
 
-#include "Ybase.h"
+#include "Y.h"
 
 #ifdef __cplusplus
 extern "C" {
