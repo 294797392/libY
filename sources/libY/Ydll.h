@@ -24,7 +24,7 @@ extern "C" {
     /// </summary>
     /// <param name="dll_path">要加载的dll的路径</param>
     /// <returns>dll实例，如果加载失败则返回空</returns>
-    YAPI int Y_load_dll(const YCHAR *dll_path);
+    YAPI int Y_load_dll(const YCHAR *dll_path, Ydll **outdll);
 
     /// <summary>
     /// 释放一个加载的dll
@@ -32,6 +32,8 @@ extern "C" {
     /// <param name="dll"></param>
     /// <returns></returns>
     YAPI void Y_unload_dll(Ydll *dll);
+
+    YAPI void *Y_dll_symbol(Ydll *dll, const char *symbol);
 
 #ifdef __cplusplus
 }

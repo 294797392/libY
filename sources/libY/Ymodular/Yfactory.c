@@ -3,9 +3,17 @@
 #include <string.h>
 
 #include "Y.h"
+#include "Ylog.h"
 #include "Ylist.h"
 #include "Ythread.h"
 #include "Yfactory.h"
+
+typedef struct Ymodule_runtime_s
+{
+	// Ä£¿é¶¨Òå
+	Ymodule_manifest *manifest;
+	Ymodule *module;
+}Ymodule_runtime;
 
 struct Yfactory_s
 {
@@ -24,6 +32,18 @@ static void foreach_module_manifest(Ylist *yl, void *item, void *userdata)
 	Yfactory *factory = (Yfactory *)userdata;
 	Ymodule_manifest *manifest = (Ymodule_manifest *)item;
 
+	Ymodule_runtime *mrt = (Ymodule_runtime *)Ycalloc(1, sizeof(Ymodule_runtime));
+	if(mrt->manifest->load_type == YMOD_LOAD_TYPE_EXTERNAL)
+	{
+
+	}
+	else if(mrt->manifest->load_type == YMOD_LOAD_TYPE_INNER)
+	{
+	}
+	else
+	{
+		return;
+	}
 }
 
 static void initial_thread_entry(void *userdata)

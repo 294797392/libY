@@ -123,7 +123,12 @@ void Ystr_split_free(char **tokens, size_t num_tokens)
 }
 
 
-YCHAR *Ystr_newcopy(YCHAR *string)
+YCHAR *Ystr_copynew(YCHAR *string)
+{
+
+}
+
+int Ystrcmp(YCHAR *str1, YCHAR *str2)
 {
 
 }

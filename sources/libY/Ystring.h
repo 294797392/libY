@@ -72,8 +72,8 @@ extern "C" {
      * 返回：
      * 新分配的字符串内存
      */
-    YAPI YCHAR *Ystr_newcopy(YCHAR *string);
-
+    YAPI YCHAR *Ystr_copynew(YCHAR *string);
+    YAPI int Ystrcmp(YCHAR *str1, YCHAR *str2);
 
 #ifdef __cplusplus
 }
