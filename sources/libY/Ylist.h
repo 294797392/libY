@@ -20,6 +20,8 @@ extern "C" {
 
 	typedef void (*Ylist_foreach_func)(Ylist *yl, void *item, void *userdata);
 
+    typedef int (*Ylist_query_func)(Ylist *yl, void *item, void *data, void *userdata);
+
     YAPI Ylist *Y_create_list();
 
     YAPI Ylist *Y_create_list2(Ylist_free_func freefunc);
@@ -123,6 +125,15 @@ extern "C" {
      * @free：如果free == 1，并且你指定了freefunc，那么该函数会帮你free掉item
      */
     YAPI void Y_list_removeat(Ylist *yl, int at, int free);
+
+    /*
+     * 描述：
+     * 根据条件查询一个元素
+     *
+     * 参数：
+     * @yl：要移除元素的集合
+     */
+    YAPI void *Y_list_query(Ylist *yl, Ylist_query_func queryfunc, void *data, void *userdata);
 
 #ifdef __cplusplus
 }

@@ -50,7 +50,7 @@ int Y_log_init()
 	consume_log_queue = Y_create_queue(NULL, sizeof(Ymsg));
 	Y_queue_start(consume_log_queue, 1, consume_log_queue_callback);
 
-	return YERR_OK;
+	return YERR_SUCCESS;
 }
 
 void Y_log_write(const YCHAR *category, Ylog_level level, int line, const YCHAR *msg, ...)

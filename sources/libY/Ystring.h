@@ -61,6 +61,20 @@ extern "C" {
      */
     YAPI void Ystr_split_free(char **tokens, size_t num_tokens);
 
+
+    /*
+     * 描述：
+     * 重新分配内存并把string拷贝到新的内存并返回
+     *
+     * 参数：
+     * @string：要拷贝的字符串
+     * 
+     * 返回：
+     * 新分配的字符串内存
+     */
+    YAPI YCHAR *Ystr_newcopy(YCHAR *string);
+
+
 #ifdef __cplusplus
 }
 #endif

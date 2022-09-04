@@ -24,6 +24,7 @@
       <Filter>Ymodular</Filter>
     </ClCompile>
     <ClCompile Include="..\..\sources\libY\Y.c" />
+    <ClCompile Include="..\..\sources\libY\Ydll.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\sources\libY\Yerrno.h" />
@@ -51,6 +52,7 @@
       <Filter>Ymodular</Filter>
     </ClInclude>
     <ClInclude Include="..\..\sources\libY\Y.h" />
+    <ClInclude Include="..\..\sources\libY\Ydll.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Ylog">

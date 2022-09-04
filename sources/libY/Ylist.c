@@ -74,7 +74,7 @@ static void ensure_capacity(Ylist *yl, int count)
 
 Ylist *Y_create_list()
 {
-	Ylist *yl = (Ylist *)calloc(1, sizeof(Ylist));
+	Ylist *yl = (Ylist *)Ycalloc(1, sizeof(Ylist));
 	return yl;
 }
 
@@ -189,4 +189,17 @@ void Y_list_removeat(Ylist *yl, int at, int free)
 
 	move_left(yl, at);
 	yl->length--;
+}
+
+void *Y_list_query(Ylist *yl, Ylist_query_func queryfunc, void *data, void *userdata)
+{
+	for(int i = 0; i < yl->length; i++)
+	{
+		if(queryfunc(yl, yl->array[i], data, userdata))
+		{
+			return yl->array[i];
+		}
+	}
+
+	return NULL;
 }
