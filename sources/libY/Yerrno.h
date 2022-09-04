@@ -3,5 +3,6 @@
 
 #define YERR_OK                             0
 #define YERR_FILE_NOT_FOUND                 1
+#define YERR_FAILED							2
 
 #endif

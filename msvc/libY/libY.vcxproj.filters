@@ -23,6 +23,7 @@
     <ClCompile Include="..\..\sources\libY\Ymodular\Ymodule.c">
       <Filter>Ymodular</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\sources\libY\Y.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\sources\libY\Yerrno.h" />
@@ -49,6 +50,7 @@
     <ClInclude Include="..\..\sources\libY\Ymodular\Ymodule.h">
       <Filter>Ymodular</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\sources\libY\Y.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Ylog">

@@ -11,6 +11,22 @@
 
 #include "Y.h"
 
+void *Ycalloc(size_t count, size_t size)
+{
+	void *mem = calloc(count, size);
+	if(mem == NULL)
+	{
+		// 这里会直接退出进程，并在终端打印这条消息
+		perror("mem cannot alloc\n");
+	}
+	return mem;
+}
+
+void Yfree(void *mem)
+{
+	free(mem);
+}
+
 void Ysleep(int mseconds)
 {
 	#if (defined(Y_WIN32))

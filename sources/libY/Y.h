@@ -9,13 +9,13 @@
 
 // 定义导出和导入符号
 // 注意，如果是链接静态库，那么不需要__declspec(dllimport)
-#if (defined(Y_ENV_WIN32))
+#if (defined(Y_WIN32))
     #ifdef Y_EXPORT
         #define YAPI __declspec(dllexport)
     #else
         #define YAPI __declspec(dllimport)
     #endif
-#elif (defined(Y_ENV_MINGW))
+#elif (defined(Y_WIN32))
     #ifdef Y_EXPORT
         #define YAPI __declspec(dllexport)
     #else
@@ -24,9 +24,6 @@
 #else
     #define YAPI
 #endif
-
-// 起个别名而已
-#define Y_API YAPI
 
 // 在unix和win32平台兼容多字节字符
 // YTEXT宏表示让编译器把YTEXT里的字符当成多字节字符处理，也就是一个字符可能需要2-4个字节去存储
@@ -40,6 +37,11 @@
 // #else
 // #define YTEXT(quote)        quote
 // #endif
+
+#define YSTRING(string)
+
+// 是否使用unicode字符
+#define YUNICODE
 
 #define YTEXT
 typedef char YCHAR;
@@ -56,6 +58,10 @@ extern "C" {
      * @mseconds：要睡眠的毫秒数
      */
     YAPI void Ysleep(int mseconds);
+
+
+    YAPI void *Ycalloc(size_t count, size_t size);
+    YAPI void Yfree(void *mem);
 
 #ifdef UNIX
 

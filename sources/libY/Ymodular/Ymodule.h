@@ -16,6 +16,33 @@
 extern "C" {
 #endif
 
+#define DEFAULT_STRING_SIZE                 2048
+
+    typedef enum
+    {
+        YMOD_FLAGS_NONE,
+        YMOD_FLAGS_DISABLED
+    }Ymodule_flags;
+
+    typedef enum
+    {
+        YMOD_STAT_UN_INITIALIZED,
+        YMOD_STAT_INITIALIZED,
+        YMOD_STAT_INIT_FAILED,
+        YMOD_STAT_INITIALIZING,
+        YMOD_STAT_INIT_EXCEPTION
+    }Ymodule_status;
+
+    typedef struct Ymodule_manifest_s
+    {
+        char *id;
+        char *description;
+        char *lib_path;
+
+        int flags;
+
+    }Ymodule_manifest;
+
     // Ä£¿é¶ÔÏó
     typedef struct Ymodule_s Ymodule;
 
