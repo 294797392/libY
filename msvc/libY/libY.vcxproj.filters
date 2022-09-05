@@ -25,6 +25,12 @@
     </ClCompile>
     <ClCompile Include="..\..\sources\libY\Y.c" />
     <ClCompile Include="..\..\sources\libY\Ydll.c" />
+    <ClCompile Include="..\..\sources\libY\external\cJSON.c">
+      <Filter>external</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sources\libY\external\getopt.c">
+      <Filter>external</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\sources\libY\Yerrno.h" />
@@ -53,6 +59,12 @@
     </ClInclude>
     <ClInclude Include="..\..\sources\libY\Y.h" />
     <ClInclude Include="..\..\sources\libY\Ydll.h" />
+    <ClInclude Include="..\..\sources\libY\external\cJSON.h">
+      <Filter>external</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\sources\libY\external\getopt.h">
+      <Filter>external</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Ylog">
@@ -60,6 +72,9 @@
     </Filter>
     <Filter Include="Ymodular">
       <UniqueIdentifier>{a330aa74-7fab-47fe-a586-de80ab7d1b77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="external">
+      <UniqueIdentifier>{7dd504af-6e82-4afb-bced-f346a5df290e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

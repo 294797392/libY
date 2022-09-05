@@ -18,6 +18,9 @@ extern "C" {
 
 #define DEFAULT_STRING_SIZE                 2048
 
+	typedef int(*Ymodule_initialize_entry)();
+	typedef void(*Ymodule_release_entry)();
+
 	// 模块的选项
 	typedef enum {
 		YMOD_FLAGS_NONE,
@@ -33,18 +36,15 @@ extern "C" {
 		YMOD_STAT_INIT_EXCEPTION
 	}Ymodule_status;
 
-	// 模块加载方式
-	typedef enum {
-		YMOD_LOAD_TYPE_INNER,                   // 模块就在进程内部
-		YMOD_LOAD_TYPE_EXTERNAL                 // 从外部dll里加载一个模块
-	}Ymodule_load_type;
-
 	typedef struct Ymodule_manifest_s {
 		char *id;
-		char *description;
+		char *name;
+		char *desc;
+		char *author;
 		char *lib_path;
 		int flags;
-		int load_type;
+		char *init_entry;					// 入口点函数名
+		char *release_entry;				// 释放函数名
 	}Ymodule_manifest;
 
 	// 模块对象
@@ -52,23 +52,14 @@ extern "C" {
 		YCHAR *id;
 		YCHAR *name;
 		YCHAR *desc;
-
+		Ymodule_manifest *manifest;
 		// 模块的输入参数
 		void *config;
-		int(*initialize)();
-		void(*release)();
+		Ymodule_initialize_entry initialize;
+		Ymodule_release_entry release;
+		// 模块内部使用的结构体
+		void *context;
 	} Ymodule;
-
-	YAPI Ymodule *Y_create_module();
-
-	/*
-	 * 描述：
-	 * 删除一个事件
-	 *
-	 * 参数：
-	 * @ye：要删除的事件
-	 */
-	YAPI void Y_delete_module(Ymodule *ym);
 
 #ifdef __cplusplus
 }

@@ -18,7 +18,7 @@ extern "C" {
 
     typedef void (*Ylist_free_func)(void *item);
 
-	typedef void (*Ylist_foreach_func)(Ylist *yl, void *item, void *userdata);
+	typedef int (*Ylist_foreach_func)(Ylist *yl, void *item, void *userdata);
 
     typedef int (*Ylist_query_func)(Ylist *yl, void *item, void *data, void *userdata);
 
@@ -38,14 +38,16 @@ extern "C" {
 
     /*
      * 描述：
-     * 往集合里插入一个元素
-     * 如果集合的当前空间不够存储新的元素，那么会自动扩充空间，新扩充的空间的大小是当前大小的两倍
+     * 对集合做foreach遍历操作
      * 
      * 参数：
      * @yl：要操作的集合
-	 * @item：要插入的元素
+	 * @ff：遍历回调函数，通过返回值来指定是否继续遍历
+     * 
+     * 返回：
+     * 最后一次遍历的返回值
      */
-    YAPI void Y_list_foreach(Ylist *yl, Ylist_foreach_func ff, void *userdata);
+    YAPI int Y_list_foreach(Ylist *yl, Ylist_foreach_func ff, void *userdata);
 
     /*
      * 描述：

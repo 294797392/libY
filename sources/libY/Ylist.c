@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "Ylog.h"
+#include "Yerrno.h"
 #include "Ylist.h"
 
 #define DEFAULT_CAPACITY        512
@@ -24,7 +25,7 @@ struct Ylist_s
 // 把元素从从start_index的地方向后移动一个元素
 static void move_right(Ylist *yl, int start_index)
 {
-	for (int i = yl->length; i > start_index; i--)
+	for(int i = yl->length; i > start_index; i--)
 	{
 		yl->array[i] = yl->array[i - 1];
 	}
@@ -33,7 +34,7 @@ static void move_right(Ylist *yl, int start_index)
 // 把元素从从start_index的地方向前移动一个元素
 static void move_left(Ylist *yl, int start_index)
 {
-	for (int i = start_index; i < yl->length; i++)
+	for(int i = start_index; i < yl->length; i++)
 	{
 		yl->array[i - 1] = yl->array[i];
 	}
@@ -46,12 +47,12 @@ static void foreach_free(Ylist *yl, void *item, void *userdata)
 
 static void ensure_capacity(Ylist *yl, int count)
 {
-	if (yl->capacity == 0)
+	if(yl->capacity == 0)
 	{
 		yl->capacity = DEFAULT_CAPACITY;
 		yl->array = calloc(yl->capacity, sizeof(void *));
 	}
-	else if (yl->capacity < count)
+	else if(yl->capacity < count)
 	{
 		// 要扩充的元素数量
 		int new_capacity = yl->capacity * 2;
@@ -87,7 +88,7 @@ Ylist *Y_create_list2(Ylist_free_func freefunc)
 
 void Y_delete_list(Ylist *yl)
 {
-	if (yl->array != NULL)
+	if(yl->array != NULL)
 	{
 		Y_list_clear(yl);
 		free(yl->array);
@@ -95,12 +96,18 @@ void Y_delete_list(Ylist *yl)
 	free(yl);
 }
 
-void Y_list_foreach(Ylist *yl, Ylist_foreach_func ff, void *userdata)
+int Y_list_foreach(Ylist *yl, Ylist_foreach_func ff, void *userdata)
 {
-	for (int i = 0; i < yl->length; i++)
+	for(int i = 0; i < yl->length; i++)
 	{
-		ff(yl, yl->array[i], userdata);
+		int rc = ff(yl, yl->array[i], userdata);
+		if(rc != YERR_SUCCESS)
+		{
+			return rc;
+		}
 	}
+
+	return YERR_SUCCESS;
 }
 
 void Y_list_add(Ylist *yl, void *item)
@@ -112,7 +119,7 @@ void Y_list_add(Ylist *yl, void *item)
 
 void Y_list_clear(Ylist *yl)
 {
-	if (yl->freefunc != NULL && yl->length > 0)
+	if(yl->freefunc != NULL && yl->length > 0)
 	{
 		Y_list_foreach(yl, foreach_free, NULL);
 		memset(yl->array, 0, sizeof(void *) * yl->length);
@@ -127,14 +134,14 @@ int Y_list_count(Ylist *yl)
 
 int Y_list_contains(Ylist *yl, void *item)
 {
-	if (yl->length == 0)
+	if(yl->length == 0)
 	{
 		return -1;
 	}
 
-	for (int i = 0; i < yl->length; i++)
+	for(int i = 0; i < yl->length; i++)
 	{
-		if (yl->array[i] == item)
+		if(yl->array[i] == item)
 		{
 			return i;
 		}
@@ -146,7 +153,7 @@ int Y_list_contains(Ylist *yl, void *item)
 void Y_list_insert(Ylist *yl, int index, void *item)
 {
 	// 不能向末尾插入元素
-	if (index > yl->length)
+	if(index > yl->length)
 	{
 		YLOGE(YTEXT("insertions at the end are legal"));
 		return;
@@ -162,7 +169,7 @@ void Y_list_insert(Ylist *yl, int index, void *item)
 void Y_list_remove(Ylist *yl, void *item, int free)
 {
 	int index = Y_list_contains(yl, item);
-	if (index < 0)
+	if(index < 0)
 	{
 		// 元素不存在
 		YLOGE(YTEXT("item not found"));
@@ -174,7 +181,7 @@ void Y_list_remove(Ylist *yl, void *item, int free)
 
 void Y_list_removeat(Ylist *yl, int at, int free)
 {
-	if (at < 0 || at > yl->length)
+	if(at < 0 || at > yl->length)
 	{
 		YLOGE(YTEXT("index outof range"));
 		return;
@@ -182,7 +189,7 @@ void Y_list_removeat(Ylist *yl, int at, int free)
 
 	void *item = yl->array[at];
 
-	if (free == 1 && yl->freefunc != NULL)
+	if(free == 1 && yl->freefunc != NULL)
 	{
 		yl->freefunc(item);
 	}

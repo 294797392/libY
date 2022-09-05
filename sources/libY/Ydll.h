@@ -33,7 +33,7 @@ extern "C" {
     /// <returns></returns>
     YAPI void Y_unload_dll(Ydll *dll);
 
-    YAPI void *Y_dll_symbol(Ydll *dll, const char *symbol);
+    YAPI void *Y_load_symbol(Ydll *dll, const char *symbol);
 
 #ifdef __cplusplus
 }

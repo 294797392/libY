@@ -90,7 +90,7 @@ void Y_unload_dll(Ydll *dll)
 	Y_list_remove(dllmgr->dlllist, dll, 0);
 }
 
-void *Y_dll_symbol(Ydll *dll, const char *symbol)
+void *Y_load_symbol(Ydll *dll, const char *symbol)
 {
 #if (defined(Y_WIN32))
 	return GetProcAddress(dll->hmodule, (LPCSTR)symbol);
