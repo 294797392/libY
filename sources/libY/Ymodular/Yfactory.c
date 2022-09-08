@@ -1,12 +1,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <wchar.h>
 
 #include "Y.h"
 #include "Ylog.h"
 #include "Ydll.h"
 #include "Ylist.h"
 #include "Yerrno.h"
+#include "Yfile.h"
 #include "Ythread.h"
 #include "Yfactory.h"
 
@@ -38,7 +40,9 @@ struct Yfactory_s
 };
 
 
-
+static int parse_config(const char *config, Ymodule_manifest **manifests)
+{
+}
 
 static void release_module_runtime(Ymodule_runtime *runtime)
 {
@@ -153,6 +157,8 @@ static void initial_thread_entry(void *userdata)
 
 
 
+
+
 Yfactory *Y_create_factory(Yfactory_options *opts)
 {
 	Yfactory *factory = (Yfactory *)Ycalloc(1, sizeof(Yfactory));
@@ -179,7 +185,7 @@ int Y_setup_factory_async(Yfactory *factory, Ylist *manifests)
 
 int Y_setup_factory_async2(Yfactory *factory, const YCHAR *config_file)
 {
-
+	FILE *file = Y_file_open(config_file, "r");
 }
 
 void Y_delete_factory(Yfactory *yf)

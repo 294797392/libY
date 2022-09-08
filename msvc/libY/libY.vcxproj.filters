@@ -31,6 +31,7 @@
     <ClCompile Include="..\..\sources\libY\external\getopt.c">
       <Filter>external</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\sources\libY\Yfile.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\sources\libY\Yerrno.h" />
@@ -65,6 +66,7 @@
     <ClInclude Include="..\..\sources\libY\external\getopt.h">
       <Filter>external</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\sources\libY\Yfile.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Ylog">
