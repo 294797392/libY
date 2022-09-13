@@ -25,7 +25,9 @@ extern "C" {
 
     typedef struct Yfactory_options_s
     {
+        // 初始化完成的回调
         Yfactory_initialized on_initialized;
+        // 模块状态发生改变的回调
         Yfactory_module_status_changed on_module_status_changed;
 
         // 当某个模块初始化失败的时候，自动重试初始化的间隔时间
