@@ -185,7 +185,7 @@ int Y_setup_factory_async(Yfactory *factory, Ylist *manifests)
 
 int Y_setup_factory_async2(Yfactory *factory, const YCHAR *config_file)
 {
-	FILE *file = Y_file_open(config_file, "r");
+	
 }
 
 void Y_delete_factory(Yfactory *yf)

@@ -13,12 +13,20 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 
 #include "Y.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+	// 存储文件信息
+	typedef struct Yfstat_s
+	{
+		int exist;
+		uint64_t length;
+	}Yfstat;
 
 	/*
 	 * 描述：
@@ -30,7 +38,7 @@ extern "C" {
 	 * 返回值：
 	 * 文件大小，以字节为单位
 	 */
-	YAPI size_t Y_file_size(const YCHAR *file_path);
+	YAPI int Y_file_stat(const YCHAR *file_path, Yfstat *stat);
 
 
     /*
@@ -44,7 +52,7 @@ extern "C" {
 	 * 返回值：
 	 * 文件内容的长度
 	 */
-	YAPI int Y_file_readall(const YCHAR *file_path, YCHAR **content);
+	YAPI int Y_file_readall(const YCHAR *file_path, char **content, uint64_t *size);
 
 	/*
 	 * 描述：
@@ -53,7 +61,7 @@ extern "C" {
 	 * 参数：
 	 * @content：要释放的内存空间
 	 */
-	YAPI void Y_file_free(const YCHAR *content);
+	YAPI void Y_file_free(const char *content);
 
 #ifdef __cplusplus
 }

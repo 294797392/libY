@@ -38,13 +38,13 @@
 // #define YTEXT(quote)        quote
 // #endif
 
-#define YSTRING(string)
-
-// 是否使用unicode字符
-#define YUNICODE
-
+#ifdef UNICODE
+#define YTEXT
+typedef wchar_t YCHAR;
+#else
 #define YTEXT
 typedef char YCHAR;
+#endif
 
 #ifdef __cplusplus
 extern "C" {

@@ -82,7 +82,7 @@ static void demo_Ypool()
 
 	Yobject *objs[10] = { NULL };
 
-	// 先创建10个对象
+	// ???10???
 	for (size_t i = 0; i < 10; i++)
 	{
 		Yobject *yo = Y_pool_obtain(yp);
@@ -150,6 +150,16 @@ int main(int argc, char **argv)
 	// 	printf("%s\n", lines[i]);
 	// 	fflush(stdout);
 	// }
+
+	char buf[1024] = { '\0' };
+	wchar_t *t = L"你好";
+	//WideCharToMultiByte(CP_UTF8, NULL, t, -1, buf, sizeof(buf), '\0', NULL);
+
+	// 指定转换后的多字节序列是GB2312编码的字节序列
+	// GB2312字节序列和终端使用的字节序列相同，所以可以显示正确的中文
+	WideCharToMultiByte(936, NULL, t, -1, buf, sizeof(buf), '\0', NULL);
+
+	printf("%s\n", buf);
 
 	while (1)
 	{
