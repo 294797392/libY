@@ -14,17 +14,27 @@
 #include "Yfactory.h"
 #include "cJSON.h"
 
-typedef struct Ymodule_runtime_s
+struct Ymodule_s
 {
+	// 模块的输入参数
+	cJSON *config;
+
+	// 模块状态
+	Ymodule_status status;
+
+	// 回调函数
+	Ymodule_initialize_entry initialize;
+	Ymodule_release_entry release;
+	
+	// 模块内部使用的结构体
+	void *context;
+
 	// 模块定义
 	Ymodule_manifest *manifest;
 
-	// 模块实例
-	Ymodule *module;
-
 	// 模块所在的dll
 	Ydll *dll;
-}Ymodule_runtime;
+};
 
 struct Yfactory_s
 {
@@ -96,21 +106,15 @@ static int parse_config(const YBYTE *config_bytes, Ylist **list)
 	return YERR_SUCCESS;
 }
 
-static void release_module_runtime(Ymodule_runtime *runtime)
+static void release_module(Ymodule *module)
 {
-	if(runtime->dll != NULL)
+	if(module != NULL)
 	{
-		Y_unload_dll(runtime->dll);
-		runtime->dll = NULL;
-	}
+		Y_unload_dll(module->dll);
+		module->dll = NULL;
 
-	if(runtime->module != NULL)
-	{
-		Yfree(runtime->module);
-		runtime->module = NULL;
+		Yfree(module);
 	}
-
-	Yfree(runtime);
 }
 
 /// <summary>
@@ -123,32 +127,32 @@ static int foreach_create_module_from_manifest(Ylist *manifests, void *item, voi
 {
 	Yfactory *factory = (Yfactory *)userdata;
 	Ymodule_manifest *manifest = (Ymodule_manifest *)item;
-	Ymodule_runtime *mrt = (Ymodule_runtime *)Ycalloc(1, sizeof(Ymodule_runtime));
+	
+	// 创建实例
+	Ymodule *module = (Ymodule *)Ycalloc(1, sizeof(Ymodule));
 
 	// 首先加载对应的dll
-	int code = Y_load_dll(mrt->manifest->lib_path, &mrt->dll);
+	int code = Y_load_dll(module->manifest->lib_path, &module->dll);
 	if(code != YERR_SUCCESS)
 	{
-		release_module_runtime(mrt);
+		release_module(module);
 		YLOGE(YTEXT("create module instance failed, load dll failed, %d"), code);
 		return YERR_FAILED;
 	}
 
-	// 创建实例
-	mrt->module = (Ymodule *)Ycalloc(1, sizeof(Ymodule));
-	mrt->module->manifest = manifest;
+	module->manifest = manifest;
 
 	// 然后获取dll里的函数
-	if((mrt->module->initialize = (Ymodule_initialize_entry)Y_load_symbol(mrt->dll, manifest->init_entry)) == NULL)
+	if((module->initialize = (Ymodule_initialize_entry)Y_load_symbol(module->dll, manifest->init_entry)) == NULL)
 	{
-		release_module_runtime(mrt);
+		release_module(module);
 		YLOGE(YTEXT("load initialize function failed, entry = %s"), manifest->init_entry);
 		return YERR_FAILED;
 	}
 
-	if((mrt->module->release = (Ymodule_release_entry)Y_load_symbol(mrt->dll, manifest->release_entry)) == NULL)
+	if((module->release = (Ymodule_release_entry)Y_load_symbol(module->dll, manifest->release_entry)) == NULL)
 	{
-		release_module_runtime(mrt);
+		release_module(module);
 		YLOGE(YTEXT("load release function failed, entry = %s"), manifest->release_entry);
 		return YERR_FAILED;
 	}
@@ -161,13 +165,12 @@ static int foreach_init_module(Ylist *runtimes, void *item, void *userdata)
 	Yfactory *factory = (Yfactory *)userdata;
 
 	Yfactory_options *opts = factory->opts;
-	Ymodule_runtime *mrt = (Ymodule_runtime *)item;
-	Ymodule_manifest *manifest = mrt->manifest;
-	Ymodule *module = mrt->module;
+	Ymodule *module = (Ymodule *)item;
+	Ymodule_manifest *manifest = module->manifest;
 
 	while(1)
 	{
-		int code = module->initialize();
+		int code = module->initialize(module);
 		if(code != YERR_SUCCESS)
 		{
 			YLOGE(YTEXT("initialize module failed, %s, code = %d"), manifest->name, code);
@@ -267,3 +270,48 @@ int Y_setup_factory_async2(Yfactory *factory, const YCHAR *config_file)
 void Y_delete_factory(Yfactory *yf)
 {
 }
+
+
+
+void *Y_module_context(Ymodule *module)
+{
+	return module->context;
+}
+
+int Y_module_config_get_int(Ymodule *module, const char *key, int defval)
+{
+	cJSON *json = cJSON_GetObjectItem(module->config, key);
+	if(json == NULL)
+	{
+		return defval;
+	}
+
+	return json->valueint;
+}
+
+void Y_module_config_get_string(Ymodule *module, const char *key, char *buf, size_t bufsize, const char *defval)
+{
+	cJSON *json = cJSON_GetObjectItem(module->config, key);
+	if(json == NULL)
+	{
+		strncpy(buf, defval, bufsize);
+		return;
+	}
+
+	strncpy(buf, json->valuestring, bufsize);
+}
+
+double Y_module_config_get_double(Ymodule *module, const char *key, double defval)
+{
+	cJSON *json = cJSON_GetObjectItem(module->config, key);
+	if(json == NULL)
+	{
+		return defval;
+	}
+
+	return json->valuedouble;
+}
+
+
+
+

@@ -1,0 +1,14 @@
+{
+    "modules": [
+        {
+            "id": "",
+            "name": "",
+            "desc": "",
+            "lib_path": "",
+            "init_entry": "",
+            "release_entry": "",
+            "flag": 0,
+            "input": {}
+        }
+    ]
+}

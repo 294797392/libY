@@ -161,8 +161,8 @@
     <ClCompile Include="..\..\sources\libY\Ylog\Yappender_conosle.c" />
     <ClCompile Include="..\..\sources\libY\Ylog\Ylog.c" />
     <ClCompile Include="..\..\sources\libY\Ymap.c" />
+    <ClCompile Include="..\..\sources\libY\Ymodular\demo_module.c" />
     <ClCompile Include="..\..\sources\libY\Ymodular\Yfactory.c" />
-    <ClCompile Include="..\..\sources\libY\Ymodular\Ymodule.c" />
     <ClCompile Include="..\..\sources\libY\Ypool.c" />
     <ClCompile Include="..\..\sources\libY\Yqueue.c" />
     <ClCompile Include="..\..\sources\libY\Ystring.c" />
@@ -184,7 +184,6 @@
     <ClInclude Include="..\..\sources\libY\Ylog\Ylog.h" />
     <ClInclude Include="..\..\sources\libY\Ymap.h" />
     <ClInclude Include="..\..\sources\libY\Ymodular\Yfactory.h" />
-    <ClInclude Include="..\..\sources\libY\Ymodular\Ymodule.h" />
     <ClInclude Include="..\..\sources\libY\Ypool.h" />
     <ClInclude Include="..\..\sources\libY\Yqueue.h" />
     <ClInclude Include="..\..\sources\libY\Ysem.h" />

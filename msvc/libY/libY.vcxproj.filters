@@ -20,9 +20,6 @@
     <ClCompile Include="..\..\sources\libY\Ymodular\Yfactory.c">
       <Filter>Ymodular</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\sources\libY\Ymodular\Ymodule.c">
-      <Filter>Ymodular</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\sources\libY\Y.c" />
     <ClCompile Include="..\..\sources\libY\Ydll.c" />
     <ClCompile Include="..\..\sources\libY\external\cJSON.c">
@@ -32,6 +29,9 @@
       <Filter>external</Filter>
     </ClCompile>
     <ClCompile Include="..\..\sources\libY\Yfile.c" />
+    <ClCompile Include="..\..\sources\libY\Ymodular\demo_module.c">
+      <Filter>Ymodular</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\sources\libY\Yerrno.h" />
@@ -53,9 +53,6 @@
     <ClInclude Include="..\..\sources\libY\Ysem.h" />
     <ClInclude Include="..\..\sources\libY\libY.h" />
     <ClInclude Include="..\..\sources\libY\Ymodular\Yfactory.h">
-      <Filter>Ymodular</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\sources\libY\Ymodular\Ymodule.h">
       <Filter>Ymodular</Filter>
     </ClInclude>
     <ClInclude Include="..\..\sources\libY\Y.h" />
