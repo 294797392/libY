@@ -41,18 +41,18 @@ extern "C" {
 	YAPI int Y_file_stat(const YCHAR *file_path, Yfstat *stat);
 
 
-    /*
+	/*
 	 * 描述：
-	 * 读取一个文件里的所有内容
+	 * 读取一个文件里的所有字节
 	 *
 	 * 参数：
 	 * @file_path：要读取的文件的完整路径
-	 * @content：保存文件内容
-	 * 
+	 * @bytes：字节缓冲区
+	 *
 	 * 返回值：
 	 * 文件内容的长度
 	 */
-	YAPI int Y_file_readall(const YCHAR *file_path, char **content, uint64_t *size);
+	YAPI int Y_file_readbytes(const YCHAR *file_path, YBYTE **bytes, uint64_t *size);
 
 	/*
 	 * 描述：
@@ -61,7 +61,7 @@ extern "C" {
 	 * 参数：
 	 * @content：要释放的内存空间
 	 */
-	YAPI void Y_file_free(const char *content);
+	YAPI void Y_file_free(char *content);
 
 #ifdef __cplusplus
 }

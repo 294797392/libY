@@ -10,13 +10,14 @@
 #ifndef __YMODULE_H__
 #define __YMODULE_H__
 
+#include "cJSON.h"
 #include "Y.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define DEFAULT_STRING_SIZE                 2048
+#define DEF_STR_LEN			64
 
 	typedef int(*Ymodule_initialize_entry)();
 	typedef void(*Ymodule_release_entry)();
@@ -37,14 +38,17 @@ extern "C" {
 	}Ymodule_status;
 
 	typedef struct Ymodule_manifest_s {
-		char *id;
-		char *name;
-		char *desc;
-		char *author;
-		char *lib_path;
+		YCHAR id[DEF_STR_LEN];
+		YCHAR name[DEF_STR_LEN];
+		YCHAR desc[DEF_STR_LEN];
+		YCHAR author[DEF_STR_LEN];
+		YCHAR lib_path[YMAX_PATH];
 		int flags;
+
 		char *init_entry;					// 入口点函数名
 		char *release_entry;				// 释放函数名
+
+		cJSON *input;
 	}Ymodule_manifest;
 
 	// 模块对象

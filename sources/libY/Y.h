@@ -7,6 +7,8 @@
 #include <unistd.h>
 #endif
 
+#define YMAX_PATH                    512
+
 // 定义导出和导入符号
 // 注意，如果是链接静态库，那么不需要__declspec(dllimport)
 #if (defined(Y_WIN32))
@@ -25,26 +27,16 @@
     #define YAPI
 #endif
 
-// 在unix和win32平台兼容多字节字符
-// YTEXT宏表示让编译器把YTEXT里的字符当成多字节字符处理，也就是一个字符可能需要2-4个字节去存储
-// 多字节字符可以存储汉字
-// #if (defined(Y_ENV_WIN32))
-// #define YTEXT(quote)		TEXT(quote)
-// #elif (defined(Y_ENV_MINGW))
-// #define YTEXT(quote)		L##quote
-// #elif (defined(Y_ENV_UNIX))
-// #define YTEXT(quote)        L##quote
-// #else
-// #define YTEXT(quote)        quote
-// #endif
-
 #ifdef UNICODE
-#define YTEXT
+#define YTEXT(quote) TEXT(quote)
 typedef wchar_t YCHAR;
 #else
-#define YTEXT
+#define YTEXT(quote)
 typedef char YCHAR;
 #endif
+
+// 表示一个字节
+typedef char YBYTE;
 
 #ifdef __cplusplus
 extern "C" {

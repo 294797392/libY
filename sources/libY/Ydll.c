@@ -2,6 +2,12 @@
 #include <stdio.h>
 #include <string.h>
 
+#if (defined(Y_WIN32))
+#include <Windows.h>
+#elif (defined(Y_UNIX))
+#include <unistd.h>
+#endif
+
 #include "Y.h"
 #include "Yerrno.h"
 #include "Ylist.h"
@@ -16,10 +22,10 @@ typedef struct Ydll_mgr_s
 struct Ydll_s
 {
 	// dll的完整路径
-	YCHAR *path;
+	YCHAR path[YMAX_PATH];
 
 #if (defined(Y_WIN32))
-	HMODULE *hmodule;
+	HMODULE hmodule;
 #elif (defined(Y_UNIX))
 #endif
 };
@@ -45,7 +51,7 @@ static int query_dll(Ylist *yl, void *item, void *data, void *userdata)
 
 
 
-int Y_load_dll(const YCHAR *dll_path, Ydll **outdll)
+int Y_load_dll(YCHAR *dll_path, Ydll **outdll)
 {
 	if(dllmgr == NULL)
 	{
@@ -70,9 +76,9 @@ int Y_load_dll(const YCHAR *dll_path, Ydll **outdll)
 	}
 
 	dll = (Ydll *)Ycalloc(1, sizeof(Ydll));
-	dll->path = (YCHAR *)Ystr_copynew(dll_path);
+	Ystrcpy(dll->path, dll_path);
 	dll->hmodule = lib;
-	
+
 	Y_list_add(dllmgr->dlllist, dll);
 
 	*outdll = dll;

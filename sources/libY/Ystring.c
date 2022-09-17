@@ -3,6 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include <fcntl.h>
+#include <wchar.h>
 #ifdef Y_UNIX
 #include <unistd.h>
 #endif
@@ -122,13 +123,20 @@ void Ystr_split_free(char **tokens, size_t num_tokens)
 	}
 }
 
-
-YCHAR *Ystr_copynew(YCHAR *string)
-{
-
-}
-
 int Ystrcmp(YCHAR *str1, YCHAR *str2)
 {
+#ifdef UNICODE
+	return wcsncmp(str1, str2, wcslen(str1));
+#else
+	return strncmp(str1, str2, strlen(str1));
+#endif
+}
 
+YCHAR *Ystrcpy(YCHAR *dest, YCHAR *source)
+{
+#ifdef UNICODE
+	return wcsncpy(dest, source, wcslen(dest));
+#else
+	return strncpy(dest, source, strlen(dest));
+#endif
 }

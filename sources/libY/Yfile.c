@@ -21,7 +21,7 @@ int Y_file_stat(const YCHAR *file_path, Yfstat *stat)
 	memset(&attr_data, 0, sizeof(WIN32_FILE_ATTRIBUTE_DATA));
 	GetFileAttributesEx(file_path, GetFileExInfoStandard, &attr_data);
 	stat->exist = (attr_data.dwFileAttributes & 0x10) == 0;
-	stat->length = ((int64_t)(attr_data.nFileSizeHigh << 32)) | (attr_data.nFileSizeLow & UINT_MAX);
+	stat->length = (stat->length | attr_data.nFileSizeHigh) << 32 | attr_data.nFileSizeLow;
 #elif (defined(Y_UNIX))
 	//stat s;
 //fstat()
@@ -30,7 +30,7 @@ int Y_file_stat(const YCHAR *file_path, Yfstat *stat)
 	return YERR_SUCCESS;
 }
 
-int Y_file_readall(const YCHAR *file_path, char **content, uint64_t *size)
+int Y_file_readbytes(const YCHAR *file_path, YBYTE **bytes, uint64_t *size)
 {
 	Yfstat stat;
 	int rc = Y_file_stat(file_path, &stat);
@@ -49,22 +49,26 @@ int Y_file_readall(const YCHAR *file_path, char **content, uint64_t *size)
 		return YERR_SUCCESS;
 	}
 
+#ifdef UNICODE
 	FILE *f = _wfopen(file_path, YTEXT("r"));
+#else
+	FILE *f = fopen(file_path, "r");
+#endif
 	if(f == NULL)
 	{
 		return YERR_FAILED;
 	}
-	char *buf = (char *)Ycalloc(stat.length, 1);
-	fread(buf, 1, stat.length, f);
+	char *buf = (char *)Ycalloc((size_t)stat.length, 1);
+	fread(buf, 1, (size_t)stat.length, f);
 	fclose(f);
 	
 	*size = stat.length;
-	*content = buf;
+	*bytes = buf;
 
 	return YERR_SUCCESS;
 }
 
-void Y_file_free(const char *content)
+void Y_file_free(char *content)
 {
 	Yfree(content);
 }

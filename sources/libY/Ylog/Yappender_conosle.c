@@ -33,8 +33,8 @@ static void Y_console_appender_close(void *ctx)
 static void Y_console_appender_write(void *ctx, const Ymsg *ymsg)
 {
 	Yconsole *console = (Yconsole *)ctx;
-	// fwprintf(stdout, ymsg->msg);
 	fprintf(stdout, "%s", ymsg->msg);
+
 #if (defined(Y_ENV_MINGW))
 	// mingw环境下不能每次都马上输出到控制台，这里每次都flush一下
 	fflush(stdout);

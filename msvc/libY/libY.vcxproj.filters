@@ -79,4 +79,7 @@
       <UniqueIdentifier>{7dd504af-6e82-4afb-bced-f346a5df290e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="..\..\sources\libY\modules.json" />
+  </ItemGroup>
 </Project>

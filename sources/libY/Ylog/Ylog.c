@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <wchar.h>
+#include <locale.h>
 
 #if (defined(Y_WIN32))
 #include <Windows.h>
@@ -26,7 +27,7 @@ static void consume_log_queue_callback(void *userdata, void *element)
 {
 	Ymsg *ymsg = (Ymsg *)element;
 
-	for (int i = 0; i < num_appender; i++)
+	for(int i = 0; i < num_appender; i++)
 	{
 		Yappender *appender = appenders[i];
 		appender->write(appender->context, ymsg);
@@ -40,7 +41,7 @@ int Y_log_init()
 	appenders[0] = &Yappender_console;
 
 	// 启动appender
-	for (int i = 0; i < num_appender; i++)
+	for(int i = 0; i < num_appender; i++)
 	{
 		Yappender *appender = appenders[i];
 		appender->context = appender->open("");
@@ -56,66 +57,40 @@ int Y_log_init()
 void Y_log_write(const YCHAR *category, Ylog_level level, int line, const YCHAR *msg, ...)
 {
 	// 格式化用户输入的日志
-	char message[MAX_MSG_SIZE] = { '\0' };
+	YCHAR message[MAX_MSG_SIZE1] = { '\0' };
 	va_list ap;
 	va_start(ap, msg);
-	vsnprintf(message, MAX_MSG_SIZE, msg, ap);
+#ifdef UNICODE
+	vswprintf(message, MAX_MSG_SIZE1, msg, ap);
+#else
+	vsnprintf(message, MAX_MSG_SIZE1, msg, ap);
+#endif
 	va_end(ap);
 
 	Ymsg *ymsg = (Ymsg *)Y_queue_prepare_enqueue(consume_log_queue);
 
 	// 格式化最终要输出的日志
-	// 注意宽字符串需要用%ls输出，输出单个宽字符使用%lc
+	const char *format = "[%s][%d]%s\r\n\0";
+#ifdef UNICODE
+	// 如果是Unicode字符把Unicode转成多字节字符输出
+	char *locale = setlocale(LC_ALL, NULL);
+	setlocale(LC_ALL, ".ACP");
+	
+	char mbsmsg[MAX_MSG_SIZE2] = { '\0' };
+	wcstombs(mbsmsg, message, sizeof(mbsmsg) - 1);
 
-	if (category == NULL)
-	{
-		const char *format = YTEXT("[%s][%d]%s\r\n\0");
-		snprintf(ymsg->msg, MAX_MSG_SIZE, format, YTEXT(__FILE__), line , message);
-	}
-	else
-	{
-		const char *format = YTEXT("[%s][%d]%s\r\n\0");
-		snprintf(ymsg->msg, MAX_MSG_SIZE, format, category, line, message);
-	}
+	char mbscate[1024] = { '\0' };
+	wcstombs(mbscate, category, sizeof(mbscate) - 1);
+	
+	setlocale(LC_ALL, locale);
+	snprintf(ymsg->msg, sizeof(ymsg->msg), format, mbscate, line, mbsmsg);
+#else
+	snprintf(ymsg->msg, sizeof(ymsg->msg), format, cateogrty, line, message);
+#endif
 
 	ymsg->level = level;
 
 	Y_queue_commit_enqueue(consume_log_queue);
 }
-
-// {
-// 	// 格式化用户输入的日志
-// 	wchar_t message[MAX_MSG_SIZE] = { '\0' };
-// 	va_list ap;
-// 	va_start(ap, msg);
-// 	vswprintf(message, MAX_MSG_SIZE, msg, ap);
-// 	va_end(ap);
-
-// 	Ymsg *ymsg = (Ymsg *)Y_queue_prepare_enqueue(consume_log_queue);
-
-// 	// 格式化最终要输出的日志
-// 	// 注意宽字符串需要用%ls输出，输出单个宽字符使用%lc
-
-// 	if (category == NULL)
-// 	{
-// #if (defined(Y_ENV_UNIX)) || (defined(Y_ENV_MINGW))
-// 		// mingw环境下没法把__FILE__预定义宏转成多字节字符，暂时先直接使用单字节字符输出
-// 		const wchar_t *format = YTEXT("[%s][%d]%ls\r\n\0");
-// 		swprintf(ymsg->msg, MAX_MSG_SIZE, format, __FILE__, line , message);
-// #else
-// 		const wchar_t *format = YTEXT("[%ls][%d]%ls\r\n\0");
-// 		swprintf(ymsg->msg, MAX_MSG_SIZE, format, YTEXT(__FILE__), line , message);
-// #endif
-// 	}
-// 	else
-// 	{
-// 		const wchar_t *format = YTEXT("[%ls][%d]%ls\r\n\0");
-// 		swprintf(ymsg->msg, MAX_MSG_SIZE, format, category, line, message);
-// 	}
-
-// 	ymsg->level = level;
-
-// 	Y_queue_commit_enqueue(consume_log_queue);
-// }
 
 

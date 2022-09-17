@@ -40,9 +40,10 @@ static void move_left(Ylist *yl, int start_index)
 	}
 }
 
-static void foreach_free(Ylist *yl, void *item, void *userdata)
+static int foreach_free(Ylist *yl, void *item, void *userdata)
 {
 	yl->freefunc(item);
+	return YERR_SUCCESS;
 }
 
 static void ensure_capacity(Ylist *yl, int count)

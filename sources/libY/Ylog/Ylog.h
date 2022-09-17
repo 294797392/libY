@@ -17,7 +17,8 @@
 
 #include "Y.h"
 
-#define MAX_MSG_SIZE        4096
+#define MAX_MSG_SIZE1        4096				// 字符个数，不管是宽字符还是多字节字符
+#define MAX_MSG_SIZE2        8192				// 以字节为长度的字符长度
 
  // 内部使用，调用者用不到这个枚举
 typedef enum Ylog_level_e
@@ -31,7 +32,7 @@ typedef enum Ylog_level_e
 typedef struct Ymsg_s
 {
 	Ylog_level level;
-	YCHAR msg[MAX_MSG_SIZE];
+	char msg[MAX_MSG_SIZE2];
 }Ymsg;
 
 #define YLOGD(...) Y_log_write(NULL, YLOG_LEVEL_DEBUG, __LINE__, __VA_ARGS__)

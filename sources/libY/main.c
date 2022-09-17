@@ -123,6 +123,8 @@ int main(int argc, char **argv)
 {
 	Y_log_init();
 
+	YLOGCD(YTEXT("main"), YTEXT("你好"));
+
 	//char perm[1024] = {'\0'};
 	//Y_file_read_linux_perm("/home/oheiheiheiheihei/code/oheiheiheiheihei/tools/cmake/Ydemo", perm);
 	//printf("%s\n", perm);
@@ -151,15 +153,27 @@ int main(int argc, char **argv)
 	// 	fflush(stdout);
 	// }
 
-	char buf[1024] = { '\0' };
-	wchar_t *t = L"你好";
+	//char buf[1024] = { '\0' };
+	//FILE *f = fopen("e://2.txt", "r");
+	//fread(buf, 1, sizeof(buf), f);
+	//fclose(f);
+
+	//wchar_t widechar[1024] = { '\0' };
+	//MultiByteToWideChar(CP_UTF8, NULL, buf, -1, widechar, 1024);
+
+	//char buf1[1024] = { '\0' };
+	//WideCharToMultiByte(936, NULL, widechar, -1, buf1, sizeof(buf1), '\0', NULL);
+
+	//printf("%s\n", buf1);
+
+	//wchar_t *t = L"你好";
 	//WideCharToMultiByte(CP_UTF8, NULL, t, -1, buf, sizeof(buf), '\0', NULL);
 
 	// 指定转换后的多字节序列是GB2312编码的字节序列
 	// GB2312字节序列和终端使用的字节序列相同，所以可以显示正确的中文
-	WideCharToMultiByte(936, NULL, t, -1, buf, sizeof(buf), '\0', NULL);
+	// WideCharToMultiByte(936, NULL, t, -1, buf, sizeof(buf), '\0', NULL);
 
-	printf("%s\n", buf);
+	//printf("%s\n", buf);
 
 	while (1)
 	{

@@ -90,7 +90,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS;%(PreprocessorDefinitions);HAVE_STRUCT_TIMESPEC;Y_WIN32;Y_EXPORT;Y_MAP_CHAIN</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <CompileAs>CompileAsC</CompileAs>
-      <AdditionalIncludeDirectories>$(SolutionDir)../sources/libY/Ylog;$(SolutionDir)../sources/libY</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)../sources/libY/Ylog;$(SolutionDir)../sources/libY;$(SolutionDir)../sources/libY/external</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -191,6 +191,11 @@
     <ClInclude Include="..\..\sources\libY\Ystring.h" />
     <ClInclude Include="..\..\sources\libY\Ythread.h" />
     <ClInclude Include="..\..\sources\libY\Ytree.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="..\..\sources\libY\modules.json">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
