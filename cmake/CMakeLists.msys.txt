@@ -1,6 +1,7 @@
 ﻿# msys环境下的专用配置文件
 
-add_definitions(-D Y_ENV_MSYS)
+add_definitions(-D Y_MSYS)
 add_definitions(-D Y_EXPORT)
+add_definitions(-D UNICODE)
 
 list(APPEND Y_LINK_LIBRARIES ws2_32)

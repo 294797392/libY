@@ -16,6 +16,9 @@
 #elif (defined(Y_UNIX))
 #include <pthread.h>
 #include <semaphore.h>
+#elif (defined(Y_MSYS))
+#include <pthread.h>
+#include <semaphore.h>
 #endif
 
 #if (defined(Y_WIN32))
@@ -25,6 +28,12 @@ typedef HANDLE Ysem;
 #define Y_sem_wait(Y_sem)                   WaitForSingleObject(Y_sem, INFINITE)
 #define Y_sem_post(Y_sem)                   ReleaseSemaphore(Y_sem, 1, NULL)
 #elif (defined(Y_UNIX))
+typedef sem_t Ysem;
+#define Y_create_sem(Y_sem, max_size)       sem_init(&Y_sem, 0, 0)
+#define Y_delete_sem(Y_sem)                 sem_destroy(&Y_sem)
+#define Y_sem_wait(Y_sem)                   sem_wait(&Y_sem)
+#define Y_sem_post(Y_sem)                   sem_post(&Y_sem)
+#elif (defined(Y_MSYS))
 typedef sem_t Ysem;
 #define Y_create_sem(Y_sem, max_size)       sem_init(&Y_sem, 0, 0)
 #define Y_delete_sem(Y_sem)                 sem_destroy(&Y_sem)

@@ -66,7 +66,17 @@ int Y_load_dll(YCHAR *dll_path, Ydll **outdll)
 	}
 
 #if (defined(Y_WIN32))
-	HMODULE lib = LoadLibrary(dll_path);
+	HMODULE lib = NULL;
+	wchar_t filename[1024] = { '\0' };
+	GetModuleFileName(NULL, filename, _countof(filename));
+	if(wcsncmp(dll_path, filename, _countof(filename)) == 0)
+	{
+		lib = GetModuleHandle(NULL);
+	}
+	else
+	{
+		lib = LoadLibrary(dll_path);
+	}
 #elif (defined(Y_UNIX))
 #endif
 

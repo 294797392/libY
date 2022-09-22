@@ -9,7 +9,7 @@
 #ifndef __YTREE_H__
 #define __YTREE_H__
 
-#include "Ybase.h"
+#include "Y.h"
 
 #define MAX_CHILD_COUNT 1024
 

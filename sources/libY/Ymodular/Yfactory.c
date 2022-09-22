@@ -4,6 +4,8 @@
 #include <wchar.h>
 #include <locale.h>
 
+#include "cJSON.h"
+
 #include "Y.h"
 #include "Ylog.h"
 #include "Ydll.h"
@@ -12,7 +14,6 @@
 #include "Yfile.h"
 #include "Ythread.h"
 #include "Yfactory.h"
-#include "cJSON.h"
 
 struct Ymodule_s
 {
@@ -25,7 +26,7 @@ struct Ymodule_s
 	// 回调函数
 	Ymodule_initialize_entry initialize;
 	Ymodule_release_entry release;
-	
+
 	// 模块内部使用的结构体
 	void *context;
 

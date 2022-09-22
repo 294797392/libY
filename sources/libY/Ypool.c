@@ -2,12 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 
-
-#if (defined(Y_WIN32))
-#include <Windows.h>
-#elif (defined(Y_UNIX))
-#endif
-
 #include "Ylog.h"
 #include "Ypool.h"
 #include "Ylock.h"

@@ -35,15 +35,15 @@ typedef struct Ymsg_s
 	char msg[MAX_MSG_SIZE2];
 }Ymsg;
 
-#define YLOGD(fmt, ...) printf(fmt, ##__VA_ARGS__) //Y_log_write(NULL, YLOG_LEVEL_DEBUG, __LINE__, __VA_ARGS__)
-#define YLOGI(fmt, ...) printf(fmt, ##__VA_ARGS__) //Y_log_write(NULL, YLOG_LEVEL_INFO, __LINE__, __VA_ARGS__)
-#define YLOGE(fmt, ...) printf(fmt, ##__VA_ARGS__) //Y_log_write(NULL, YLOG_LEVEL_ERROR, __LINE__, __VA_ARGS__)
-#define YLOGW(fmt, ...) printf(fmt, ##__VA_ARGS__) //Y_log_write(NULL, YLOG_LEVEL_WARN, __LINE__, __VA_ARGS__)
+#define YLOGD(format, ...) Y_log_write(NULL, YLOG_LEVEL_DEBUG, __LINE__, format, ##__VA_ARGS__)
+#define YLOGI(format, ...) Y_log_write(NULL, YLOG_LEVEL_INFO, __LINE__, format, ##__VA_ARGS__)
+#define YLOGE(format, ...) Y_log_write(NULL, YLOG_LEVEL_ERROR, __LINE__, format, ##__VA_ARGS__)
+#define YLOGW(format, ...) Y_log_write(NULL, YLOG_LEVEL_WARN, __LINE__, format, ##__VA_ARGS__)
 
-// #define YLOGCD(cate, ...) Y_log_write(cate, YLOG_LEVEL_DEBUG, __LINE__, ##__VA_ARGS__)
-// #define YLOGCI(cate, ...) Y_log_write(cate, YLOG_LEVEL_INFO, __LINE__, ##__VA_ARGS__)
-// #define YLOGCE(cate, ...) Y_log_write(cate, YLOG_LEVEL_ERROR, __LINE__, ##__VA_ARGS__)
-// #define YLOGCW(cate, ...) Y_log_write(cate, YLOG_LEVEL_WARN, __LINE__, ##__VA_ARGS__)
+#define YLOGCD(cate, ...) Y_log_write(cate, YLOG_LEVEL_DEBUG, __LINE__, ##__VA_ARGS__)
+#define YLOGCI(cate, ...) Y_log_write(cate, YLOG_LEVEL_INFO, __LINE__, ##__VA_ARGS__)
+#define YLOGCE(cate, ...) Y_log_write(cate, YLOG_LEVEL_ERROR, __LINE__, ##__VA_ARGS__)
+#define YLOGCW(cate, ...) Y_log_write(cate, YLOG_LEVEL_WARN, __LINE__, ##__VA_ARGS__)
 
 #ifdef __cplusplus
 extern "C" {
