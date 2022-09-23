@@ -10,29 +10,20 @@
 
 #include "Y.h"
 
-#if (defined(Y_WIN32))
+#if (defined(Y_WIN32)) || (defined(Y_MINGW))
 #include <Windows.h>
-#elif (defined(Y_UNIX))
-#include <pthread.h>
-#include <semaphore.h>
-#elif (defined(Y_MSYS))
+#elif (defined(Y_UNIX)) || (defined(Y_MSYS))
 #include <pthread.h>
 #include <semaphore.h>
 #endif
 
-#if (defined(Y_WIN32))
+#if (defined(Y_WIN32)) || (defined(Y_MINGW))
 typedef CRITICAL_SECTION Ylock;
 #define Y_create_lock(Y_lock)             InitializeCriticalSection(&Y_lock)
 #define Y_delete_lock(Y_lock)             DeleteCriticalSection(&Y_lock)
 #define Y_lock_lock(Y_lock)               EnterCriticalSection(&Y_lock)
 #define Y_lock_unlock(Y_lock)             LeaveCriticalSection(&Y_lock)
-#elif (defined(Y_UNIX))
-typedef pthread_mutex_t Ylock;
-#define Y_create_lock(Y_lock)             pthread_mutex_init(&Y_lock, NULL)
-#define Y_delete_lock(Y_lock)             pthread_mutex_destroy(&Y_lock)
-#define Y_lock_lock(Y_lock)               pthread_mutex_lock(&Y_lock)
-#define Y_lock_unlock(Y_lock)             pthread_mutex_unlock(&Y_lock)
-#elif (defined(Y_MSYS))
+#elif (defined(Y_UNIX)) || (defined(Y_MSYS))
 typedef pthread_mutex_t Ylock;
 #define Y_create_lock(Y_lock)             pthread_mutex_init(&Y_lock, NULL)
 #define Y_delete_lock(Y_lock)             pthread_mutex_destroy(&Y_lock)

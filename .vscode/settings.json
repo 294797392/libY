@@ -26,6 +26,9 @@
         "stat.h": "c",
         "ybuilder.h": "c",
         "stdlib.h": "c",
-        "xlocale": "c"
+        "xlocale": "c",
+        "atomic": "c",
+        "cjson.h": "c",
+        "yerrno.h": "c"
     }
 }

@@ -20,6 +20,16 @@
 #define MAX_MSG_SIZE1        4096				// 字符个数，不管是宽字符还是多字节字符
 #define MAX_MSG_SIZE2        8192				// 以字节为长度的字符长度
 
+#define YLOGD2(logger, format, ...)		Y_log_write(logger, YLOG_LEVEL_DEBUG, __LINE__, format, __VA_ARGS__)
+#define YLOGI2(logger, format, ...)		Y_log_write(logger, YLOG_LEVEL_INFO, __LINE__, format, __VA_ARGS__)
+#define YLOGW2(logger, format, ...)		Y_log_write(logger, YLOG_LEVEL_WARN, __LINE__, format, __VA_ARGS__)
+#define YLOGE2(logger, format, ...)		Y_log_write(logger, YLOG_LEVEL_ERROR, __LINE__, format, __VA_ARGS__)
+
+#define YLOGD(format, ...)		Y_log_write(NULL, YLOG_LEVEL_DEBUG, __LINE__, format, ##__VA_ARGS__)
+#define YLOGI(format, ...)		Y_log_write(NULL, YLOG_LEVEL_INFO, __LINE__, format, ##__VA_ARGS__)
+#define YLOGW(format, ...)		Y_log_write(NULL, YLOG_LEVEL_WARN, __LINE__, format, ##__VA_ARGS__)
+#define YLOGE(format, ...)		Y_log_write(NULL, YLOG_LEVEL_ERROR, __LINE__, format, ##__VA_ARGS__)
+
  // 内部使用，调用者用不到这个枚举
 typedef enum Ylog_level_e
 {
@@ -35,19 +45,18 @@ typedef struct Ymsg_s
 	char msg[MAX_MSG_SIZE2];
 }Ymsg;
 
-#define YLOGD(format, ...) Y_log_write(NULL, YLOG_LEVEL_DEBUG, __LINE__, format, ##__VA_ARGS__)
-#define YLOGI(format, ...) Y_log_write(NULL, YLOG_LEVEL_INFO, __LINE__, format, ##__VA_ARGS__)
-#define YLOGE(format, ...) Y_log_write(NULL, YLOG_LEVEL_ERROR, __LINE__, format, ##__VA_ARGS__)
-#define YLOGW(format, ...) Y_log_write(NULL, YLOG_LEVEL_WARN, __LINE__, format, ##__VA_ARGS__)
-
-#define YLOGCD(cate, ...) Y_log_write(cate, YLOG_LEVEL_DEBUG, __LINE__, ##__VA_ARGS__)
-#define YLOGCI(cate, ...) Y_log_write(cate, YLOG_LEVEL_INFO, __LINE__, ##__VA_ARGS__)
-#define YLOGCE(cate, ...) Y_log_write(cate, YLOG_LEVEL_ERROR, __LINE__, ##__VA_ARGS__)
-#define YLOGCW(cate, ...) Y_log_write(cate, YLOG_LEVEL_WARN, __LINE__, ##__VA_ARGS__)
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+	typedef struct Ylogger_s Ylogger;
+	typedef struct Ylogger_options_s
+	{
+		int level;
+		YCHAR path[256];
+		int max_size_bytes;
+		YCHAR format[1024];
+	}Ylogger_options;
 
 	/*
 	 * 描述：
@@ -56,9 +65,11 @@ extern "C" {
 	 * 返回值：
 	 * YERRNO
 	 */
-	YAPI int Y_log_init();
+	YAPI int Y_log_init(const YCHAR *config);
 
-	YAPI void Y_log_write(const YCHAR *category, Ylog_level level, int line, const YCHAR *msg, ...);
+	YAPI Ylogger *Y_log_get_logger(const YCHAR *name);
+
+	YAPI void Y_log_write(Ylogger *logger, Ylog_level level, int line, YCHAR *msg, ...)
 
 #ifdef __cplusplus
 }

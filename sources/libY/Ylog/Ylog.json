@@ -1,0 +1,17 @@
+﻿{
+    "options":{
+        "level":1,
+        "path":"log.txt",
+        "max_size":"4M",
+        "format":"{datetime} {message}"
+    },
+
+    "appenders":[
+        {
+            "type":"console"
+        },
+        {
+            "type":"file"
+        }
+    ]
+}

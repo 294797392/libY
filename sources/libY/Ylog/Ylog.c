@@ -10,54 +10,181 @@
 #elif (defined(Y_UNIX))
 #endif
 
+#include <cJSON.h>
+
 #include "Y.h"
 #include "Yerrno.h"
 #include "Ylog.h"
 #include "Yqueue.h"
 #include "Ythread.h"
 #include "Yappender.h"
+#include "Yfile.h"
+#include "Ystring.h"
 
-static Yqueue *consume_log_queue = NULL;
+#define DEFAULT_LEVEL				YLOG_LEVEL_DEBUG
+#define DEFAULT_PATH				YTEXT("Ylog.txt")
+#define DEFAULT_SIZE				4194304
+#define DEFAULT_FORMAT				YTEXT("")
 
-static int num_appender = 0;
+
+typedef struct Ylog_s
+{
+	// 全局配置
+	Ylogger_options *global_options;
+
+	// 所有配置的appender
+	Yappender *appenders[32];
+	int num_appenders;	
+
+	Ylogger *logger[256];
+
+	Yqueue *consume_queue;
+}Ylog;
+
+struct Ylogger_s
+{
+	YCHAR name[64];
+	Ylog *log;
+};
+
 extern Yappender Yappender_console;
 static Yappender *appenders[32] = { NULL };
+static Ylog *log = NULL;
 
 static void consume_log_queue_callback(void *userdata, void *element)
 {
 	Ymsg *ymsg = (Ymsg *)element;
 
-	for(int i = 0; i < num_appender; i++)
+	for(int i = 0; i < log->num_appenders; i++)
 	{
-		Yappender *appender = appenders[i];
+		Yappender *appender = log->appenders[i];
 		appender->write(appender->context, ymsg);
 	}
 }
 
-int Y_log_init()
-{
-	// 初始化appender
-	num_appender = 1;
-	appenders[0] = &Yappender_console;
 
-	// 启动appender
-	for(int i = 0; i < num_appender; i++)
+
+
+static Ylogger_options *get_default_options()
+{
+	Ylogger_options *default_options = (Ylogger_options*)Ycalloc(1, sizeof(Ylogger_options));
+	default_options->level = DEFAULT_LEVEL;
+	Ystrcpy(default_options->path, YTEXT("abc"));
+	default_options->max_size_bytes = DEFAULT_SIZE;
+	Ystrcpy(default_options->format, DEFAULT_FORMAT);
+	return default_options;
+}
+
+static void init_options(Ylog *log, cJSON *json)
+{
+	log->global_options = get_default_options();
+
+	cJSON *options = cJSON_GetObjectItem(json, "options");
+	if(options == NULL)
 	{
-		Yappender *appender = appenders[i];
-		appender->context = appender->open("");
+		// 如果没定义全局config，那么使用一个默认的值
+		return;
 	}
 
+	cJSON *level = cJSON_GetObjectItem(options, "level");
+	if(level != NULL)
+	{
+		log->global_options->level = level->valueint;
+	}
+}
+
+static Yappender *get_appender(const char *type)
+{
+	size_t len = sizeof(appenders) / sizeof(Yappender*);
+	for(int i = 0; i < len; i++)
+	{
+		if(appenders[i] == NULL)
+		{
+			return NULL;
+		}
+
+		if(strcmp(appenders[i]->type, type) == 0)
+		{
+			return appenders[i];
+		}
+	}
+
+	return NULL;
+}
+
+static void init_appenders(Ylog *log, cJSON *json)
+{
+	cJSON *appenders = cJSON_GetObjectItem(json, "appenders");
+	if(appenders == NULL)
+	{
+		// 如果没定义appender，那么使用默认appender
+		log->appenders[0] = &Yappender_console;
+		log->num_appenders = 1;
+		return;
+	}
+
+	int size = cJSON_GetArraySize(appenders);
+	for(int i = 0; i < size; i++)
+	{
+		cJSON *appender = cJSON_GetArrayItem(appenders, i);
+		cJSON *type = cJSON_GetObjectItem(appender, "type");
+		Yappender *appender1 = get_appender(type->valuestring);
+		appender1->context = appender1->open("");
+		log->appenders[i] = appender1;
+	}
+}
+
+
+
+int Y_log_init(const YCHAR *config)
+{
+	if(log != NULL)
+	{
+		return YERR_SUCCESS;
+	}
+
+	YBYTE *bytes = NULL;
+	uint64_t size = 0;
+	int code = Y_file_readbytes(config, &bytes, &size);
+	if(code != YERR_SUCCESS)
+	{
+		perror("init log failed");
+		return code;
+	}
+
+	cJSON *json = cJSON_Parse(bytes);
+	if(json == NULL)
+	{
+		perror("invalid log.json format");
+		return YERR_INVALID_JSON;
+	}
+
+	log = (Ylog*)Ycalloc(1, sizeof(Ylog));
+
+	// 先解析全局配置
+	init_options(log, json);
+
+	// 再解析appender配置
+	init_appenders(log, json);
+
 	// 启动日志队列
-	consume_log_queue = Y_create_queue(NULL, sizeof(Ymsg));
-	Y_queue_start(consume_log_queue, 1, consume_log_queue_callback);
+	log->consume_queue = Y_create_queue(NULL, sizeof(Ymsg));
+	Y_queue_start(log->consume_queue, 1, consume_log_queue_callback);
 
 	return YERR_SUCCESS;
 }
 
-void Y_log_write(const YCHAR *category, Ylog_level level, int line, const YCHAR *msg, ...)
+Ylogger *Y_log_get_logger(const YCHAR *name)
 {
-	// 格式化用户输入的日志
-	YCHAR message[MAX_MSG_SIZE1] = { '\0' };
+	Ylogger *logger = (Ylogger*)Ycalloc(1, sizeof(Ylogger));
+	logger->log = log;
+	Ystrcpy(logger->name, (YCHAR*)name);
+	return logger;
+}
+
+void Y_log_write(Ylogger *logger, Ylog_level level, int line, YCHAR *msg, ...)
+{
+	YCHAR message[MAX_MSG_SIZE1] = {'\0'};
 	va_list ap;
 	va_start(ap, msg);
 #ifdef UNICODE
@@ -67,7 +194,7 @@ void Y_log_write(const YCHAR *category, Ylog_level level, int line, const YCHAR 
 #endif
 	va_end(ap);
 
-	Ymsg *ymsg = (Ymsg *)Y_queue_prepare_enqueue(consume_log_queue);
+	Ymsg *ymsg = (Ymsg *)Y_queue_prepare_enqueue(log->consume_queue);
 
 	// 格式化最终要输出的日志
 	const char *format = "[%s][%d]%s\r\n\0";
@@ -77,20 +204,28 @@ void Y_log_write(const YCHAR *category, Ylog_level level, int line, const YCHAR 
 	setlocale(LC_ALL, ".ACP");
 	
 	char mbsmsg[MAX_MSG_SIZE2] = { '\0' };
-	wcstombs(mbsmsg, message, sizeof(mbsmsg) - 1);
+	wcstombs(mbsmsg, message, sizeof(mbsmsg));
 
 	char mbscate[1024] = { '\0' };
-	wcstombs(mbscate, category, sizeof(mbscate) - 1);
+	if(logger == NULL)
+	{
+		wcstombs(mbscate, YTEXT("NULL"), sizeof(mbscate));
+	}
+	else
+	{
+		wcstombs(mbscate, logger->name, sizeof(mbscate));
+	}
 	
 	setlocale(LC_ALL, locale);
 	snprintf(ymsg->msg, sizeof(ymsg->msg), format, mbscate, line, mbsmsg);
 #else
-	snprintf(ymsg->msg, sizeof(ymsg->msg), format, cateogrty, line, message);
+	snprintf(ymsg->msg, sizeof(ymsg->msg), format, logger->name, line, message);
 #endif
 
 	ymsg->level = level;
 
-	Y_queue_commit_enqueue(consume_log_queue);
+	Y_queue_commit_enqueue(log->consume_queue);
 }
+
 
 

@@ -27,7 +27,7 @@
                 "_DEBUG",
                 "UNICODE",
                 "_UNICODE",
-                "Y_ENV_MINGW",
+                "Y_MINGW",
                 "Y_MAP_CHAIN"
             ],
             "windowsSdkVersion": "10.0.18362.0",

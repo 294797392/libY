@@ -3,7 +3,7 @@
 #include <string.h>
 #include <errno.h>
 
-#if (defined(Y_WIN32))
+#if (defined(Y_WIN32)) || (defined(Y_MINGW))
 #include <Windows.h>
 #elif (defined(Y_UNIX))
 #endif
@@ -13,8 +13,6 @@
 #include "Ylist.h"
 #include "Ypool.h"
 #include "Ythread.h"
-
-#define CATEGORY	YTEXT("main")
 
 static void Yqueue_callback_handler(void *userdata, void *element)
 {
@@ -53,11 +51,11 @@ static void demo_Ylist()
 {
 	Ylist *yl = Y_create_list2(Ylist_free_item);
 
-	for (size_t i = 0; i < 100; i++)
+	for (int i = 0; i < 100; i++)
 	{
 		Ylist_item *item = (Ylist_item *)calloc(1, sizeof(Ylist_item));
 		char *line = (char *)calloc(1, 1024);
-		snprintf(line, 1024, "%ld", i);
+		snprintf(line, 1024, "%d", i);
 		item->line = line;
 		Y_list_add(yl, item);
 	}
@@ -82,12 +80,11 @@ static void demo_Ypool()
 
 	Yobject *objs[10] = { NULL };
 
-	// ???10???
-	for (size_t i = 0; i < 10; i++)
+	for (int i = 0; i < 10; i++)
 	{
 		Yobject *yo = Y_pool_obtain(yp);
 		char *msg = (char *)calloc(1, 1024);
-		snprintf(msg, 1024, "%ld", i);
+		snprintf(msg, 1024, "%d", i);
 		Y_object_set_data(yo, msg);
 		objs[i] = yo;
 	}
@@ -121,9 +118,9 @@ static void demo_Ylog()
 
 int main(int argc, char **argv)
 {
-	Y_log_init();
+	Y_log_init(YTEXT("Ylog.json"));
 
-	YLOGCD(YTEXT("main"), YTEXT("你好"));
+	YLOGD(YTEXT("你好"));
 
 	//char perm[1024] = {'\0'};
 	//Y_file_read_linux_perm("/home/oheiheiheiheihei/code/oheiheiheiheihei/tools/cmake/Ydemo", perm);
@@ -179,7 +176,7 @@ int main(int argc, char **argv)
 	{
 		char line[1024] = { '\0' };
 		fgets(line, sizeof(line), stdin);
-		YLOGCI(CATEGORY, YTEXT("your input is : %s"), line);
+		YLOGI(YTEXT("your input is : %s"), line);
 	}
 
 	return 0;

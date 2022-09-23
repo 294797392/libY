@@ -6,6 +6,8 @@
 
 typedef struct Yappender_s
 {
+	char *type;
+
 	void *context;
 
 	void *(*open)(const char *uri);

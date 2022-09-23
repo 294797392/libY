@@ -3,7 +3,7 @@
 cmake_minimum_required(VERSION 3.4)
 project(Y VERSION 1.1 LANGUAGES C)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99 -Wall -Wno-unused-variable -Wno-unused-but-set-variable -Wno-unused-label -Wno-unused-function -D _GNU_SOURCE -fPIC")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -Wall -Wno-unused-variable -Wno-unused-but-set-variable -Wno-unused-label -Wno-unused-function -D _GNU_SOURCE -fPIC")
 
 # 全局变量定义
 set(Y_DIR ../sources/libY)
@@ -12,6 +12,7 @@ message(STATUS "Y_SYS = " ${Y_SYS})
 
 # 宏定义选项
 add_definitions(-D Y_MAP_CHAIN)                 # 指定哈希表使用链式扩展法解决哈希冲突问题
+add_definitions(-D UNICODE)
 
 # 配置不同环境下的CMake文件
 if(${MSYS})
@@ -29,6 +30,7 @@ endif()
 # 设置要引用的头文件目录
 include_directories(${Y_DIR})
 include_directories(${Y_DIR}/Ylog)
+include_directories(${Y_DIR}/external)
 
 # 编译libY
 list(APPEND Y_SOURCE ${Y_DIR}/Y.c)
@@ -43,6 +45,7 @@ list(APPEND Y_SOURCE ${Y_DIR}/Yfile.c)
 list(APPEND Y_SOURCE ${Y_DIR}/Yevent.c)
 list(APPEND Y_SOURCE ${Y_DIR}/Ylog/Ylog.c)
 list(APPEND Y_SOURCE ${Y_DIR}/Ylog/Yappender_conosle.c)
+list(APPEND Y_SOURCE ${Y_DIR}/external/cJSON.c)
 # aux_source_directory(${Y_DIR} Y_SOURCE)
 add_library(Y ${Y_SOURCE})
 target_link_libraries(Y PRIVATE ${Y_LINK_LIBRARIES})

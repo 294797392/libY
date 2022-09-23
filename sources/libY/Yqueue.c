@@ -3,7 +3,6 @@
 #include <string.h>
 #include <errno.h>
 
-#include "Ylog.h"
 #include "Yqueue.h"
 #include "Ythread.h"
 #include "Ylock.h"
