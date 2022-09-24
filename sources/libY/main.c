@@ -9,10 +9,11 @@
 #endif
 
 #include "Ylog.h"
-#include "Yqueue.h"
+#include "Ybuffer_queue.h"
 #include "Ylist.h"
 #include "Ypool.h"
 #include "Ythread.h"
+#include "Yqueue.h"
 
 static void Yqueue_callback_handler(void *userdata, void *element)
 {
@@ -21,17 +22,35 @@ static void Yqueue_callback_handler(void *userdata, void *element)
 	free(line);
 }
 
-static void demo_Yqueue()
+static void demo_Ybuffer_queue()
 {
-	Yqueue *q = Y_create_queue(NULL, 1024);
-	Y_queue_start(q, 1, Yqueue_callback_handler);
+	Ybuffer_queue *q = Y_create_buffer_queue(NULL);
+	Y_buffer_queue_start(q, 1, Yqueue_callback_handler);
 
 	while (1)
 	{
 		printf("please input element:\n");
-		char *line = (char*)Y_queue_prepare_enqueue(q);
+		char *line = (char *)Ycalloc(1, 1024);
 		fgets(line, sizeof(line), stdin);
-		Y_queue_commit_enqueue(q);
+		Y_buffer_queue_enqueue(q, line);
+	}
+}
+
+static void demo_Yqueue()
+{
+	Yqueue *q = Y_create_queue(NULL);
+
+	for(int i = 0; i < 100; i++)
+	{
+		char *buf = (char *)Ycalloc(1, 64);
+		snprintf(buf, 64, "%d", i);
+		Y_queue_enqueue(q, buf);
+	}
+
+	for(int i = 0; i < 100; i++)
+	{
+		char *buf = (char *)Y_queue_dequeue(q);
+		printf("%s\n", buf);
 	}
 }
 
@@ -76,16 +95,15 @@ static void demo_Ylist()
 
 static void demo_Ypool()
 {
-	Ypool *yp = Y_create_pool();
+	Ypool *yp = Y_create_pool(1024, 1024);
 
 	Yobject *objs[10] = { NULL };
 
 	for (int i = 0; i < 10; i++)
 	{
-		Yobject *yo = Y_pool_obtain(yp);
-		char *msg = (char *)calloc(1, 1024);
+		Yobject *yo = Y_pool_obtain(yp, 1024);
+		char *msg = (char *)Y_object_get_data(yo);
 		snprintf(msg, 1024, "%d", i);
-		Y_object_set_data(yo, msg);
 		objs[i] = yo;
 	}
 
@@ -96,13 +114,13 @@ static void demo_Ypool()
 
 	for (size_t i = 0; i < 10; i++)
 	{
-		Y_pool_recycle(yp, objs[i]);
+		Y_pool_recycle(objs[i]);
 	}
 
 
 	for (size_t i = 0; i < 10; i++)
 	{
-		Yobject *yo = Y_pool_obtain(yp);
+		Yobject *yo = Y_pool_obtain(yp, 1024);
 		char *msg = (char *)Y_object_get_data(yo);
 		YLOGI(YTEXT("%s"), msg);
 	}
@@ -120,7 +138,13 @@ int main(int argc, char **argv)
 {
 	Y_log_init(YTEXT("E:\\oheiheiheiheihei\\libY\\msvc\\Debug\\Ylog.json"));
 
-	YLOGD(YTEXT("你好"));
+	for(size_t i = 0; i < 99999999; i++)
+	{
+		YLOGD(YTEXT("%d"), i);
+		Ysleep(1);
+	}
+
+	//demo_Yqueue();
 
 	//char perm[1024] = {'\0'};
 	//Y_file_read_linux_perm("/home/oheiheiheiheihei/code/oheiheiheiheihei/tools/cmake/Ydemo", perm);

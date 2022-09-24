@@ -153,6 +153,7 @@
     <ClCompile Include="..\..\sources\libY\external\getopt.c" />
     <ClCompile Include="..\..\sources\libY\main.c" />
     <ClCompile Include="..\..\sources\libY\Y.c" />
+    <ClCompile Include="..\..\sources\libY\Ybuffer_queue.c" />
     <ClCompile Include="..\..\sources\libY\Ydll.c" />
     <ClCompile Include="..\..\sources\libY\Yevent.c" />
     <ClCompile Include="..\..\sources\libY\Yfile.c" />
@@ -174,6 +175,7 @@
     <ClInclude Include="..\..\sources\libY\external\getopt.h" />
     <ClInclude Include="..\..\sources\libY\libY.h" />
     <ClInclude Include="..\..\sources\libY\Y.h" />
+    <ClInclude Include="..\..\sources\libY\Ybuffer_queue.h" />
     <ClInclude Include="..\..\sources\libY\Ydll.h" />
     <ClInclude Include="..\..\sources\libY\Yerrno.h" />
     <ClInclude Include="..\..\sources\libY\Yevent.h" />

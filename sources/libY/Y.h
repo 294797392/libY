@@ -9,6 +9,8 @@
 
 #define YMAX_PATH                    512
 
+#define YARRAY_LENGTH(_Array) (sizeof(_Array) / sizeof(_Array[0]))
+
 // 定义导出和导入符号
 // 注意，如果是链接静态库，那么不需要__declspec(dllimport)
 #if (defined(Y_WIN32))

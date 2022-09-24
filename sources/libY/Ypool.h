@@ -19,14 +19,18 @@ typedef struct Ypool_s Ypool;
 extern "C" {
 #endif
 
-    /*
+	/*
 	 * 描述：
 	 * 创建一个对象缓冲池
+	 *
+	 * 参数：
+	 * @max_block_size：缓冲池里可以申请的最大的缓冲区大小
+	 * @max_blocks：缓冲池里的内存块的最大个数
 	 *
 	 * 返回值：
 	 * 创建的缓冲池对象
 	 */
-	YAPI Ypool *Y_create_pool();
+	YAPI Ypool *Y_create_pool(int max_block_size, int max_blocks);
 
 	/*
 	 * 描述：
@@ -36,11 +40,12 @@ extern "C" {
 	 *
 	 * 参数：
 	 * @yp：缓冲池对象
+	 * @blocksize：要申请的内存块的大小
 	 *
 	 * 返回值：
 	 * 缓冲对象
 	 */
-	YAPI Yobject *Y_pool_obtain(Ypool *yp);
+	YAPI Yobject *Y_pool_obtain(Ypool *yp, int blocksize);
 
 	/*
 	 * 描述：
@@ -49,10 +54,9 @@ extern "C" {
 	 * 这个函数会把你用完的对象重新放到缓冲池里，以便于下次复用
 	 *
 	 * 参数：
-	 * @yp：缓冲池对象
 	 * @yo：要回收的对象
 	 */
-	YAPI void Y_pool_recycle(Ypool *yp, Yobject *yo);
+	YAPI void Y_pool_recycle(Yobject *yo);
 
 	/*
 	 * 描述：
@@ -62,8 +66,6 @@ extern "C" {
 	 * 内存地址
 	 */
 	YAPI void *Y_object_get_data(Yobject *yo);
-
-	YAPI void Y_object_set_data(Yobject *yo, void *data);
 
 #ifdef __cplusplus
 }

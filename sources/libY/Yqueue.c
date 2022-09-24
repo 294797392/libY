@@ -1,176 +1,125 @@
 ﻿#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <errno.h>
+#include <wchar.h>
 
+#include "Ylog.h"
+#include "Yerrno.h"
 #include "Yqueue.h"
-#include "Ythread.h"
-#include "Ylock.h"
-#include "Ysem.h"
 
-#define MAX_QUEUE_SIZE 4096
+#define DEFAULT_CAPACITY        512
 
 struct Yqueue_s
 {
-	Yqueue_full_callback full_callback;
-
-	Yqueue_callback callback;
-	Yqueue_state state;
-	void *userdata;
-	void *elements[MAX_QUEUE_SIZE];
-	int enqueue_index;  /* 当前要入队的索引 */
-	int dequeue_index;  /* 当前要出队的索引 */
-
-	// 队列里每个元素的大小
-	int itemsize;
+	void **array;
+	int head;
+	int tail;
 
 	// 当前队列里元素的总数量
-	int count;
-
-	// 消费者线程列表
-	Ythread **consume_threads;
-	int num_thread;
-
-	// 队列锁
-	Ylock lock;
-
-	// 信号量
-	Ysem sem;
+	int size;
+	// 队列的容量
+	int capacity;
 };
 
-static void consume_thread_process(void *state)
-{
-	Yqueue *q = (Yqueue *)state;
-	while (q->state == YQUEUE_STATE_RUNNING)
-	{
-		/* 取下一个元素 */
-		void *element = Y_queue_dequeue(q);
 
-		/* 有信号量了，回调 */
-		if (q->callback)
-		{
-			q->callback(q->userdata, element);
-		}
+/// <summary>
+/// 对queue进行扩容
+/// </summary>
+/// <param name="yq"></param>
+/// <param name="count">要存储的元素的数量</param>
+static void ensure_capacity(Yqueue *yq, int count)
+{
+	if(yq->capacity == 0)
+	{
+		yq->capacity = count;
+		yq->array = calloc(yq->capacity, sizeof(void *));
 	}
+	else if(yq->capacity < count)
+	{
+		// 要扩充的元素数量
+		int new_capacity = yq->capacity * 2;
+
+		// 要扩充的大小
+		int size = sizeof(void *) * new_capacity;
+
+		// 先判断当前的指针是否有足够的连续空间，如果有，扩大mem_address指向的地址，并且将mem_address返回，
+		// 如果空间不够，先按照newsize指定的大小分配空间，将原有数据从头到尾拷贝到新分配的内存区域，而后释放原来mem_address所指内存区域（注意：原来指针是自动释放，不需要使用free）
+		// 同时返回新分配的内存区域的首地址。即重新分配存储器块的地址。
+		yq->array = (void **)realloc(yq->array, size);
+		if(yq->array == NULL)
+		{
+			perror("realloc == NULL");
+		}
+
+		yq->capacity = new_capacity;
+	}
+	else
+	{
+		/* code */
+	}
+
+	yq->head = 0;
+	yq->tail = ((yq->size != yq->capacity) ? yq->size : 0);
 }
 
-Yqueue *Y_create_queue(void *userdata, size_t itemsize)
+
+
+Yqueue *Y_create_queue()
 {
-	Yqueue *yq = (Yqueue *)calloc(1, sizeof(Yqueue));
-	if (!yq)
-	{
-		//YLOGE(YTEXT("create Yqueue instance failed"));
-		return NULL;
-	}
-
-	yq->itemsize = itemsize;
-	yq->state = YQUEUE_STATE_IDLE;
-	yq->userdata = userdata;
-	Y_create_lock(yq->lock);
-	Y_create_sem(yq->sem, MAX_QUEUE_SIZE);
-
+	Yqueue *yq = (Yqueue *)Ycalloc(1, sizeof(Yqueue));
+	yq->capacity = 0;
+	yq->head = 0;
+	yq->tail = 0;
+	yq->size = 0;
+	ensure_capacity(yq, DEFAULT_CAPACITY);
 	return yq;
 }
 
 void Y_delete_queue(Yqueue *yq)
 {
-	yq->state = YQUEUE_STATE_IDLE;
-	yq->callback = NULL;
-	yq->full_callback = NULL;
-	Y_delete_lock(yq->lock);
-	Y_delete_sem(yq->sem);
-
-	for(int i = 0; i < yq->num_thread; i++)
-	{
-		Y_delete_thread(yq->consume_threads[i]);
-	}
-
-	// 此时消费者线程肯定运行完了，所有元素也肯定都被消费了
 	free(yq);
 }
 
-void Y_queue_start(Yqueue *yq, int num_thread, Yqueue_callback callback)
+void Y_queue_enqueue(Yqueue *yq, void *item)
 {
-	yq->state = YQUEUE_STATE_RUNNING;
-	yq->callback = callback;
-	yq->num_thread = num_thread;
-	yq->consume_threads = (Ythread**)calloc(num_thread, sizeof(Ythread*));
-
-
-	for(int i = 0; i < num_thread; i++)
+	if(yq->size == yq->capacity)
 	{
-		yq->consume_threads[i] = Y_create_thread(consume_thread_process, yq);
-	}
-}
+		int num = (int)((long long)yq->capacity * 200L / 100);
+		if(num < yq->capacity + 4)
+		{
+			num = yq->capacity + 4;
+		}
 
-void Y_queue_set_full_callback(Yqueue *yq, Yqueue_full_callback callback)
-{
-	yq->full_callback = callback;
+		ensure_capacity(yq, num);
+	}
+
+	yq->array[yq->tail] = item;
+	yq->tail = (yq->tail + 1) % yq->capacity;
+	yq->size++;
 }
 
 void *Y_queue_dequeue(Yqueue *yq)
 {
-	// 等待生产者线程的数据
-	Y_sem_wait(yq->sem);
-
-	Y_lock_lock(yq->lock);
-
-	/* 如果当前要出队的索引是MAX_QUEUE_SIZE，那么重置为0，从头开始继续出队 */
-	int index = yq->dequeue_index;
-	if (index == MAX_QUEUE_SIZE)
+	if(yq->size == 0)
 	{
-		index = 0;
-		yq->dequeue_index = 0;
+		return NULL;
 	}
 
-	void *element = yq->elements[index];
-
-	yq->count--;
-
-	/* 计算下一个要出队的索引 */
-	yq->dequeue_index += 1;
-
-	Y_lock_unlock(yq->lock);
-
-	return element;
+	void *result = yq->array[yq->head];
+	yq->array[yq->head] = NULL;
+	yq->head = (yq->head + 1) % yq->capacity;
+	yq->size--;
+	return result;
 }
 
 int Y_queue_size(Yqueue *yq)
 {
-	return yq->count;
+	return yq->size;
 }
 
-void *Y_queue_prepare_enqueue(Yqueue *yq)
+void Y_queue_clear(Yqueue *yq)
 {
-	Y_lock_lock(yq->lock);
-
-	int index = yq->enqueue_index;
-	if (index == MAX_QUEUE_SIZE)
-	{
-		/* 队列满了，从头开始 */
-		yq->enqueue_index = 0;
-		index = 0;
-	}
-
-	// 如果下一个要入队的元素为空，那么开辟一段新的内存空间
-	void *item = yq->elements[index];
-	if (item == NULL)
-	{
-		item = calloc(1, yq->itemsize);
-		yq->elements[index] = item;
-	}
-
-	yq->count++;
-
-	/* 计算下一个要入队的元素索引 */
-	yq->enqueue_index += 1;
-
-	Y_lock_unlock(yq->lock);
-
-	return item;
-}
-
-void Y_queue_commit_enqueue(Yqueue *yq)
-{
-	Y_sem_post(yq->sem);
+	yq->size = 0;
+	yq->head = 0;
+	yq->tail = 0;
 }

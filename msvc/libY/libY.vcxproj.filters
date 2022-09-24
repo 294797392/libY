@@ -32,6 +32,7 @@
     <ClCompile Include="..\..\sources\libY\Ymodular\demo_module.c">
       <Filter>Ymodular</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\sources\libY\Ybuffer_queue.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\sources\libY\Yerrno.h" />
@@ -64,6 +65,7 @@
       <Filter>external</Filter>
     </ClInclude>
     <ClInclude Include="..\..\sources\libY\Yfile.h" />
+    <ClInclude Include="..\..\sources\libY\Ybuffer_queue.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Ylog">

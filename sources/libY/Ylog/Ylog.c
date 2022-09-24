@@ -16,6 +16,7 @@
 #include "Yerrno.h"
 #include "Ylog.h"
 #include "Yqueue.h"
+#include "Ybuffer_queue.h"
 #include "Ythread.h"
 #include "Yappender.h"
 #include "Yfile.h"
@@ -26,6 +27,7 @@
 #define DEFAULT_PATH				YTEXT("Ylog.txt")
 #define DEFAULT_SIZE				4194304
 #define DEFAULT_FORMAT				YTEXT("")
+#define YMSG_POOL_SIZE				8192
 
 
 typedef struct Ylog_s
@@ -39,7 +41,8 @@ typedef struct Ylog_s
 
 	Ylogger *logger[256];
 
-	Yqueue *consume_queue;
+	Ypool *msg_pool;
+	Ybuffer_queue *consume_queue;
 
 	cJSON *config;
 }Ylog;
@@ -60,13 +63,16 @@ static Ylog *log = NULL;
 
 static void consume_log_queue_callback(void *userdata, void *element)
 {
-	Ymsg *ymsg = (Ymsg *)element;
+	Yobject *yo = (Yobject *)element;
+	Ymsg *ymsg = (Ymsg *)Y_object_get_data(yo);
 
 	for(int i = 0; i < log->num_appenders; i++)
 	{
 		Yappender *appender = log->appenders[i];
 		appender->write(appender->context, ymsg);
 	}
+
+	Y_pool_recycle(yo);
 }
 
 
@@ -76,9 +82,9 @@ static Ylogger_options *get_default_options()
 {
 	Ylogger_options *default_options = (Ylogger_options*)Ycalloc(1, sizeof(Ylogger_options));
 	default_options->level = DEFAULT_LEVEL;
-	Ystrcpy(default_options->path, DEFAULT_PATH, _countof(default_options->path));
+	Ystrcpy(default_options->path, DEFAULT_PATH, YARRAY_LENGTH(default_options->path));
 	default_options->max_size_bytes = DEFAULT_SIZE;
-	Ystrcpy(default_options->format, DEFAULT_FORMAT, _countof(default_options->format));
+	Ystrcpy(default_options->format, DEFAULT_FORMAT, YARRAY_LENGTH(default_options->format));
 	return default_options;
 }
 
@@ -102,7 +108,7 @@ static void init_options(Ylog *log, cJSON *json)
 
 static Yappender *get_appender(const char *type)
 {
-	size_t len = _countof(appenders);
+	size_t len = YARRAY_LENGTH(appenders);
 	for(size_t i = 0; i < len; i++)
 	{
 		if(appenders[i] == NULL)
@@ -149,6 +155,8 @@ static void init_appenders(Ylog *log, cJSON *json)
 
 
 
+
+
 int Y_log_init(const YCHAR *config)
 {
 	if(log != NULL)
@@ -168,12 +176,13 @@ int Y_log_init(const YCHAR *config)
 	cJSON *json = cJSON_Parse(bytes);
 	if(json == NULL)
 	{
-		perror("invalid log.json format");
+		//perror("invalid log.json format");
 		return YERR_INVALID_JSON;
 	}
 
 	log = (Ylog*)Ycalloc(1, sizeof(Ylog));
 	log->config = json;
+	log->msg_pool = Y_create_pool(sizeof(Ymsg), YMSG_POOL_SIZE);
 
 	// 先解析全局配置
 	init_options(log, json);
@@ -182,8 +191,8 @@ int Y_log_init(const YCHAR *config)
 	init_appenders(log, json);
 
 	// 启动日志队列
-	log->consume_queue = Y_create_queue(NULL, sizeof(Ymsg));
-	Y_queue_start(log->consume_queue, 1, consume_log_queue_callback);
+	log->consume_queue = Y_create_buffer_queue(NULL);
+	Y_buffer_queue_start(log->consume_queue, 1, consume_log_queue_callback);
 
 	return YERR_SUCCESS;
 }
@@ -192,7 +201,7 @@ Ylogger *Y_log_get_logger(const YCHAR *name)
 {
 	Ylogger *logger = (Ylogger*)Ycalloc(1, sizeof(Ylogger));
 	logger->log = log;
-	Ystrcpy(logger->name, (YCHAR *)name, _countof(logger->name));
+	Ystrcpy(logger->name, (YCHAR *)name, YARRAY_LENGTH(logger->name));
 	return logger;
 }
 
@@ -208,15 +217,18 @@ void Y_log_write(Ylogger *logger, Ylog_level level, int line, YCHAR *msg, ...)
 #endif
 	va_end(ap);
 
-	Ymsg *ymsg = (Ymsg *)Y_queue_prepare_enqueue(log->consume_queue);
+	Yobject *yo = Y_pool_obtain(log->msg_pool, sizeof(Ymsg));
+	Ymsg *ymsg = (Ymsg *)Y_object_get_data(yo);
+	ymsg->level = level;
 
 	// 格式化最终要输出的日志
 	const char *format = "[%s][%d]%s\r\n\0";
 #ifdef UNICODE
 	// 如果是Unicode字符把Unicode转成多字节字符输出
-	char *locale = setlocale(LC_ALL, NULL);
+	char locale[64] = { '\0' };
+	strncpy(locale, setlocale(LC_ALL, NULL), sizeof(locale));
 	setlocale(LC_ALL, ".ACP");
-	
+
 	char mbsmsg[MAX_MSG_SIZE1] = { '\0' };
 	wcstombs(mbsmsg, message, sizeof(mbsmsg));
 
@@ -238,7 +250,7 @@ void Y_log_write(Ylogger *logger, Ylog_level level, int line, YCHAR *msg, ...)
 
 	ymsg->level = level;
 
-	Y_queue_commit_enqueue(log->consume_queue);
+	Y_buffer_queue_enqueue(log->consume_queue, yo);
 }
 
 
