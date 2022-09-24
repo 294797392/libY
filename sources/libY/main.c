@@ -118,7 +118,7 @@ static void demo_Ylog()
 
 int main(int argc, char **argv)
 {
-	Y_log_init(YTEXT("Ylog.json"));
+	Y_log_init(YTEXT("E:\\oheiheiheiheihei\\libY\\msvc\\Debug\\Ylog.json"));
 
 	YLOGD(YTEXT("你好"));
 

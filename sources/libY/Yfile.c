@@ -19,7 +19,12 @@ int Y_file_stat(const YCHAR *file_path, Yfstat *stat)
 #if (defined(Y_WIN32))
 	WIN32_FILE_ATTRIBUTE_DATA attr_data;
 	memset(&attr_data, 0, sizeof(WIN32_FILE_ATTRIBUTE_DATA));
-	GetFileAttributesEx(file_path, GetFileExInfoStandard, &attr_data);
+	int rc = GetFileAttributesEx(file_path, GetFileExInfoStandard, &attr_data);
+	if(rc == 0)
+	{
+		rc = GetLastError();
+		return YERR_FILE_STAT_FAILED;
+	}
 	stat->exist = (attr_data.dwFileAttributes & 0x10) == 0;
 	stat->length = (stat->length | attr_data.nFileSizeHigh) << 32 | attr_data.nFileSizeLow;
 #elif (defined(Y_UNIX))
@@ -58,7 +63,7 @@ int Y_file_readbytes(const YCHAR *file_path, YBYTE **bytes, uint64_t *size)
 	{
 		return YERR_FAILED;
 	}
-	char *buf = (char *)Ycalloc((size_t)stat.length, 1);
+	char *buf = (char *)Ycalloc((size_t)stat.length + 1, 1);
 	fread(buf, 1, (size_t)stat.length, f);
 	fclose(f);
 	

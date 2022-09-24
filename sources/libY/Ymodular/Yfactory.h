@@ -10,6 +10,8 @@
 #ifndef __YFACTORY_H__
 #define __YFACTORY_H__
 
+#include <cJSON.h>
+
 #include "Y.h"
 #include "Ylist.h"
 
@@ -21,6 +23,8 @@ extern "C" {
 	typedef struct Yfactory_options_s Yfactory_options;
 	typedef struct Ymodule_s Ymodule;
 	typedef struct Ymodule_manifest_s Ymodule_manifest;
+	typedef enum Ymodule_flags_e Ymodule_flags;
+	typedef enum Ymodule_status_e Ymodule_status;
 
 	typedef int(*Ymodule_initialize_entry)(Ymodule *module, void **context);
 	typedef void(*Ymodule_release_entry)(Ymodule *module);
@@ -29,25 +33,25 @@ extern "C" {
 	typedef void(*Yfactory_module_status_changed)(Yfactory *factory, Ymodule *m, Ymodule_status status);
 
 	// 模块的选项
-	typedef enum {
+	enum Ymodule_flags_e {
 		YMOD_FLAGS_NONE,
 		YMOD_FLAGS_DISABLED
-	}Ymodule_flags;
+	};
 
 	// 模块状态
-	typedef enum {
+	enum Ymodule_status_e {
 		YMOD_STAT_UN_INITIALIZED,
 		YMOD_STAT_INITIALIZED,
 		YMOD_STAT_INIT_FAILED,
 		YMOD_STAT_INITIALIZING,
 		YMOD_STAT_INIT_EXCEPTION
-	}Ymodule_status;
+	};
 
 	struct Ymodule_manifest_s {
-		YCHAR id[DEF_STR_LEN];
-		YCHAR name[DEF_STR_LEN];
-		YCHAR desc[DEF_STR_LEN];
-		YCHAR author[DEF_STR_LEN];
+		YCHAR id[256];
+		YCHAR name[256];
+		YCHAR desc[256];
+		YCHAR author[256];
 		YCHAR lib_path[YMAX_PATH];
 		int flags;
 		char *init_entry;					// 入口点函数名
@@ -98,9 +102,9 @@ extern "C" {
 
 	// module公开接口
 	YAPI void *Y_module_context(Ymodule *module);
-	YAPI int Y_module_config_get_int(const char *key, int defval);
-	YAPI void Y_module_config_get_string(const char *key, char *buf, size_t bufsize, const char *defval);
-	YAPI double Y_module_config_get_double(const char *key, double defval);
+	YAPI int Y_module_config_get_int(Ymodule *module, const char *key, int defval);
+	YAPI void Y_module_config_get_string(Ymodule *module, const char *key, char *buf, size_t bufsize, const char *defval);
+	YAPI double Y_module_config_get_double(Ymodule *module, const char *key, double defval);
 
 #ifdef __cplusplus
 }

@@ -86,7 +86,7 @@ int Y_load_dll(YCHAR *dll_path, Ydll **outdll)
 	}
 
 	dll = (Ydll *)Ycalloc(1, sizeof(Ydll));
-	Ystrcpy(dll->path, dll_path);
+	Ystrcpy(dll->path, dll_path, _countof(dll->path));
 	dll->hmodule = lib;
 
 	Y_list_add(dllmgr->dlllist, dll);

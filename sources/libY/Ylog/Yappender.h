@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <cJSON.h>
+
 #include "Ylog.h"
 
 typedef struct Yappender_s
@@ -10,7 +12,7 @@ typedef struct Yappender_s
 
 	void *context;
 
-	void *(*open)(const char *uri);
+	void *(*open)(cJSON *config);
 	void(*close)(void *ctx);
 	void(*write)(void *ctx, const Ymsg *ymsg);
 	void(*flush)(void *ctx);

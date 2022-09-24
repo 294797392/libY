@@ -171,7 +171,8 @@ static int foreach_init_module(Ylist *runtimes, void *item, void *userdata)
 
 	while(1)
 	{
-		int code = module->initialize(module);
+		void *context = NULL;
+		int code = module->initialize(module, &context);
 		if(code != YERR_SUCCESS)
 		{
 			YLOGE(YTEXT("initialize module failed, %s, code = %d"), manifest->name, code);
@@ -182,6 +183,8 @@ static int foreach_init_module(Ylist *runtimes, void *item, void *userdata)
 			Ysleep(opts->initial_interval);
 			continue;
 		}
+
+		module->context = context;
 
 		YLOGI(YTEXT("initialize module success, %s"), manifest->name);
 		if(opts->on_module_status_changed)

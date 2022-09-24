@@ -62,7 +62,8 @@ extern "C" {
 	YAPI void Ystr_split_free(char **tokens, size_t num_tokens);
 
 	YAPI int Ystrcmp(YCHAR *str1, YCHAR *str2);
-	YAPI YCHAR *Ystrcpy(YCHAR *dest, YCHAR *source);
+	YAPI YCHAR *Ystrcpy(YCHAR *dest, YCHAR *source, size_t count);
+	YAPI size_t Ystrlen(YCHAR *str);
 
 #ifdef __cplusplus
 }

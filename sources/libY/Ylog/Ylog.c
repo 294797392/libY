@@ -20,6 +20,7 @@
 #include "Yappender.h"
 #include "Yfile.h"
 #include "Ystring.h"
+#include "Ypool.h"
 
 #define DEFAULT_LEVEL				YLOG_LEVEL_DEBUG
 #define DEFAULT_PATH				YTEXT("Ylog.txt")
@@ -39,6 +40,8 @@ typedef struct Ylog_s
 	Ylogger *logger[256];
 
 	Yqueue *consume_queue;
+
+	cJSON *config;
 }Ylog;
 
 struct Ylogger_s
@@ -48,7 +51,11 @@ struct Ylogger_s
 };
 
 extern Yappender Yappender_console;
-static Yappender *appenders[32] = { NULL };
+static Yappender *appenders[] =
+{
+	&Yappender_console,
+	NULL
+};
 static Ylog *log = NULL;
 
 static void consume_log_queue_callback(void *userdata, void *element)
@@ -69,9 +76,9 @@ static Ylogger_options *get_default_options()
 {
 	Ylogger_options *default_options = (Ylogger_options*)Ycalloc(1, sizeof(Ylogger_options));
 	default_options->level = DEFAULT_LEVEL;
-	Ystrcpy(default_options->path, YTEXT("abc"));
+	Ystrcpy(default_options->path, DEFAULT_PATH, _countof(default_options->path));
 	default_options->max_size_bytes = DEFAULT_SIZE;
-	Ystrcpy(default_options->format, DEFAULT_FORMAT);
+	Ystrcpy(default_options->format, DEFAULT_FORMAT, _countof(default_options->format));
 	return default_options;
 }
 
@@ -95,8 +102,8 @@ static void init_options(Ylog *log, cJSON *json)
 
 static Yappender *get_appender(const char *type)
 {
-	size_t len = sizeof(appenders) / sizeof(Yappender*);
-	for(int i = 0; i < len; i++)
+	size_t len = _countof(appenders);
+	for(size_t i = 0; i < len; i++)
 	{
 		if(appenders[i] == NULL)
 		{
@@ -129,8 +136,14 @@ static void init_appenders(Ylog *log, cJSON *json)
 		cJSON *appender = cJSON_GetArrayItem(appenders, i);
 		cJSON *type = cJSON_GetObjectItem(appender, "type");
 		Yappender *appender1 = get_appender(type->valuestring);
-		appender1->context = appender1->open("");
+		if(appender1 == NULL)
+		{
+			printf("%s log appender not found\n", type->valuestring);
+			continue;
+		}
+		appender1->context = appender1->open(appender);
 		log->appenders[i] = appender1;
+		log->num_appenders++;
 	}
 }
 
@@ -160,6 +173,7 @@ int Y_log_init(const YCHAR *config)
 	}
 
 	log = (Ylog*)Ycalloc(1, sizeof(Ylog));
+	log->config = json;
 
 	// 先解析全局配置
 	init_options(log, json);
@@ -178,7 +192,7 @@ Ylogger *Y_log_get_logger(const YCHAR *name)
 {
 	Ylogger *logger = (Ylogger*)Ycalloc(1, sizeof(Ylogger));
 	logger->log = log;
-	Ystrcpy(logger->name, (YCHAR*)name);
+	Ystrcpy(logger->name, (YCHAR *)name, _countof(logger->name));
 	return logger;
 }
 
@@ -203,7 +217,7 @@ void Y_log_write(Ylogger *logger, Ylog_level level, int line, YCHAR *msg, ...)
 	char *locale = setlocale(LC_ALL, NULL);
 	setlocale(LC_ALL, ".ACP");
 	
-	char mbsmsg[MAX_MSG_SIZE2] = { '\0' };
+	char mbsmsg[MAX_MSG_SIZE1] = { '\0' };
 	wcstombs(mbsmsg, message, sizeof(mbsmsg));
 
 	char mbscate[1024] = { '\0' };

@@ -132,11 +132,20 @@ int Ystrcmp(YCHAR *str1, YCHAR *str2)
 #endif
 }
 
-YCHAR *Ystrcpy(YCHAR *dest, YCHAR *source)
+YCHAR *Ystrcpy(YCHAR *dest, YCHAR *source, size_t count)
 {
 #ifdef UNICODE
-	return wcsncpy(dest, source, wcslen(dest));
+	return wcsncpy(dest, source, count);
 #else
-	return strncpy(dest, source, strlen(dest));
+	return strncpy(dest, source, count);
+#endif
+}
+
+size_t Ystrlen(YCHAR *str)
+{
+#ifdef UNICODE
+	return wcslen(str);
+#else
+	return strlen(str);
 #endif
 }
