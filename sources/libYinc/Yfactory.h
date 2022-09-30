@@ -1,10 +1,10 @@
-/***********************************************************************************
+ï»¿/***********************************************************************************
  * @ file    : Yfactory.h
  * @ author  : oheiheiheiheihei
  * @ version : 0.9
  * @ date    : 2022.08.31 19:33
- * @ brief   : Ä£¿é¹¤³§
- * @ remark  £º
+ * @ brief   : æ¨¡å—å·¥å‚
+ * @ remark  ï¼š
  ************************************************************************************/
 
 #ifndef __YFACTORY_H__
@@ -32,13 +32,13 @@ extern "C" {
 	typedef void(*Yfactory_initialized)(Yfactory *factory);
 	typedef void(*Yfactory_module_status_changed)(Yfactory *factory, Ymodule *m, Ymodule_status status);
 
-	// Ä£¿éµÄÑ¡Ïî
+	// æ¨¡å—çš„é€‰é¡¹
 	enum Ymodule_flags_e {
 		YMOD_FLAGS_NONE,
 		YMOD_FLAGS_DISABLED
 	};
 
-	// Ä£¿é×´Ì¬
+	// æ¨¡å—çŠ¶æ€
 	enum Ymodule_status_e {
 		YMOD_STAT_UN_INITIALIZED,
 		YMOD_STAT_INITIALIZED,
@@ -54,44 +54,44 @@ extern "C" {
 		YCHAR author[256];
 		YCHAR lib_path[YMAX_PATH];
 		int flags;
-		char *init_entry;					// Èë¿Úµãº¯ÊıÃû
-		char *release_entry;				// ÊÍ·Åº¯ÊıÃû
+		char *init_entry;					// å…¥å£ç‚¹å‡½æ•°å
+		char *release_entry;				// é‡Šæ”¾å‡½æ•°å
 		cJSON *input;
 	};
 
 	struct Yfactory_options_s
 	{
-		// ³õÊ¼»¯Íê³ÉµÄ»Øµ÷
+		// åˆå§‹åŒ–å®Œæˆçš„å›è°ƒ
 		Yfactory_initialized on_initialized;
-		// Ä£¿é×´Ì¬·¢Éú¸Ä±äµÄ»Øµ÷
+		// æ¨¡å—çŠ¶æ€å‘ç”Ÿæ”¹å˜çš„å›è°ƒ
 		Yfactory_module_status_changed on_module_status_changed;
 
-		// µ±Ä³¸öÄ£¿é³õÊ¼»¯Ê§°ÜµÄÊ±ºò£¬×Ô¶¯ÖØÊÔ³õÊ¼»¯µÄ¼ä¸ôÊ±¼ä
-		// µ¥Î»ºÁÃë
+		// å½“æŸä¸ªæ¨¡å—åˆå§‹åŒ–å¤±è´¥çš„æ—¶å€™ï¼Œè‡ªåŠ¨é‡è¯•åˆå§‹åŒ–çš„é—´éš”æ—¶é—´
+		// å•ä½æ¯«ç§’
 		int initial_interval;
 	};
 
 	/*
-	 * ÃèÊö£º
-	 * Ê¹ÓÃoptions´´½¨Ò»¸ö¹¤³§
+	 * æè¿°ï¼š
+	 * ä½¿ç”¨optionsåˆ›å»ºä¸€ä¸ªå·¥å‚
 	 *
-	 * ²ÎÊı£º
-	 * @opts£ºÄ£¿é¹¤³§µÄÑ¡Ïî
+	 * å‚æ•°ï¼š
+	 * @optsï¼šæ¨¡å—å·¥å‚çš„é€‰é¡¹
 	 *
-	 * ·µ»ØÖµ£º
-	 * YfactoryÊµÀı
+	 * è¿”å›å€¼ï¼š
+	 * Yfactoryå®ä¾‹
 	 */
 	YAPI Yfactory *Y_create_factory(Yfactory_options *opts);
 
 	/*
-	 * ÃèÊö£º
-	 * Ê¹ÓÃÒ»×éÄ£¿éÒì²½³õÊ¼»¯Ä£¿é¹¤³§
+	 * æè¿°ï¼š
+	 * ä½¿ç”¨ä¸€ç»„æ¨¡å—å¼‚æ­¥åˆå§‹åŒ–æ¨¡å—å·¥å‚
 	 *
-	 * ²ÎÊı£º
-	 * @modules£ºÒª¼ÓÔØµÄÄ£¿éÁĞ±í, Ymodule_manifestÁĞ±í
+	 * å‚æ•°ï¼š
+	 * @modulesï¼šè¦åŠ è½½çš„æ¨¡å—åˆ—è¡¨, Ymodule_manifeståˆ—è¡¨
 	 *
-	 * ·µ»ØÖµ£º
-	 * YfactoryÊµÀı
+	 * è¿”å›å€¼ï¼š
+	 * Yfactoryå®ä¾‹
 	 */
 	YAPI int Y_setup_factory_async(Yfactory *factory, Ylist *manifests);
 
@@ -100,7 +100,7 @@ extern "C" {
 	YAPI void Y_delete_factory(Yfactory *factory);
 
 
-	// module¹«¿ª½Ó¿Ú
+	// moduleå…¬å¼€æ¥å£
 	YAPI void *Y_module_context(Ymodule *module);
 	YAPI int Y_module_config_get_int(Ymodule *module, const char *key, int defval);
 	YAPI void Y_module_config_get_string(Ymodule *module, const char *key, char *buf, size_t bufsize, const char *defval);

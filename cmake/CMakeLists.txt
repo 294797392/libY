@@ -71,7 +71,6 @@ list(APPEND Y_INCLUDE ${Y_DIR}/Yevent.h)
 list(APPEND Y_INCLUDE ${Y_DIR}/Ydll.h)
 list(APPEND Y_INCLUDE ${Y_DIR}/Ymodular/Yfactory.h)
 list(APPEND Y_INCLUDE ${Y_DIR}/Ylog/Ylog.h)
-list(APPEND Y_INCLUDE ${Y_DIR}/libY.h)
 
 # 拷贝头文件到libYinc
 file(COPY ${Y_INCLUDE} DESTINATION ${Y_DIR}/../libYinc)

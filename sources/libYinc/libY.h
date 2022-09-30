@@ -5,6 +5,7 @@
 extern "C" {
 #endif
 
+#include "Y.h"
 #include "Yerrno.h"
 #include "Yevent.h"
 #include "Ylist.h"
@@ -16,6 +17,9 @@ extern "C" {
 #include "Ystring.h"
 #include "Ythread.h"
 #include "Ytree.h"
+#include "Ylog.h"
+#include "Yfactory.h"
+#include "Yfile.h"
 
 #ifdef __cplusplus
 }

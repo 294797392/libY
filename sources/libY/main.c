@@ -138,6 +138,8 @@ int main(int argc, char **argv)
 {
 	Y_log_init(YTEXT("E:\\oheiheiheiheihei\\libY\\msvc\\Debug\\Ylog.json"));
 
+	YLOGI(YTEXT("123"));
+
 	for(size_t i = 0; i < 99999999; i++)
 	{
 		YLOGD(YTEXT("%d"), i);
