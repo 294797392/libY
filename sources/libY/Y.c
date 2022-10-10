@@ -6,6 +6,7 @@
 
 #if (defined(Y_WIN32))
 #include <Windows.h>
+#include <WinSock2.h>
 #elif (defined(Y_UNIX))
 #include <unistd.h>
 #endif

@@ -6,5 +6,6 @@
 #define YERR_FAILED							2
 #define YERR_INVALID_JSON					3
 #define YERR_FILE_STAT_FAILED				4				// 读取文件属性失败
+#define YERR_VIDEO_FORMAT_NOT_SUPPORTED     5               // 不支持的视频格式
 
 #endif

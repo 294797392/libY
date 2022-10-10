@@ -1,10 +1,10 @@
-/***********************************************************************************
+ï»¿/***********************************************************************************
  * @ file    : Ydll.h
  * @ author  : oheiheiheiheihei
  * @ version : 0.9
  * @ date    : 2022.09.04 13:32
- * @ brief   : ·â×°dllÏà¹ØµÄ²Ù×÷
- * @ remark  £º
+ * @ brief   : å°è£…dllç›¸å…³çš„æ“ä½œ
+ * @ remark  ï¼š
  ************************************************************************************/
 
 #ifndef __YDLL_H__
@@ -20,14 +20,14 @@ extern "C" {
 	typedef struct Ydll_s Ydll;
 
 	/// <summary>
-	/// ¶¯Ì¬¼ÓÔØÒ»¸ödll
+	/// åŠ¨æ€åŠ è½½ä¸€ä¸ªdll
 	/// </summary>
-	/// <param name="dll_path">Òª¼ÓÔØµÄdllµÄÂ·¾¶</param>
-	/// <returns>dllÊµÀı£¬Èç¹û¼ÓÔØÊ§°ÜÔò·µ»Ø¿Õ</returns>
+	/// <param name="dll_path">è¦åŠ è½½çš„dllçš„è·¯å¾„</param>
+	/// <returns>dllå®ä¾‹ï¼Œå¦‚æœåŠ è½½å¤±è´¥åˆ™è¿”å›ç©º</returns>
 	YAPI int Y_load_dll(YCHAR *dll_path, Ydll **outdll);
 
 	/// <summary>
-	/// ÊÍ·ÅÒ»¸ö¼ÓÔØµÄdll
+	/// é‡Šæ”¾ä¸€ä¸ªåŠ è½½çš„dll
 	/// </summary>
 	/// <param name="dll"></param>
 	/// <returns></returns>
