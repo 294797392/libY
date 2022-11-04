@@ -56,7 +56,7 @@ Ybuffer_queue *Y_create_buffer_queue(void *userdata)
 	Ybuffer_queue *yq = (Ybuffer_queue *)Ycalloc(1, sizeof(Ybuffer_queue));
 	if (!yq)
 	{
-		//YLOGE(YTEXT("create Yqueue instance failed"));
+		//YLOGE(("create Yqueue instance failed"));
 		return NULL;
 	}
 

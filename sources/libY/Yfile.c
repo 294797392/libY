@@ -15,7 +15,7 @@
 #include "Ystring.h"
 #include "Yfile.h"
 
-int Y_file_stat(const YCHAR *file_path, Yfstat *stat)
+int Y_file_stat(const char *file_path, Yfstat *stat)
 {
 #if (defined(Y_WIN32)) || (defined(Y_MINGW))
 	WIN32_FILE_ATTRIBUTE_DATA attr_data;
@@ -36,7 +36,7 @@ int Y_file_stat(const YCHAR *file_path, Yfstat *stat)
 	return YERR_SUCCESS;
 }
 
-int Y_file_readbytes(const YCHAR *file_path, YBYTE **bytes, uint64_t *size)
+int Y_file_readbytes(const char *file_path, char **bytes, uint64_t *size)
 {
 	Yfstat stat;
 	int rc = Y_file_stat(file_path, &stat);
@@ -55,22 +55,7 @@ int Y_file_readbytes(const YCHAR *file_path, YBYTE **bytes, uint64_t *size)
 		return YERR_SUCCESS;
 	}
 
-	//wcstombs(,,)
-
-#ifdef UNICODE
-#if (defined(Y_WIN32)) || (defined(Y_MINGW))
-	FILE *f = _wfopen(file_path, YTEXT("r"));
-#elif (defined(Y_UNIX)) || (defined(Y_MSYS))
-	char locale[64] = { '\0' };
-	strncpy(locale, setlocale(LC_ALL, NULL), sizeof(locale));
-	char mb_path[1024] = { '\0' };
-	wcstombs(mb_path, file_path, sizeof(mb_path));
-	setlocale(LC_ALL, locale);
-	FILE *f = fopen(mb_path, "r");
-#endif
-#else
 	FILE *f = fopen(file_path, "r");
-#endif
 	if(f == NULL)
 	{
 		return YERR_FAILED;

@@ -122,7 +122,7 @@ static void demo_Ypool()
 	{
 		Yobject *yo = Y_pool_obtain(yp, 1024);
 		char *msg = (char *)Y_object_get_data(yo);
-		YLOGI(YTEXT("%s"), msg);
+		YLOGI(("%s"), msg);
 	}
 }
 
@@ -130,19 +130,19 @@ static void demo_Ylog()
 {
 	while (1)
 	{
-		YLOGI(YTEXT("test log, %d"), errno);
+		YLOGI(("test log, %d"), errno);
 	}
 }
 
 int main(int argc, char **argv)
 {
-	Y_log_init(YTEXT("E:\\oheiheiheiheihei\\libY\\msvc\\Debug\\Ylog.json"));
+	Y_log_init(("E:\\oheiheiheiheihei\\libY\\msvc\\Debug\\Ylog.json"));
 
-	YLOGI(YTEXT("123"));
+	YLOGI(("123"));
 
 	for(size_t i = 0; i < 99999999; i++)
 	{
-		YLOGD(YTEXT("%d"), i);
+		YLOGD(("%d"), i);
 		Ysleep(1);
 	}
 
@@ -152,8 +152,8 @@ int main(int argc, char **argv)
 	//Y_file_read_linux_perm("/home/oheiheiheiheihei/code/oheiheiheiheihei/tools/cmake/Ydemo", perm);
 	//printf("%s\n", perm);
 
-	//YLOGI(YTEXT("hello libY"));
-	// YLOGCI(CATEGORY, YTEXT("hello libY"));
+	//YLOGI(("hello libY"));
+	// YLOGCI(CATEGORY, ("hello libY"));
 
 	// demo_Yqueue();
 
@@ -202,7 +202,7 @@ int main(int argc, char **argv)
 	{
 		char line[1024] = { '\0' };
 		fgets(line, sizeof(line), stdin);
-		YLOGI(YTEXT("your input is : %s"), line);
+		YLOGI(("your input is : %s"), line);
 	}
 
 	return 0;

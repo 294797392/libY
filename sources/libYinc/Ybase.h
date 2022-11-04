@@ -29,20 +29,20 @@
 #define Y_API YAPI
 
 // 在unix和win32平台兼容多字节字符
-// YTEXT宏表示让编译器把YTEXT里的字符当成多字节字符处理，也就是一个字符可能需要2-4个字节去存储
+// 宏表示让编译器把里的字符当成多字节字符处理，也就是一个字符可能需要2-4个字节去存储
 // 多字节字符可以存储汉字
 // #if (defined(Y_ENV_WIN32))
-// #define YTEXT(quote)		TEXT(quote)
+// #define (quote)		TEXT(quote)
 // #elif (defined(Y_ENV_MINGW))
-// #define YTEXT(quote)		L##quote
+// #define (quote)		L##quote
 // #elif (defined(Y_ENV_UNIX))
-// #define YTEXT(quote)        L##quote
+// #define (quote)        L##quote
 // #else
-// #define YTEXT(quote)        quote
+// #define (quote)        quote
 // #endif
 
-#define YTEXT
-typedef char YCHAR;
+#define 
+typedef char char;
 
 #ifdef __cplusplus
 extern "C" {

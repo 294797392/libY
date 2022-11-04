@@ -2,11 +2,11 @@
 #include <stdio.h>
 #include <string.h>
 
-//#define YTEXT(Q)
+//#define (Q)
 
 int main(int argc, char **argv)
 {
-	wchar_t *s = L"123";//YTEXT("123");
+	wchar_t *s = L"123";//("123");
 
 	return 0;
 }

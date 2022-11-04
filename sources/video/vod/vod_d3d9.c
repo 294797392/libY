@@ -44,7 +44,7 @@ int d3d_renderer_init(video_renderer *renderer, video_renderer_options *options,
     d3d9 = Direct3DCreate9(D3D_SDK_VERSION);
     if(d3d9 == NULL)
     {
-        YLOGE(YTEXT("Durect3DCreate9 failed, %d"), GetLastError());
+        YLOGE(("Durect3DCreate9 failed, %d"), GetLastError());
         return YERR_FAILED;
     }
 
@@ -59,7 +59,7 @@ int d3d_renderer_init(video_renderer *renderer, video_renderer_options *options,
 	HRESULT r = d3d9->lpVtbl->CreateDevice(d3d9, D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, (HWND)options->drawable, D3DCREATE_MIXED_VERTEXPROCESSING, &d3dpp, &d3ddev9);
 	if(FAILED(r))
     {
-        YLOGE(YTEXT("IDirect3D9->CreateDevice failed, %d"), r);
+        YLOGE(("IDirect3D9->CreateDevice failed, %d"), r);
         return YERR_FAILED;
     }
 
@@ -67,7 +67,7 @@ int d3d_renderer_init(video_renderer *renderer, video_renderer_options *options,
 	r = d3ddev9->lpVtbl->CreateOffscreenPlainSurface(d3ddev9, (UINT)options->video_width, (UINT)options->video_height, d3dfmt, D3DPOOL_DEFAULT, &d3dsurface9, NULL);
 	if(FAILED(r))
     {
-        YLOGE(YTEXT("IDirect3DDevice9->CreateOffscreenPlainSurface failed, %d"), r);
+        YLOGE(("IDirect3DDevice9->CreateOffscreenPlainSurface failed, %d"), r);
         return YERR_FAILED;
     }
 
@@ -97,7 +97,7 @@ int d3d_renderer_render(video_renderer *renderer, char *video_data)
     HRESULT hr = ctx->d3dsurface9->lpVtbl->LockRect(ctx->d3dsurface9, &lockedrect, NULL, D3DLOCK_DISCARD);
     if(FAILED(hr))
     {
-        YLOGE(YTEXT("d3dsurface9->LockRect failed, %d"), hr);
+        YLOGE(("d3dsurface9->LockRect failed, %d"), hr);
         return YERR_FAILED;
     }
 
@@ -137,7 +137,7 @@ int d3d_renderer_render(video_renderer *renderer, char *video_data)
 
     if((FAILED(hr = ctx->d3dsurface9->lpVtbl->UnlockRect(ctx->d3dsurface9))))
     {
-        YLOGE(YTEXT("d3dsurface9->UnlockRect failed, %d"), hr);
+        YLOGE(("d3dsurface9->UnlockRect failed, %d"), hr);
         return YERR_FAILED;
     }
 

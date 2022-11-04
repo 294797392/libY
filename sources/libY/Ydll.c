@@ -22,7 +22,7 @@ typedef struct Ydll_mgr_s
 struct Ydll_s
 {
 	// dll的完整路径
-	YCHAR path[YMAX_PATH];
+	char path[YMAX_PATH];
 
 #if (defined(Y_WIN32))
 	HMODULE hmodule;
@@ -37,7 +37,7 @@ static Ydll_mgr *dllmgr = NULL;
 
 static int query_dll(Ylist *yl, void *item, void *data, void *userdata)
 {
-	YCHAR *dll_path = (YCHAR *)data;
+	char *dll_path = (char *)data;
 	Ydll *dll = (Ydll *)item;
 
 	if(Ystrcmp(dll->path, dll_path) == 0)
@@ -51,7 +51,7 @@ static int query_dll(Ylist *yl, void *item, void *data, void *userdata)
 
 
 
-int Y_load_dll(YCHAR *dll_path, Ydll **outdll)
+int Y_load_dll(char *dll_path, Ydll **outdll)
 {
 	if(dllmgr == NULL)
 	{

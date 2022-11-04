@@ -38,7 +38,7 @@ extern "C" {
 	 * 返回值：
 	 * 文件大小，以字节为单位
 	 */
-	YAPI int Y_file_stat(const YCHAR *file_path, Yfstat *stat);
+	YAPI int Y_file_stat(const char *file_path, Yfstat *stat);
 
 
 	/*
@@ -52,7 +52,7 @@ extern "C" {
 	 * 返回值：
 	 * 文件内容的长度
 	 */
-	YAPI int Y_file_readbytes(const YCHAR *file_path, YBYTE **bytes, uint64_t *size);
+	YAPI int Y_file_readbytes(const char *file_path, char **bytes, uint64_t *size);
 
 	/*
 	 * 描述：

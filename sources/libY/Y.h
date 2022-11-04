@@ -29,23 +29,6 @@
     #define YAPI
 #endif
 
-#ifdef UNICODE
-typedef wchar_t YCHAR;
-#if (defined(Y_WIN32))
-#define YTEXT(quote)       TEXT(quote)
-#elif (defined(Y_MINGW))
-#define YTEXT(quote)        L##quote
-#elif (defined(Y_MSYS))
-#define YTEXT(quote)        L##quote
-#endif
-#else
-#define YTEXT(quote)
-typedef char YCHAR;
-#endif
-
-// 表示一个字节
-typedef char YBYTE;
-
 #ifdef __cplusplus
 extern "C" {
 #endif

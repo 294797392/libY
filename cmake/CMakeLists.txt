@@ -7,12 +7,12 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -Wall -Wno-unused-variable -Wno-unu
 
 # 全局变量定义
 set(Y_DIR ../sources/libY)
+set(Y_EXT_DIR ../external)
 set(Y_SYS ${CMAKE_SYSTEM_NAME})
 message(STATUS "Y_SYS = " ${Y_SYS})
 
 # 宏定义选项
 add_definitions(-D Y_MAP_CHAIN)                 # 指定哈希表使用链式扩展法解决哈希冲突问题
-add_definitions(-D UNICODE)
 
 # 配置不同环境下的CMake文件
 if(${MSYS})
@@ -30,7 +30,7 @@ endif()
 # 设置要引用的头文件目录
 include_directories(${Y_DIR})
 include_directories(${Y_DIR}/Ylog)
-include_directories(${Y_DIR}/external)
+include_directories(${Y_EXT_DIR}/cJSON)
 
 # 编译libY
 list(APPEND Y_SOURCE ${Y_DIR}/Y.c)
@@ -46,8 +46,7 @@ list(APPEND Y_SOURCE ${Y_DIR}/Yfile.c)
 list(APPEND Y_SOURCE ${Y_DIR}/Yevent.c)
 list(APPEND Y_SOURCE ${Y_DIR}/Ylog/Ylog.c)
 list(APPEND Y_SOURCE ${Y_DIR}/Ylog/Yappender_conosle.c)
-list(APPEND Y_SOURCE ${Y_DIR}/external/cJSON.c)
-# aux_source_directory(${Y_DIR} Y_SOURCE)
+list(APPEND Y_SOURCE ${Y_EXT_DIR}/cJSON/cJSON.c)
 add_library(Y ${Y_SOURCE})
 target_link_libraries(Y PRIVATE ${Y_LINK_LIBRARIES})
 

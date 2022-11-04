@@ -123,7 +123,7 @@ void Ystr_split_free(char **tokens, size_t num_tokens)
 	}
 }
 
-int Ystrcmp(YCHAR *str1, YCHAR *str2)
+int Ystrcmp(char *str1, char *str2)
 {
 #ifdef UNICODE
 	return wcsncmp(str1, str2, wcslen(str1));
@@ -132,7 +132,7 @@ int Ystrcmp(YCHAR *str1, YCHAR *str2)
 #endif
 }
 
-YCHAR *Ystrcpy(YCHAR *dest, YCHAR *source, size_t count)
+char *Ystrcpy(char *dest, char *source, size_t count)
 {
 #ifdef UNICODE
 	return wcsncpy(dest, source, count);
@@ -141,7 +141,7 @@ YCHAR *Ystrcpy(YCHAR *dest, YCHAR *source, size_t count)
 #endif
 }
 
-size_t Ystrlen(YCHAR *str)
+size_t Ystrlen(char *str)
 {
 #ifdef UNICODE
 	return wcslen(str);

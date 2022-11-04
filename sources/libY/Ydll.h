@@ -3,8 +3,8 @@
  * @ author  : oheiheiheiheihei
  * @ version : 0.9
  * @ date    : 2022.09.04 13:32
- * @ brief   : ·â×°dllÏà¹ØµÄ²Ù×÷
- * @ remark  £º
+ * @ brief   : ï¿½ï¿½×°dllï¿½ï¿½ØµÄ²ï¿½ï¿½ï¿½
+ * @ remark  ï¿½ï¿½
  ************************************************************************************/
 
 #ifndef __YDLL_H__
@@ -20,14 +20,14 @@ extern "C" {
 	typedef struct Ydll_s Ydll;
 
 	/// <summary>
-	/// ¶¯Ì¬¼ÓÔØÒ»¸ödll
+	/// ï¿½ï¿½Ì¬ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½dll
 	/// </summary>
-	/// <param name="dll_path">Òª¼ÓÔØµÄdllµÄÂ·¾¶</param>
-	/// <returns>dllÊµÀý£¬Èç¹û¼ÓÔØÊ§°ÜÔò·µ»Ø¿Õ</returns>
-	YAPI int Y_load_dll(YCHAR *dll_path, Ydll **outdll);
+	/// <param name="dll_path">Òªï¿½ï¿½ï¿½Øµï¿½dllï¿½ï¿½Â·ï¿½ï¿½</param>
+	/// <returns>dllÊµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½ï¿½ò·µ»Ø¿ï¿½</returns>
+	YAPI int Y_load_dll(char *dll_path, Ydll **outdll);
 
 	/// <summary>
-	/// ÊÍ·ÅÒ»¸ö¼ÓÔØµÄdll
+	/// ï¿½Í·ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½dll
 	/// </summary>
 	/// <param name="dll"></param>
 	/// <returns></returns>

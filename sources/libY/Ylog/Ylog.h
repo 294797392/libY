@@ -51,9 +51,9 @@ extern "C" {
 	typedef struct Ylogger_options_s
 	{
 		int level;
-		YCHAR path[256];
+		char path[256];
 		int max_size_bytes;
-		YCHAR format[1024];
+		char format[1024];
 	}Ylogger_options;
 
 	/*
@@ -63,11 +63,11 @@ extern "C" {
 	 * 返回值：
 	 * YERRNO
 	 */
-	YAPI int Y_log_init(const YCHAR *config);
+	YAPI int Y_log_init(const char *config);
 
-	YAPI Ylogger *Y_log_get_logger(const YCHAR *name);
+	YAPI Ylogger *Y_log_get_logger(const char *name);
 
-	YAPI void Y_log_write(Ylogger *logger, Ylog_level level, int line, YCHAR *msg, ...);
+	YAPI void Y_log_write(Ylogger *logger, Ylog_level level, int line, char *msg, ...);
 
 #ifdef __cplusplus
 }

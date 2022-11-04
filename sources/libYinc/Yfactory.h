@@ -48,11 +48,11 @@ extern "C" {
 	};
 
 	struct Ymodule_manifest_s {
-		YCHAR id[256];
-		YCHAR name[256];
-		YCHAR desc[256];
-		YCHAR author[256];
-		YCHAR lib_path[YMAX_PATH];
+		char *id;
+		char *name;
+		char *desc;
+		char *author;
+		char *lib_path;
 		int flags;
 		char *init_entry;					// 入口点函数名
 		char *release_entry;				// 释放函数名
@@ -95,7 +95,7 @@ extern "C" {
 	 */
 	YAPI int Y_setup_factory_async(Yfactory *factory, Ylist *manifests);
 
-	YAPI int Y_setup_factory_async2(Yfactory *factory, const YCHAR *config_file);
+	YAPI int Y_setup_factory_async2(Yfactory *factory, const char *config_file);
 
 	YAPI void Y_delete_factory(Yfactory *factory);
 

@@ -24,9 +24,9 @@
 #include "Ypool.h"
 
 #define DEFAULT_LEVEL				YLOG_LEVEL_DEBUG
-#define DEFAULT_PATH				YTEXT("Ylog.txt")
+#define DEFAULT_PATH				("Ylog.txt")
 #define DEFAULT_SIZE				4194304
-#define DEFAULT_FORMAT				YTEXT("")
+#define DEFAULT_FORMAT				("")
 #define YMSG_POOL_SIZE				8192
 
 
@@ -49,7 +49,7 @@ typedef struct Ylog_s
 
 struct Ylogger_s
 {
-	YCHAR name[64];
+	char name[64];
 	Ylog *log;
 };
 
@@ -157,14 +157,14 @@ static void init_appenders(Ylog *log, cJSON *json)
 
 
 
-int Y_log_init(const YCHAR *config)
+int Y_log_init(const char *config)
 {
 	if(log != NULL)
 	{
 		return YERR_SUCCESS;
 	}
 
-	YBYTE *bytes = NULL;
+	char *bytes = NULL;
 	uint64_t size = 0;
 	int code = Y_file_readbytes(config, &bytes, &size);
 	if(code != YERR_SUCCESS)
@@ -197,24 +197,20 @@ int Y_log_init(const YCHAR *config)
 	return YERR_SUCCESS;
 }
 
-Ylogger *Y_log_get_logger(const YCHAR *name)
+Ylogger *Y_log_get_logger(const char *name)
 {
 	Ylogger *logger = (Ylogger*)Ycalloc(1, sizeof(Ylogger));
 	logger->log = log;
-	Ystrcpy(logger->name, (YCHAR *)name, YARRAY_LENGTH(logger->name));
+	Ystrcpy(logger->name, (char *)name, YARRAY_LENGTH(logger->name));
 	return logger;
 }
 
-void Y_log_write(Ylogger *logger, Ylog_level level, int line, YCHAR *msg, ...)
+void Y_log_write(Ylogger *logger, Ylog_level level, int line, char *msg, ...)
 {
-	YCHAR message[MAX_MSG_SIZE1] = {'\0'};
+	char message[MAX_MSG_SIZE1] = {'\0'};
 	va_list ap;
 	va_start(ap, msg);
-#ifdef UNICODE
-	vswprintf(message, MAX_MSG_SIZE1, msg, ap);
-#else
 	vsnprintf(message, MAX_MSG_SIZE1, msg, ap);
-#endif
 	va_end(ap);
 
 	Yobject *yo = Y_pool_obtain(log->msg_pool, sizeof(Ymsg));
@@ -223,30 +219,7 @@ void Y_log_write(Ylogger *logger, Ylog_level level, int line, YCHAR *msg, ...)
 
 	// 格式化最终要输出的日志
 	const char *format = "[%s][%d]%s\r\n\0";
-#ifdef UNICODE
-	// 如果是Unicode字符把Unicode转成多字节字符输出
-	char locale[64] = { '\0' };
-	strncpy(locale, setlocale(LC_ALL, NULL), sizeof(locale));
-	setlocale(LC_ALL, ".ACP");
-
-	char mbsmsg[MAX_MSG_SIZE1] = { '\0' };
-	wcstombs(mbsmsg, message, sizeof(mbsmsg));
-
-	char mbscate[1024] = { '\0' };
-	if(logger == NULL)
-	{
-		wcstombs(mbscate, YTEXT("NULL"), sizeof(mbscate));
-	}
-	else
-	{
-		wcstombs(mbscate, logger->name, sizeof(mbscate));
-	}
-	
-	setlocale(LC_ALL, locale);
-	snprintf(ymsg->msg, sizeof(ymsg->msg), format, mbscate, line, mbsmsg);
-#else
 	snprintf(ymsg->msg, sizeof(ymsg->msg), format, logger->name, line, message);
-#endif
 
 	ymsg->level = level;
 

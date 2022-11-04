@@ -28,7 +28,7 @@ int ffmpeg_decoder_init(video_decoder *decoder, void **decode_ctx)
     AVCodec *codec = avcodec_find_decoder(AV_CODEC_ID_H264);
     if(codec == NULL)
     {
-        YLOGE(YTEXT("avcodec_find_decoder failed"));
+        YLOGE(("avcodec_find_decoder failed"));
         return YERR_FAILED;
     }
 
@@ -44,7 +44,7 @@ int ffmpeg_decoder_init(video_decoder *decoder, void **decode_ctx)
     int rc = avcodec_open2(codec_ctx, codec, NULL);
     if(rc < 0)
     {
-        YLOGE(YTEXT("avcodec_open2 failed, %s"), rc);
+        YLOGE(("avcodec_open2 failed, %s"), rc);
         return YERR_FAILED;
     }
 
@@ -87,7 +87,7 @@ int ffmpeg_decoder_decode(video_decoder *decoder, char *indata, size_t indata_si
 
     if(got_picture == 0)
     {
-        YLOGE(YTEXT("decode failed, codec = %d"), decoder->codec);
+        YLOGE(("decode failed, codec = %d"), decoder->codec);
         return YERR_FAILED;
     }
 

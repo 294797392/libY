@@ -17,52 +17,52 @@
 
 struct Ymodule_s
 {
-	// Ä£¿éµÄÊäÈë²ÎÊý
+	// Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	cJSON *config;
 
-	// Ä£¿é×´Ì¬
+	// Ä£ï¿½ï¿½×´Ì¬
 	Ymodule_status status;
 
-	// »Øµ÷º¯Êý
+	// ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½
 	Ymodule_initialize_entry initialize;
 	Ymodule_release_entry release;
 
-	// Ä£¿éÄÚ²¿Ê¹ÓÃµÄ½á¹¹Ìå
+	// Ä£ï¿½ï¿½ï¿½Ú²ï¿½Ê¹ï¿½ÃµÄ½á¹¹ï¿½ï¿½
 	void *context;
 
-	// Ä£¿é¶¨Òå
+	// Ä£ï¿½é¶¨ï¿½ï¿½
 	Ymodule_manifest *manifest;
 
-	// Ä£¿éËùÔÚµÄdll
+	// Ä£ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½dll
 	Ydll *dll;
 };
 
 struct Yfactory_s
 {
-	// ËùÓÐÄ£¿éÊµÀýÁÐ±í
+	// ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½Êµï¿½ï¿½ï¿½Ð±ï¿½
 	Ylist *manifests;
 
-	// ËùÓÐÄ£¿éµÄÔËÐÐÊ±ÁÐ±í
+	// ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½Ð±ï¿½
 	Ylist *runtimes;
 
-	// ÓÃ»§ÉèÖÃµÄ²ÎÊý
+	// ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ÃµÄ²ï¿½ï¿½ï¿½
 	Yfactory_options *opts;
 
-	// Òì²½³õÊ¼»¯Ä£¿éµÄÏß³Ì
+	// ï¿½ì²½ï¿½ï¿½Ê¼ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ß³ï¿½
 	Ythread *initial_thread;
 
-	// ÅäÖÃÎÄ¼þ×Ö½ÚÊý×é
-	// ±ØÐëÊ¹ÓÃUTF8¸ñÊ½£¬ÒòÎªÊ¹ÓÃcJSONÈ¥½âÎöµÄ£¬UTF8ÖÐÊ¹ÓÃÒ»¸ö×Ö½ÚÀ´±íÊ¾ASCIIÂëºÍÒ»Ð©±êµã·ûºÅ£¬ËùÒÔcJSONÓ¦¸ÃÊÇ¿ÉÒÔ¼æÈÝUTF8µÄ
-	YBYTE *config;
+	// ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½Ö½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½UTF8ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ÎªÊ¹ï¿½ï¿½cJSONÈ¥ï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½UTF8ï¿½ï¿½Ê¹ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ö½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ASCIIï¿½ï¿½ï¿½Ò»Ð©ï¿½ï¿½ï¿½ï¿½ï¿½Å£ï¿½ï¿½ï¿½ï¿½ï¿½cJSONÓ¦ï¿½ï¿½ï¿½Ç¿ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½UTF8ï¿½ï¿½
+	char *config;
 };
 
 
 /// <summary>
-/// °Ñconfig×ª»»³ÉYmanifest¼¯ºÏ
+/// ï¿½ï¿½config×ªï¿½ï¿½ï¿½ï¿½Ymanifestï¿½ï¿½ï¿½ï¿½
 /// </summary>
 /// <param name="config_bytes"></param>
 /// <returns></returns>
-static int parse_config(const YBYTE *config_bytes, Ylist **list)
+static int parse_config(const char *config_bytes, Ylist **list)
 {
 	cJSON *json = cJSON_Parse(config_bytes);
 	if(json == NULL)
@@ -86,19 +86,15 @@ static int parse_config(const YBYTE *config_bytes, Ylist **list)
 		cJSON *lib_path = cJSON_GetObjectItem(module, "lib_path");
 		cJSON *input = cJSON_GetObjectItem(module, "input");
 
-		// setlocaleº¯Êý»á¶Ômbstowcsº¯Êý²úÉúÓ°Ïì£¬Ïàµ±ÓÚMultiBytesToWideCharµÄµÚÒ»¸ö²ÎÊý
-		char *locale = setlocale(LC_ALL, NULL);
-		setlocale(LC_ALL, ".UTF8");
 		Ymodule_manifest *manifest = (Ymodule_manifest *)Ycalloc(1, sizeof(Ymodule_manifest));
-		mbstowcs(manifest->id, id->valuestring, strlen(id->valuestring));
-		mbstowcs(manifest->name, name->valuestring, strlen(name->valuestring));
-		mbstowcs(manifest->desc, desc->valuestring, strlen(desc->valuestring));
-		mbstowcs(manifest->lib_path, lib_path->valuestring, strlen(lib_path->valuestring));
+		manifest->id = id->valuestring;
+		manifest->name = name->valuestring;
+		manifest->desc = desc->valuestring;
+		manifest->lib_path = lib_path->valuestring;
 		manifest->flags = flag->valueint;
 		manifest->init_entry = init_entry->valuestring;
 		manifest->release_entry = release_entry->valuestring;
 		manifest->input = input;
-		setlocale(LC_ALL, locale);
 
 		Y_list_add(manifests, manifest);
 	}
@@ -119,7 +115,7 @@ static void release_module(Ymodule *module)
 }
 
 /// <summary>
-/// ´´½¨Ä£¿éÊµÀý£¬²»³õÊ¼»¯
+/// ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
 /// </summary>
 /// <param name="yl"></param>
 /// <param name="item"></param>
@@ -129,32 +125,32 @@ static int foreach_create_module_from_manifest(Ylist *manifests, void *item, voi
 	Yfactory *factory = (Yfactory *)userdata;
 	Ymodule_manifest *manifest = (Ymodule_manifest *)item;
 	
-	// ´´½¨ÊµÀý
+	// ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½
 	Ymodule *module = (Ymodule *)Ycalloc(1, sizeof(Ymodule));
 
-	// Ê×ÏÈ¼ÓÔØ¶ÔÓ¦µÄdll
+	// ï¿½ï¿½ï¿½È¼ï¿½ï¿½Ø¶ï¿½Ó¦ï¿½ï¿½dll
 	int code = Y_load_dll(module->manifest->lib_path, &module->dll);
 	if(code != YERR_SUCCESS)
 	{
 		release_module(module);
-		YLOGE(YTEXT("create module instance failed, load dll failed, %d"), code);
+		YLOGE(("create module instance failed, load dll failed, %d"), code);
 		return YERR_FAILED;
 	}
 
 	module->manifest = manifest;
 
-	// È»ºó»ñÈ¡dllÀïµÄº¯Êý
+	// È»ï¿½ï¿½ï¿½È¡dllï¿½ï¿½Äºï¿½ï¿½ï¿½
 	if((module->initialize = (Ymodule_initialize_entry)Y_load_symbol(module->dll, manifest->init_entry)) == NULL)
 	{
 		release_module(module);
-		YLOGE(YTEXT("load initialize function failed, entry = %s"), manifest->init_entry);
+		YLOGE(("load initialize function failed, entry = %s"), manifest->init_entry);
 		return YERR_FAILED;
 	}
 
 	if((module->release = (Ymodule_release_entry)Y_load_symbol(module->dll, manifest->release_entry)) == NULL)
 	{
 		release_module(module);
-		YLOGE(YTEXT("load release function failed, entry = %s"), manifest->release_entry);
+		YLOGE(("load release function failed, entry = %s"), manifest->release_entry);
 		return YERR_FAILED;
 	}
 
@@ -175,7 +171,7 @@ static int foreach_init_module(Ylist *runtimes, void *item, void *userdata)
 		int code = module->initialize(module, &context);
 		if(code != YERR_SUCCESS)
 		{
-			YLOGE(YTEXT("initialize module failed, %s, code = %d"), manifest->name, code);
+			YLOGE(("initialize module failed, %s, code = %d"), manifest->name, code);
 			if(opts->on_module_status_changed)
 			{
 				opts->on_module_status_changed(factory, module, YMOD_STAT_INIT_FAILED);
@@ -186,7 +182,7 @@ static int foreach_init_module(Ylist *runtimes, void *item, void *userdata)
 
 		module->context = context;
 
-		YLOGI(YTEXT("initialize module success, %s"), manifest->name);
+		YLOGI(("initialize module success, %s"), manifest->name);
 		if(opts->on_module_status_changed)
 		{
 			opts->on_module_status_changed(factory, module, YMOD_STAT_INITIALIZED);
@@ -199,7 +195,7 @@ static int foreach_init_module(Ylist *runtimes, void *item, void *userdata)
 }
 
 /// <summary>
-/// ¶ÔÄ£¿é½øÐÐ³õÊ¼»¯²Ù×÷
+/// ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½Ð³ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 /// </summary>
 /// <param name="userdata"></param>
 static void initial_thread_entry(void *userdata)
@@ -207,7 +203,7 @@ static void initial_thread_entry(void *userdata)
 	Yfactory *factory = (Yfactory *)userdata;
 	Y_list_foreach(factory->runtimes, foreach_init_module, factory);
 
-	// µ½ÕâÀïËµÃ÷ËùÓÐÄ£¿é¶¼³õÊ¼»¯ÍêÁË
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½é¶¼ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if(factory->opts->on_initialized)
 	{
 		factory->opts->on_initialized(factory);
@@ -231,34 +227,34 @@ int Y_setup_factory_async(Yfactory *factory, Ylist *manifests)
 {
 	factory->manifests = manifests;
 
-	// ±éÀúÄ£¿é¶¨Òå²¢´´½¨Ä£¿éÊµÀý
+	// ï¿½ï¿½ï¿½ï¿½Ä£ï¿½é¶¨ï¿½å²¢ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½Êµï¿½ï¿½
 	int rc = Y_list_foreach(factory->manifests, foreach_create_module_from_manifest, factory);
 	if(rc != YERR_SUCCESS)
 	{
 		return rc;
 	}
 
-	// ´´½¨Ïß³ÌÒì²½³õÊ¼»¯
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ß³ï¿½ï¿½ì²½ï¿½ï¿½Ê¼ï¿½ï¿½
 	factory->initial_thread = Y_create_thread(initial_thread_entry, factory);
 
 	return YERR_SUCCESS;
 }
 
-int Y_setup_factory_async2(Yfactory *factory, const YCHAR *config_file)
+int Y_setup_factory_async2(Yfactory *factory, const char *config_file)
 {
-	YBYTE *bytes = NULL;
+	char *bytes = NULL;
 	uint64_t size = 0;
 	int code = Y_file_readbytes(config_file, &bytes, &size);
 	if(code != YERR_SUCCESS)
 	{
-		YLOGE(YTEXT("read config failed, %d, path = %s"), code, config_file);
+		YLOGE(("read config failed, %d, path = %s"), code, config_file);
 		return code;
 	}
 
 	Ylist *manifests = NULL;
 	if((code = parse_config(bytes, &manifests)) != YERR_SUCCESS)
 	{
-		YLOGE(YTEXT("parse manifest config failed, %d"), code);
+		YLOGE(("parse manifest config failed, %d"), code);
 		return code;
 	}
 
