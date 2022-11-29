@@ -11,8 +11,8 @@
 #include <string.h>
 #include <wchar.h>
 
-#include "Ylog.h"
 #include "Yappender.h"
+#include "libY.h"
 
 typedef struct Yconsole_s
 {

@@ -71,7 +71,7 @@ int d3d_renderer_init(video_renderer *renderer, video_renderer_options *options,
         return YERR_FAILED;
     }
 
-    d3d9_renderer *ctx = (d3d9_renderer*)Ycalloc(1, sizeof(d3d9_renderer));
+    d3d9_renderer *ctx = (d3d9_renderer*)calloc(1, sizeof(d3d9_renderer));
     ctx->d3d9 = d3d9;
     ctx->d3ddev9 = d3ddev9;
     ctx->d3dsurface9 = d3dsurface9;
@@ -86,7 +86,7 @@ void d3d_renderer_release(video_renderer *renderer)
     ctx->d3dsurface9->lpVtbl->Release(ctx->d3dsurface9);
     ctx->d3ddev9->lpVtbl->Release(ctx->d3ddev9);
     ctx->d3d9->lpVtbl->Release(ctx->d3d9);
-    Yfree(ctx);
+    free(ctx);
 }
 
 int d3d_renderer_render(video_renderer *renderer, char *video_data)

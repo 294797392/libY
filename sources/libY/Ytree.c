@@ -2,8 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "Yerrno.h"
-#include "Ytree.h"
+#include "libY.h"
 
 struct Ytree_s
 {

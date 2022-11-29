@@ -48,7 +48,7 @@ int ffmpeg_decoder_init(video_decoder *decoder, void **decode_ctx)
         return YERR_FAILED;
     }
 
-    ffmpeg_decode_ctx *ctx = (ffmpeg_decode_ctx*)Ycalloc(1, sizeof(ffmpeg_decode_ctx));
+    ffmpeg_decode_ctx *ctx = (ffmpeg_decode_ctx*)calloc(1, sizeof(ffmpeg_decode_ctx));
     ctx->codec = codec;
     ctx->codec_ctx = codec_ctx;
     ctx->frame = av_frame_alloc();

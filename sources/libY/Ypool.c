@@ -3,10 +3,7 @@
 #include <string.h>
 #include <stdint.h>
 
-#include "Ylog.h"
-#include "Ypool.h"
-#include "Ylock.h"
-#include "Yqueue.h"
+#include "libY.h"
 
 #define MAX_POOL_SIZE		512
 
@@ -64,7 +61,7 @@ static int get_block_size_for_bucket(int binIndex)
 
 static Ybucket *create_bucket(int block_size, int max_blocks)
 {
-	Ybucket *bucket = (Ybucket *)Ycalloc(1, sizeof(Ybucket));
+	Ybucket *bucket = (Ybucket *)calloc(1, sizeof(Ybucket));
 	bucket->block_size = block_size;
 	bucket->max_blocks = max_blocks;
 	Y_create_lock(bucket->lock);
@@ -82,8 +79,8 @@ static Yobject *bucket_obtain(Ybucket *bucket)
 		if(bucket->num_blocks < bucket->max_blocks)
 		{
 			bucket->num_blocks++;
-			Yobject *yo = (Yobject *)Ycalloc(1, sizeof(Yobject));
-			yo->block = Ycalloc(1, bucket->block_size);
+			Yobject *yo = (Yobject *)calloc(1, sizeof(Yobject));
+			yo->block = calloc(1, bucket->block_size);
 			yo->bucket = bucket;
 			//printf("queue_count = 0, alloc black, %d\n", bucket->num_blocks);
 			Y_lock_unlock(bucket->lock);
@@ -125,13 +122,13 @@ static void bucket_recycle(Yobject *yo)
 
 Ypool *Y_create_pool(int max_block_size, int max_blocks)
 {
-	Ypool *yp = (Ypool *)Ycalloc(1, sizeof(Ypool));
+	Ypool *yp = (Ypool *)calloc(1, sizeof(Ypool));
 	yp->max_block_size = max_block_size;
 	yp->max_block_per_bucket = max_blocks;
 	Y_create_lock(yp->lock);
 
 	int max_buckets = select_bucket_index(max_block_size) + 1;
-	yp->buckets = (Ybucket **)Ycalloc(max_buckets, sizeof(Ybucket *));
+	yp->buckets = (Ybucket **)calloc(max_buckets, sizeof(Ybucket *));
 	yp->num_buckets = max_buckets;
 	for(int i = 0; i < max_buckets; i++)
 	{

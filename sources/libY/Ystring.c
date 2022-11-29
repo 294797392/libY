@@ -8,7 +8,7 @@
 #include <unistd.h>
 #endif
 
-#include "Ystring.h"
+#include "libY.h"
 
 void Ystr_trim_right(char *str, char c)
 {
@@ -123,29 +123,3 @@ void Ystr_split_free(char **tokens, size_t num_tokens)
 	}
 }
 
-int Ystrcmp(char *str1, char *str2)
-{
-#ifdef UNICODE
-	return wcsncmp(str1, str2, wcslen(str1));
-#else
-	return strncmp(str1, str2, strlen(str1));
-#endif
-}
-
-char *Ystrcpy(char *dest, char *source, size_t count)
-{
-#ifdef UNICODE
-	return wcsncpy(dest, source, count);
-#else
-	return strncpy(dest, source, count);
-#endif
-}
-
-size_t Ystrlen(char *str)
-{
-#ifdef UNICODE
-	return wcslen(str);
-#else
-	return strlen(str);
-#endif
-}

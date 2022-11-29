@@ -4,13 +4,11 @@
 
 #if (defined(Y_WIN32)) || (defined(Y_MINGW))
 #include <Windows.h>
-#include <Windows.h>
 #elif (defined(Y_UNIX)) || (defined(Y_MSYS))
 #include <pthread.h>
 #endif
 
-#include "Y.h"
-#include "Ythread.h"
+#include "libY.h"
 
 struct Ythread_s
 {
@@ -44,7 +42,7 @@ static void *unix_thread_proc(void *lpThreadParameter)
 
 Ythread *Y_create_thread(Ythread_entry entry, void *userdata)
 {
-    Ythread *thread = (Ythread *)Ycalloc(1, sizeof(Ythread));
+    Ythread *thread = (Ythread *)calloc(1, sizeof(Ythread));
     thread->entry = entry;
     thread->userdata = userdata;
 

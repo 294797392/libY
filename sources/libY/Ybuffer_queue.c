@@ -3,11 +3,7 @@
 #include <string.h>
 #include <errno.h>
 
-#include "Ybuffer_queue.h"
-#include "Ythread.h"
-#include "Ylock.h"
-#include "Ysem.h"
-#include "Yqueue.h"
+#include "libY.h"
 
 #define MAX_QUEUE_SIZE 4096
 
@@ -53,7 +49,7 @@ static void consume_thread_process(void *state)
 
 Ybuffer_queue *Y_create_buffer_queue(void *userdata)
 {
-	Ybuffer_queue *yq = (Ybuffer_queue *)Ycalloc(1, sizeof(Ybuffer_queue));
+	Ybuffer_queue *yq = (Ybuffer_queue *)calloc(1, sizeof(Ybuffer_queue));
 	if (!yq)
 	{
 		//YLOGE(("create Yqueue instance failed"));

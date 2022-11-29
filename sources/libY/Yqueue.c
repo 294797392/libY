@@ -3,9 +3,7 @@
 #include <string.h>
 #include <wchar.h>
 
-#include "Ylog.h"
-#include "Yerrno.h"
-#include "Yqueue.h"
+#include "libY.h"
 
 #define DEFAULT_CAPACITY        512
 
@@ -66,7 +64,7 @@ static void ensure_capacity(Yqueue *yq, int count)
 
 Yqueue *Y_create_queue()
 {
-	Yqueue *yq = (Yqueue *)Ycalloc(1, sizeof(Yqueue));
+	Yqueue *yq = (Yqueue *)calloc(1, sizeof(Yqueue));
 	yq->capacity = 0;
 	yq->head = 0;
 	yq->tail = 0;

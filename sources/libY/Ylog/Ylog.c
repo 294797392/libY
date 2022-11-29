@@ -12,23 +12,15 @@
 
 #include <cJSON.h>
 
-#include "Y.h"
-#include "Yerrno.h"
-#include "Ylog.h"
-#include "Yqueue.h"
-#include "Ybuffer_queue.h"
-#include "Ythread.h"
 #include "Yappender.h"
-#include "Yfile.h"
-#include "Ystring.h"
-#include "Ypool.h"
+#include "libY.h"
+
 
 #define DEFAULT_LEVEL				YLOG_LEVEL_DEBUG
 #define DEFAULT_PATH				("Ylog.txt")
 #define DEFAULT_SIZE				4194304
 #define DEFAULT_FORMAT				("")
 #define YMSG_POOL_SIZE				8192
-
 
 typedef struct Ylog_s
 {
@@ -80,11 +72,11 @@ static void consume_log_queue_callback(void *userdata, void *element)
 
 static Ylogger_options *get_default_options()
 {
-	Ylogger_options *default_options = (Ylogger_options*)Ycalloc(1, sizeof(Ylogger_options));
+	Ylogger_options *default_options = (Ylogger_options*)calloc(1, sizeof(Ylogger_options));
 	default_options->level = DEFAULT_LEVEL;
-	Ystrcpy(default_options->path, DEFAULT_PATH, YARRAY_LENGTH(default_options->path));
+	// default_options->path = default_options->path;
 	default_options->max_size_bytes = DEFAULT_SIZE;
-	Ystrcpy(default_options->format, DEFAULT_FORMAT, YARRAY_LENGTH(default_options->format));
+	// default_options->format = default_options->format;
 	return default_options;
 }
 
@@ -108,7 +100,7 @@ static void init_options(Ylog *log, cJSON *json)
 
 static Yappender *get_appender(const char *type)
 {
-	size_t len = YARRAY_LENGTH(appenders);
+	size_t len = sizeof(appenders) / sizeof(void*);
 	for(size_t i = 0; i < len; i++)
 	{
 		if(appenders[i] == NULL)
@@ -180,7 +172,7 @@ int Y_log_init(const char *config)
 		return YERR_INVALID_JSON;
 	}
 
-	log = (Ylog*)Ycalloc(1, sizeof(Ylog));
+	log = (Ylog*)calloc(1, sizeof(Ylog));
 	log->config = json;
 	log->msg_pool = Y_create_pool(sizeof(Ymsg), YMSG_POOL_SIZE);
 
@@ -199,18 +191,17 @@ int Y_log_init(const char *config)
 
 Ylogger *Y_log_get_logger(const char *name)
 {
-	Ylogger *logger = (Ylogger*)Ycalloc(1, sizeof(Ylogger));
+	Ylogger *logger = (Ylogger*)calloc(1, sizeof(Ylogger));
 	logger->log = log;
-	Ystrcpy(logger->name, (char *)name, YARRAY_LENGTH(logger->name));
 	return logger;
 }
 
 void Y_log_write(Ylogger *logger, Ylog_level level, int line, char *msg, ...)
 {
-	char message[MAX_MSG_SIZE1] = {'\0'};
+	char message[MAX_LOG_LINE] = {'\0'};
 	va_list ap;
 	va_start(ap, msg);
-	vsnprintf(message, MAX_MSG_SIZE1, msg, ap);
+	vsnprintf(message, MAX_LOG_LINE, msg, ap);
 	va_end(ap);
 
 	Yobject *yo = Y_pool_obtain(log->msg_pool, sizeof(Ymsg));

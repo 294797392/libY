@@ -10,10 +10,7 @@
 #include <locale.h>
 #endif
 
-#include "Y.h"
-#include "Yerrno.h"
-#include "Ystring.h"
-#include "Yfile.h"
+#include "libY.h"
 
 int Y_file_stat(const char *file_path, Yfstat *stat)
 {
@@ -60,7 +57,7 @@ int Y_file_readbytes(const char *file_path, char **bytes, uint64_t *size)
 	{
 		return YERR_FAILED;
 	}
-	char *buf = (char *)Ycalloc((size_t)stat.length + 1, 1);
+	char *buf = (char *)calloc((size_t)stat.length + 1, 1);
 	fread(buf, 1, (size_t)stat.length, f);
 	fclose(f);
 	
@@ -72,7 +69,7 @@ int Y_file_readbytes(const char *file_path, char **bytes, uint64_t *size)
 
 void Y_file_free(char *content)
 {
-	Yfree(content);
+	free(content);
 }
 
 

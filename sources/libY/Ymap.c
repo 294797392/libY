@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "Ymap.h"
+#include "libY.h"
 
 // 默认的hash表长度
 #define DEFAULT_YMAP_SIZE		128

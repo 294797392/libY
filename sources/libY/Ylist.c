@@ -3,9 +3,7 @@
 #include <string.h>
 #include <wchar.h>
 
-#include "Ylog.h"	
-#include "Yerrno.h"
-#include "Ylist.h"
+#include "libY.h"
 
 #define DEFAULT_CAPACITY        512
 
@@ -77,7 +75,7 @@ static void ensure_capacity(Ylist *yl, int count)
 
 Ylist *Y_create_list()
 {
-	Ylist *yl = (Ylist *)Ycalloc(1, sizeof(Ylist));
+	Ylist *yl = (Ylist *)calloc(1, sizeof(Ylist));
 	return yl;
 }
 

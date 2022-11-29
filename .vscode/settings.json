@@ -29,6 +29,8 @@
         "xlocale": "c",
         "atomic": "c",
         "cjson.h": "c",
-        "yerrno.h": "c"
+        "yerrno.h": "c",
+        "liby.h": "c",
+        "string.h": "c"
     }
 }

@@ -8,33 +8,28 @@
 #elif (defined(Y_UNIX))
 #endif
 
-#include "Ylog.h"
-#include "Ybuffer_queue.h"
-#include "Ylist.h"
-#include "Ypool.h"
-#include "Ythread.h"
-#include "Yqueue.h"
+#include "libY.h"
 
-static void Yqueue_callback_handler(void *userdata, void *element)
-{
-	char *line = (char *)element;
-	printf("dequeue, %s\n", line);
-	free(line);
-}
+// static void Yqueue_callback_handler(void *userdata, void *element)
+// {
+// 	char *line = (char *)element;
+// 	printf("dequeue, %s\n", line);
+// 	free(line);
+// }
 
-static void demo_Ybuffer_queue()
-{
-	Ybuffer_queue *q = Y_create_buffer_queue(NULL);
-	Y_buffer_queue_start(q, 1, Yqueue_callback_handler);
+// static void demo_Ybuffer_queue()
+// {
+// 	Ybuffer_queue *q = Y_create_buffer_queue(NULL);
+// 	Y_buffer_queue_start(q, 1, Yqueue_callback_handler);
 
-	while (1)
-	{
-		printf("please input element:\n");
-		char *line = (char *)Ycalloc(1, 1024);
-		fgets(line, sizeof(line), stdin);
-		Y_buffer_queue_enqueue(q, line);
-	}
-}
+// 	while (1)
+// 	{
+// 		printf("please input element:\n");
+// 		char *line = (char *)calloc(1, 1024);
+// 		fgets(line, sizeof(line), stdin);
+// 		Y_buffer_queue_enqueue(q, line);
+// 	}
+// }
 
 static void demo_Yqueue()
 {
@@ -42,7 +37,7 @@ static void demo_Yqueue()
 
 	for(int i = 0; i < 100; i++)
 	{
-		char *buf = (char *)Ycalloc(1, 64);
+		char *buf = (char *)calloc(1, 64);
 		snprintf(buf, 64, "%d", i);
 		Y_queue_enqueue(q, buf);
 	}
@@ -140,11 +135,11 @@ int main(int argc, char **argv)
 
 	YLOGI(("123"));
 
-	for(size_t i = 0; i < 99999999; i++)
-	{
-		YLOGD(("%d"), i);
-		Ysleep(1);
-	}
+	//for(size_t i = 0; i < 99999999; i++)
+	//{
+	//	YLOGD(("%d"), i);
+	//	Ysleep(1);
+	//}
 
 	//demo_Yqueue();
 

@@ -82,8 +82,5 @@
     <CopyFileToFolders Include="..\..\sources\libY\Ylog\Ylog.json">
       <Filter>Ylog</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="..\..\sources\libY\modules.json">
-      <Filter>Ymodular</Filter>
-    </CopyFileToFolders>
   </ItemGroup>
 </Project>
