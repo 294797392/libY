@@ -1,12 +1,8 @@
-﻿#include "Yfirstinclude.h"
-
-#include <stdlib.h>
+﻿#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-#include "Ylogbase.h"
 #include "Yappender.h"
-
 
 typedef struct Yfile_ctx_s
 {

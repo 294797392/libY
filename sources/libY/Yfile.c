@@ -17,7 +17,7 @@ int Y_file_stat(const char *file_path, Yfstat *stat)
 #if (defined(Y_WIN32)) || (defined(Y_MINGW))
 	WIN32_FILE_ATTRIBUTE_DATA attr_data;
 	memset(&attr_data, 0, sizeof(WIN32_FILE_ATTRIBUTE_DATA));
-	int rc = GetFileAttributesEx(file_path, GetFileExInfoStandard, &attr_data);
+	int rc = GetFileAttributesExA(file_path, GetFileExInfoStandard, &attr_data);
 	if(rc == 0)
 	{
 		rc = GetLastError();

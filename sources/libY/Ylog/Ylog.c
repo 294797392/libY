@@ -15,7 +15,6 @@
 #include "Yappender.h"
 #include "libY.h"
 
-
 #define DEFAULT_LEVEL				YLOG_LEVEL_DEBUG
 #define DEFAULT_PATH				("Ylog.txt")
 #define DEFAULT_SIZE				4194304

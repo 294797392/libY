@@ -2,9 +2,9 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\..\sources\libY\main.c" />
-    <ClCompile Include="..\..\sources\libY\Yevent.c" />
+    <ClCompile Include="..\..\sources\libY\Ybuffer_queue.c" />
+    <ClCompile Include="..\..\sources\libY\Yfile.c" />
     <ClCompile Include="..\..\sources\libY\Ylist.c" />
-    <ClCompile Include="..\..\sources\libY\Ylock.c" />
     <ClCompile Include="..\..\sources\libY\Ymap.c" />
     <ClCompile Include="..\..\sources\libY\Ypool.c" />
     <ClCompile Include="..\..\sources\libY\Yqueue.c" />
@@ -14,73 +14,36 @@
     <ClCompile Include="..\..\sources\libY\Ylog\Yappender_conosle.c">
       <Filter>Ylog</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\sources\libY\Ylog\Yappender_file.c">
+      <Filter>Ylog</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\sources\libY\Ylog\Ylog.c">
       <Filter>Ylog</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\sources\libY\Ymodular\Yfactory.c">
-      <Filter>Ymodular</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\sources\libY\Y.c" />
-    <ClCompile Include="..\..\sources\libY\Ydll.c" />
-    <ClCompile Include="..\..\sources\libY\external\cJSON.c">
+    <ClCompile Include="..\..\external\cJSON\cJSON.c">
       <Filter>external</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\sources\libY\external\getopt.c">
-      <Filter>external</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\sources\libY\Yfile.c" />
-    <ClCompile Include="..\..\sources\libY\Ymodular\demo_module.c">
-      <Filter>Ymodular</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\sources\libY\Ybuffer_queue.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\sources\libY\Yerrno.h" />
-    <ClInclude Include="..\..\sources\libY\Yevent.h" />
-    <ClInclude Include="..\..\sources\libY\Ylist.h" />
-    <ClInclude Include="..\..\sources\libY\Ylock.h" />
-    <ClInclude Include="..\..\sources\libY\Ymap.h" />
-    <ClInclude Include="..\..\sources\libY\Ypool.h" />
-    <ClInclude Include="..\..\sources\libY\Yqueue.h" />
-    <ClInclude Include="..\..\sources\libY\Ystring.h" />
-    <ClInclude Include="..\..\sources\libY\Ythread.h" />
-    <ClInclude Include="..\..\sources\libY\Ytree.h" />
+    <ClInclude Include="..\..\sources\libY\libY.h" />
     <ClInclude Include="..\..\sources\libY\Ylog\Yappender.h">
       <Filter>Ylog</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\sources\libY\Ylog\Ylog.h">
-      <Filter>Ylog</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\sources\libY\Ysem.h" />
-    <ClInclude Include="..\..\sources\libY\libY.h" />
-    <ClInclude Include="..\..\sources\libY\Ymodular\Yfactory.h">
-      <Filter>Ymodular</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\sources\libY\Y.h" />
-    <ClInclude Include="..\..\sources\libY\Ydll.h" />
-    <ClInclude Include="..\..\sources\libY\external\cJSON.h">
+    <ClInclude Include="..\..\external\cJSON\cJSON.h">
       <Filter>external</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\sources\libY\external\getopt.h">
-      <Filter>external</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\sources\libY\Yfile.h" />
-    <ClInclude Include="..\..\sources\libY\Ybuffer_queue.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Ylog">
       <UniqueIdentifier>{a4e0e3bb-eeb4-4a66-8752-3d9dd07f86dd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Ymodular">
-      <UniqueIdentifier>{a330aa74-7fab-47fe-a586-de80ab7d1b77}</UniqueIdentifier>
     </Filter>
     <Filter Include="external">
       <UniqueIdentifier>{7dd504af-6e82-4afb-bced-f346a5df290e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="..\..\sources\libY\Ylog\Ylog.json">
+    <None Include="..\..\sources\libY\Ylog\Ylog.json">
       <Filter>Ylog</Filter>
-    </CopyFileToFolders>
+    </None>
   </ItemGroup>
 </Project>

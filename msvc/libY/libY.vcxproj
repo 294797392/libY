@@ -90,7 +90,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS;%(PreprocessorDefinitions);HAVE_STRUCT_TIMESPEC;Y_WIN32;Y_EXPORT;Y_MAP_CHAIN</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <CompileAs>CompileAsC</CompileAs>
-      <AdditionalIncludeDirectories>$(SolutionDir)../sources/libY/Ylog;$(SolutionDir)../sources/libY;$(SolutionDir)../sources/libY/external</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)../sources/libY/Ylog;$(SolutionDir)../sources/libY;$(SolutionDir)../external/cJSON</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -149,21 +149,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\sources\libY\external\cJSON.c" />
-    <ClCompile Include="..\..\sources\libY\external\getopt.c" />
+    <ClCompile Include="..\..\external\cJSON\cJSON.c" />
     <ClCompile Include="..\..\sources\libY\main.c" />
-    <ClCompile Include="..\..\sources\libY\Y.c" />
     <ClCompile Include="..\..\sources\libY\Ybuffer_queue.c" />
-    <ClCompile Include="..\..\sources\libY\Ydll.c" />
-    <ClCompile Include="..\..\sources\libY\Yevent.c" />
     <ClCompile Include="..\..\sources\libY\Yfile.c" />
     <ClCompile Include="..\..\sources\libY\Ylist.c" />
-    <ClCompile Include="..\..\sources\libY\Ylock.c" />
     <ClCompile Include="..\..\sources\libY\Ylog\Yappender_conosle.c" />
+    <ClCompile Include="..\..\sources\libY\Ylog\Yappender_file.c" />
     <ClCompile Include="..\..\sources\libY\Ylog\Ylog.c" />
     <ClCompile Include="..\..\sources\libY\Ymap.c" />
-    <ClCompile Include="..\..\sources\libY\Ymodular\demo_module.c" />
-    <ClCompile Include="..\..\sources\libY\Ymodular\Yfactory.c" />
     <ClCompile Include="..\..\sources\libY\Ypool.c" />
     <ClCompile Include="..\..\sources\libY\Yqueue.c" />
     <ClCompile Include="..\..\sources\libY\Ystring.c" />
@@ -171,32 +165,12 @@
     <ClCompile Include="..\..\sources\libY\Ytree.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\sources\libY\external\cJSON.h" />
-    <ClInclude Include="..\..\sources\libY\external\getopt.h" />
+    <ClInclude Include="..\..\external\cJSON\cJSON.h" />
     <ClInclude Include="..\..\sources\libY\libY.h" />
-    <ClInclude Include="..\..\sources\libY\Y.h" />
-    <ClInclude Include="..\..\sources\libY\Ybuffer_queue.h" />
-    <ClInclude Include="..\..\sources\libY\Ydll.h" />
-    <ClInclude Include="..\..\sources\libY\Yerrno.h" />
-    <ClInclude Include="..\..\sources\libY\Yevent.h" />
-    <ClInclude Include="..\..\sources\libY\Yfile.h" />
-    <ClInclude Include="..\..\sources\libY\Ylist.h" />
-    <ClInclude Include="..\..\sources\libY\Ylock.h" />
     <ClInclude Include="..\..\sources\libY\Ylog\Yappender.h" />
-    <ClInclude Include="..\..\sources\libY\Ylog\Ylog.h" />
-    <ClInclude Include="..\..\sources\libY\Ymap.h" />
-    <ClInclude Include="..\..\sources\libY\Ymodular\Yfactory.h" />
-    <ClInclude Include="..\..\sources\libY\Ypool.h" />
-    <ClInclude Include="..\..\sources\libY\Yqueue.h" />
-    <ClInclude Include="..\..\sources\libY\Ysem.h" />
-    <ClInclude Include="..\..\sources\libY\Ystring.h" />
-    <ClInclude Include="..\..\sources\libY\Ythread.h" />
-    <ClInclude Include="..\..\sources\libY\Ytree.h" />
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="..\..\sources\libY\Ylog\Ylog.json">
-      <FileType>Document</FileType>
-    </CopyFileToFolders>
+    <None Include="..\..\sources\libY\Ylog\Ylog.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
