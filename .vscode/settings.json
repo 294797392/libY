@@ -31,6 +31,8 @@
         "cjson.h": "c",
         "yerrno.h": "c",
         "liby.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "utility": "c",
+        "xmemory0": "c"
     }
 }

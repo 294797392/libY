@@ -31,7 +31,7 @@ extern "C" {
 
     typedef enum
     {
-        
+        VIDEO_RENDERER_D3D9
     }VideoRendererTypes;
 
     struct VideoRenderer
@@ -43,6 +43,7 @@ extern "C" {
 
     struct VideoRendererActions
     {
+        VideoRendererTypes Type;
         VideoRendererInitializeDlg Initialize;
         VideoRendererReleaseDlg Release;
         VideoRendererRenderDlg Render;
@@ -50,6 +51,7 @@ extern "C" {
 
     struct VideoRendererOptions
     {
+        VideoRendererTypes Type;
         int VideoWidth;
         int VideoHeight;
         VideoFormats Format;
@@ -58,8 +60,8 @@ extern "C" {
 
     YAPI VideoRenderer *VideoRendererCreate(VideoRendererOptions *options);
     YAPI int VideoRendererInitialize(VideoRenderer *renderer);
-    YAPI int VideoRendererRelease();
-    YAPI int VideoRendererRender();
+    YAPI int VideoRendererRelease(VideoRenderer *renderer);
+    YAPI int VideoRendererRender(VideoRenderer *renderer, char *videoData);
 
 
 #ifdef __cplusplus

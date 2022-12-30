@@ -156,8 +156,9 @@ int VideoRendererActionsDirect3D9Render(VideoRenderer *renderer, char *videoData
 
 struct VideoRendererActions VideoRendererActionsDirect3D9 = 
 {
+    .Type = VIDEO_RENDERER_D3D9,
     .Initialize = VideoRendererActionsDirect3D9Initialize,
-    .release = VideoRendererActionsDirect3D9Release,
-    .render = VideoRendererActionsDirect3D9Render
+    .Release = VideoRendererActionsDirect3D9Release,
+    .Render = VideoRendererActionsDirect3D9Render
 };
 
