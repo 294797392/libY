@@ -155,31 +155,31 @@ int Y_log_init(const char *config)
 		return YERR_SUCCESS;
 	}
 
-	char *bytes = NULL;
-	uint64_t size = 0;
-	int code = Y_file_readbytes(config, &bytes, &size);
-	if(code != YERR_SUCCESS)
-	{
-		perror("init log failed");
-		return code;
-	}
+	//char *bytes = NULL;
+	//uint64_t size = 0;
+	//int code = Y_file_readbytes(config, &bytes, &size);
+	//if(code != YERR_SUCCESS)
+	//{
+	//	perror("init log failed");
+	//	return code;
+	//}
 
-	cJSON *json = cJSON_Parse(bytes);
-	if(json == NULL)
-	{
-		//perror("invalid log.json format");
-		return YERR_INVALID_JSON;
-	}
+	//cJSON *json = cJSON_Parse(bytes);
+	//if(json == NULL)
+	//{
+	//	//perror("invalid log.json format");
+	//	return YERR_INVALID_JSON;
+	//}
 
 	log = (Ylog*)calloc(1, sizeof(Ylog));
-	log->config = json;
+	//log->config = json;
 	log->msg_pool = Y_create_pool(sizeof(Ymsg), YMSG_POOL_SIZE);
 
-	// 先解析全局配置
-	init_options(log, json);
+	//// 先解析全局配置
+	//init_options(log, json);
 
-	// 再解析appender配置
-	init_appenders(log, json);
+	//// 再解析appender配置
+	//init_appenders(log, json);
 
 	// 启动日志队列
 	log->consume_queue = Y_create_buffer_queue(NULL);

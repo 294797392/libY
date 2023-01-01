@@ -27,7 +27,7 @@ static void close(void *pctx)
     free(ctx);
 }
 
-static void write(void *pctx, Ylog_level level, const char *msg)
+static void write(void *pctx, const Ymsg *ymsg)
 {
 
 }

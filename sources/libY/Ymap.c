@@ -97,8 +97,8 @@ static void resize(Ymap *ym, int new_capacity)
 int Y_map_hash_string_java(void *key)
 {
 	const char *str = (const char *)key;
-	int h = 0;
-	int len = strlen(str);
+	size_t h = 0;
+	size_t len = strlen(str);
 	if (h == 0 && len > 0)
 	{
 		for (int i = 0; i < len; i++)

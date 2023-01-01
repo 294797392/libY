@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="..\..\sources\video\PixelFormats.h" />
+    <ClInclude Include="..\..\sources\video\VideoCodecs.h" />
+    <ClInclude Include="..\..\sources\video\VideoDecode.h" />
+    <ClInclude Include="..\..\sources\video\VideoRenderer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\sources\video\VideoDecode.c" />
+    <ClCompile Include="..\..\sources\video\VideoRenderer.c" />
+    <ClCompile Include="..\..\sources\video\VideoRender\VideoRendererD3D9.c">
+      <Filter>VideoRender</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sources\video\VideoDecode\VideoDecodeFFmpeg.c">
+      <Filter>VideoDecode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\sources\video\main.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="VideoRender">
+      <UniqueIdentifier>{531296aa-260b-4d2a-b3d9-2898446b0282}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VideoDecode">
+      <UniqueIdentifier>{d87b8fa5-3be9-4aaf-bd3a-2f8772881c8c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -39,9 +39,9 @@ int VideoRendererInitialize(VideoRenderer *renderer)
     return renderer->Actions->Initialize(renderer);
 }
 
-int VideoRendererRelease(VideoRenderer *renderer)
+void VideoRendererRelease(VideoRenderer *renderer)
 {
-    return renderer->Actions->Release(renderer);
+    renderer->Actions->Release(renderer);
 }
 
 int VideoRendererRender(VideoRenderer *renderer, char *videoData)

@@ -28,7 +28,6 @@
 #define AVUTIL_TREE_H
 
 #include "attributes.h"
-#include "version.h"
 
 /**
  * @addtogroup lavu_tree AVTree
@@ -58,7 +57,7 @@ struct AVTreeNode *av_tree_node_alloc(void);
  *             then the corresponding entry in next is unchanged.
  * @param cmp compare function used to compare elements in the tree,
  *            API identical to that of Standard C's qsort
- *            It is guranteed that the first and only the first argument to cmp()
+ *            It is guaranteed that the first and only the first argument to cmp()
  *            will be the key parameter to av_tree_find(), thus it could if the
  *            user wants, be a different type (like an opaque context).
  * @return An element with cmp(key, elem) == 0 or NULL if no such element

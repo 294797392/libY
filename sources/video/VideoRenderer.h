@@ -60,9 +60,8 @@ extern "C" {
 
     YAPI VideoRenderer *VideoRendererCreate(VideoRendererOptions *options);
     YAPI int VideoRendererInitialize(VideoRenderer *renderer);
-    YAPI int VideoRendererRelease(VideoRenderer *renderer);
+    YAPI void VideoRendererRelease(VideoRenderer *renderer);
     YAPI int VideoRendererRender(VideoRenderer *renderer, char *videoData);
-
 
 #ifdef __cplusplus
 }
