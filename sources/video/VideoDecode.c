@@ -20,17 +20,23 @@ VideoDecode *VideoDecodeCreate(VideoDecodeOptions *options)
 	for (size_t i = 0; i < length; i++)
 	{
         VideoDecodeActions *decodeActions = VideoDecodeList[i];
-        if(!decodeActions->IsCodecSupported(options->CodecType))
+        for(int j = 0;; j++)
         {
-            continue;
+            if(decodeActions->SupportedFormats[j] == -1)
+            {
+                break;
+            }
+
+            if(decodeActions->SupportedFormats[j] == options->CodecType)
+            {
+                YLOGI("create VideoDecode success, %s", decodeActions->Name);
+
+                VideoDecode *videoDecode = (VideoDecode *)calloc(1, sizeof(VideoDecode));
+                videoDecode->Options = options;
+                videoDecode->Actions = decodeActions;
+                return videoDecode;
+            }
         }
-
-        YLOGI("create VideoDecode success, %s", decodeActions->Name);
-
-        VideoDecode *videoDecode = (VideoDecode*)calloc(1, sizeof(VideoDecode));
-        videoDecode->Options = options;
-        videoDecode->Actions = decodeActions;
-        return videoDecode;
     }
     return NULL;
 }

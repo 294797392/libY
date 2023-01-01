@@ -23,7 +23,6 @@ extern "C" {
     typedef struct VideoDecodeActions VideoDecodeActions;
     typedef struct VideoDecodeOptions VideoDecodeOptions;
 
-    typedef int (*VideoDecodeSupportedDlg)(VideoCodecs codec);
     typedef int (*VideoDecodeInitializeDlg)(VideoDecode *decode);
     typedef void (*VideoDecodeReleaseDlg)(VideoDecode *decode);
     typedef int (*VideoDecodeDecodeDlg)(VideoDecode *decode, char *videoData, int dataSize, char **decodeData, int *size);
@@ -45,7 +44,7 @@ extern "C" {
     struct VideoDecodeActions
     {
         char *Name;
-        VideoDecodeSupportedDlg IsCodecSupported;
+        int SupportedFormats[64];
         VideoDecodeInitializeDlg Initialize;
         VideoDecodeReleaseDlg Release;
         VideoDecodeDecodeDlg Decode;

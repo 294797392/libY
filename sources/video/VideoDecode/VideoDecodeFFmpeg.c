@@ -123,8 +123,8 @@ int VideoDecodeActionsFFmpegIsCodecSupporte(VideoCodecs codecType)
 struct VideoDecodeActions VideoDecodeActionsFFmpeg =
 {
     .Name = "FFmpeg Decode",
+    .SupportedFormats = { VIDEO_CODEC_H264, VIDEO_CODEC_H265, -1 },
     .Initialize = VideoDecodeActionsFFmpegInitialize,
     .Release = VideoDecodeActionsFFmpegRelease,
     .Decode = VideoDecodeActionsFFmpegDecode,
-    .IsCodecSupported = VideoDecodeActionsFFmpegIsCodecSupporte
 };
