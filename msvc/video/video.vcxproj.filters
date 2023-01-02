@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="..\..\sources\video\PixelFormats.h" />
-    <ClInclude Include="..\..\sources\video\VideoCodecs.h" />
+    <ClInclude Include="..\..\sources\video\AVFormats.h" />
     <ClInclude Include="..\..\sources\video\VideoDecode.h" />
     <ClInclude Include="..\..\sources\video\VideoRenderer.h" />
   </ItemGroup>

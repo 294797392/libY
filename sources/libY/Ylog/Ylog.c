@@ -21,6 +21,9 @@
 #define DEFAULT_FORMAT				("")
 #define YMSG_POOL_SIZE				8192
 
+// Ylog是否已经初始化
+static int initialized = 0;
+
 typedef struct Ylog_s
 {
 	// 全局配置
@@ -197,6 +200,12 @@ Ylogger *Y_log_get_logger(const char *name)
 
 void Y_log_write(Ylogger *logger, Ylog_level level, int line, char *msg, ...)
 {
+	if(initialized == 0)
+	{
+		initialized = 1;
+		Y_log_init(NULL);
+	}
+
 	char message[MAX_LOG_LINE] = {'\0'};
 	va_list ap;
 	va_start(ap, msg);

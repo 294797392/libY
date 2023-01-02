@@ -19,13 +19,13 @@ uint64_t ByteToU64LittleEnd(uint8_t *ByteBuf)
 	return u64Value;
 }
 
-uint64_t ByteToU64BigEnd(uint8_t *ByteBuf)
+uint32_t ByteToU64BigEnd(uint8_t *ByteBuf)
 {
-	uint64_t u64Value = 0;
+	uint32_t u64Value = 0;
 
-	for(uint8_t i = 0; i < 8; i++)
+	for(uint8_t i = 0; i < 4; i++)
 	{
-		u64Value <<= 8;
+		u64Value <<= 4;
 		u64Value |= ByteBuf[i];
 	}
 
@@ -40,24 +40,25 @@ int main(int argc, char **argv)
 
 	VideoDecodeOptions options =
 	{
-		.CodecType = VIDEO_CODEC_H264
+		.AVFormat = AV_FORMAT_H264
 	};
 	VideoDecode *videoDecode = VideoDecodeCreate(&options);
 	VideoDecodeInitialize(videoDecode);
 
-	FILE *f = fopen("d://h264", "r");
+	FILE *f = fopen("d://h264", "rb");
 	while(1)
 	{
-		char sizeBytes[8];
-		fread(sizeBytes, 1, sizeof(sizeBytes), f);
-		int videoSize = ByteToU64LittleEnd(sizeBytes);
+		int videoSize = 0;
+		fread(&videoSize, 1, 4, f);
 
 		char *videoData = malloc(videoSize);
 		fread(videoData, 1, videoSize, f);
 
 		char *decodeData;
 		int decodeSize;
-		VideoDecodeDecode(videoDecode, videoData, videoSize, &decodeData, &decodeSize);
+		//VideoDecodeDecode(videoDecode, videoData, videoSize, &decodeData, &decodeSize);
+
+		free(videoData);
 	}
 
 	return 0;

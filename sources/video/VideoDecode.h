@@ -12,7 +12,7 @@
 
 #include "libY.h"
 
-#include "VideoCodecs.h"
+#include "AVFormats.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -22,10 +22,11 @@ extern "C" {
     typedef struct VideoDecode VideoDecode;
     typedef struct VideoDecodeActions VideoDecodeActions;
     typedef struct VideoDecodeOptions VideoDecodeOptions;
+    typedef struct VideoDecodeInput VideoDecodeInput;
 
     typedef int (*VideoDecodeInitializeDlg)(VideoDecode *decode);
     typedef void (*VideoDecodeReleaseDlg)(VideoDecode *decode);
-    typedef int (*VideoDecodeDecodeDlg)(VideoDecode *decode, char *videoData, int dataSize, char **decodeData, int *size);
+    typedef int (*VideoDecodeDecodeDlg)(VideoDecode *decode, VideoDecodeInput *decodeInput);
 
     typedef enum
     {
@@ -33,9 +34,19 @@ extern "C" {
         H264_NALU_
     }H264_NALU_TYPES;
 
+    struct VideoDecodeInput
+    {
+        char *videoData;
+        int videoDataSize;
+        char *decodeData;
+        int decodeDataSize;
+        int width;
+        int height;
+    };
+
     struct VideoDecode
     {
-        VideoCodecs Type;
+        AVFormats AVFormat;
         VideoDecodeActions *Actions;
         void *ActionsData;
         VideoDecodeOptions *Options;
@@ -52,15 +63,16 @@ extern "C" {
 
     struct VideoDecodeOptions
     {
-        VideoCodecs CodecType;
+        AVFormats AVFormat;
         int VideoWidth;
         int VideoHeight;
     };
 
     YAPI VideoDecode *VideoDecodeCreate(VideoDecodeOptions *options);
+    YAPI void VideoDecodeDelete(VideoDecode *decode);
     YAPI int VideoDecodeInitialize(VideoDecode *decode);
     YAPI void VideoDecodeRelease(VideoDecode *decode);
-    YAPI int VideoDecodeDecode(VideoDecode *decode, char *videoData, int dataSize, char **decodeData, int *size);
+    YAPI int VideoDecodeDecode(VideoDecode *decode, VideoDecodeInput decodeInput);
 
 #ifdef __cplusplus
 }

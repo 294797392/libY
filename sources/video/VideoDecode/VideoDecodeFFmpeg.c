@@ -10,121 +10,133 @@
 #include <libavutil/parseutils.h>
 #include <libavutil/pixfmt.h>
 
+#include "libY.h"
+
 #include "VideoDecode.h"
+#include "AVFormats.h"
 
 typedef struct FFmpegDecode
 {
-    const AVCodec *codec;
-    AVCodecContext *avctx;
-    AVFrame *frame;                             // 保存解码后的YUV数据
+	const AVCodec *codec;
+	AVCodecContext *avctx;
+	AVFrame *frame;                             // 保存解码后的YUV数据
+	struct SwsContext *swsCtx;
+	uint8_t *rgb24[4];
+	int linesize[4];
 }FFmpegDecode;
 
 static int init_once = 0;
 
 int VideoDecodeActionsFFmpegInitialize(VideoDecode *decode)
 {
-    if(init_once == 0)
-    {
-        init_once = 1;
-        //av_register_all();
-    }
+	const AVCodec *codec = avcodec_find_decoder(AV_CODEC_ID_H264);
+	if(codec == NULL)
+	{
+		YLOGE(("avcodec_find_decoder failed"));
+		return YERR_FAILED;
+	}
 
-    const AVCodec *codec = avcodec_find_decoder(AV_CODEC_ID_H264);
-    if(codec == NULL)
-    {
-        YLOGE(("avcodec_find_decoder failed"));
-        return YERR_FAILED;
-    }
-
-    AVCodecContext *codecContext = avcodec_alloc_context3(codec);
-    // codecContext->frame_number = 1;
-    // codecContext->codec_type = AVMEDIA_TYPE_VIDEO;
-    // codecContext->bit_rate = 0;
+	AVCodecContext *codecContext = avcodec_alloc_context3(codec);
+	// codecContext->frame_number = 1;
+	// codecContext->codec_type = AVMEDIA_TYPE_VIDEO;
+	// codecContext->bit_rate = 0;
 	// codecContext->time_base.num = 1;
 	// codecContext->time_base.den = 15;
-    // codecContext->width = decode->Options->VideoWidth;
-    // codecContext->height = decode->Options->VideoHeight;
+	// codecContext->width = decode->Options->VideoWidth;
+	// codecContext->height = decode->Options->VideoHeight;
 
-    int rc = avcodec_open2(codecContext, codec, NULL);
-    if(rc < 0)
-    {
-        YLOGE("avcodec_open2 failed, %s", rc);
-        return YERR_FAILED;
-    }
+	int rc = avcodec_open2(codecContext, codec, NULL);
+	if(rc < 0)
+	{
+		YLOGE("avcodec_open2 failed, %s", rc);
+		return YERR_FAILED;
+	}
 
-    FFmpegDecode *ffmpegDecode = (FFmpegDecode*)calloc(1, sizeof(FFmpegDecode));
-    ffmpegDecode->codec = codec;
-    ffmpegDecode->avctx = codecContext;
-    ffmpegDecode->frame = av_frame_alloc();
+	FFmpegDecode *ffmpegDecode = (FFmpegDecode *)calloc(1, sizeof(FFmpegDecode));
+	ffmpegDecode->codec = codec;
+	ffmpegDecode->avctx = codecContext;
+	ffmpegDecode->frame = av_frame_alloc();
 
-    decode->ActionsData = ffmpegDecode;
+	decode->ActionsData = ffmpegDecode;
 
-    return YERR_SUCCESS;
+	return YERR_SUCCESS;
 }
 
 void VideoDecodeActionsFFmpegRelease(VideoDecode *decode)
 {
-    FFmpegDecode *ffmpegDecode = (FFmpegDecode *)decode->ActionsData;
-    avcodec_close(ffmpegDecode->avctx);
-    av_free(ffmpegDecode->codec);
-    av_frame_free(&ffmpegDecode->frame);
+	FFmpegDecode *ffmpegDecode = (FFmpegDecode *)decode->ActionsData;
+	avcodec_close(ffmpegDecode->avctx);
+	av_free(ffmpegDecode->codec);
+	av_frame_free(&ffmpegDecode->frame);
+	free(ffmpegDecode);
+	decode->ActionsData = NULL;
 }
 
-int VideoDecodeActionsFFmpegDecode(VideoDecode *decode, char *videoData, int dataSize, char **decodeData, int *size)
+int VideoDecodeActionsFFmpegDecode(VideoDecode *decode, VideoDecodeInput *decodeInput)
 {
-    FFmpegDecode *ffmpegDecode = (FFmpegDecode *)decode->ActionsData;
+	FFmpegDecode *ffmpegDecode = (FFmpegDecode *)decode->ActionsData;
 
-    // // 传递给AVPacket必须是一个完整的NALU数据，所以先判断NALU的头部
-    // char *nalu = NULL;
-    // while(true)
-    // {
-        
-    // }
+	// // 传递给AVPacket必须是一个完整的NALU数据，所以先判断NALU的头部
+	// char *nalu = NULL;
+	// while(true)
+	// {
 
-    // AVPacket用来保存解码前的数据
-    AVPacket *avpkt = av_packet_alloc();
-    avpkt->data = (uint8_t *)videoData;
-    avpkt->size = dataSize;
-    int got_picture = 0;
-    int ret = avcodec_send_packet(ffmpegDecode->avctx, avpkt);
-    if(ret < 0)
-    {
-        YLOGE("avcodec_send_packet failed, %d", ret);
-        return YERR_FAILED;
-    }
+	// }
 
-    ret = avcodec_receive_frame(ffmpegDecode->avctx, ffmpegDecode->frame);
-    if(ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
-    {
-        return YERR_FAILED;
-    }
-    else if(ret < 0)
-    {
-        return YERR_FAILED;
-    }
+	// AVPacket用来保存解码前的数据
+	AVPacket *avpkt = av_packet_alloc();
+	avpkt->data = (uint8_t *)decodeInput->videoData;
+	avpkt->size = decodeInput->videoDataSize;
+	int got_picture = 0;
+	int ret = avcodec_send_packet(ffmpegDecode->avctx, avpkt);
+	if(ret < 0)
+	{
+		YLOGE("avcodec_send_packet failed, %d", ret);
+		return YERR_FAILED;
+	}
 
-    //int len = avcodec_decode_video2(ffmpegDecode->avctx, ffmpegDecode->frame, &got_picture, avPacket);
-    //if(len < 0 || got_picture == 0)
-    //{
-    //    YLOGE("decode failed, codec = %s", ffmpegDecode->codec->name);
-    //    av_free_packet(avPacket);
-    //    return YERR_FAILED;
-    //}
-    //av_free_packet(avPacket);
+	ret = avcodec_receive_frame(ffmpegDecode->avctx, ffmpegDecode->frame);
+	if(ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+	{
+		return YERR_FAILED;
+	}
+	else if(ret < 0)
+	{
+		return YERR_FAILED;
+	}
 
-    return YERR_SUCCESS;
-}
+	if(ffmpegDecode->swsCtx == NULL)
+	{
+		int srcW = ffmpegDecode->frame->width;
+		int srcH = ffmpegDecode->frame->height;
+		int dstW = ffmpegDecode->frame->width;
+		int dstH = ffmpegDecode->frame->height;
+		ffmpegDecode->swsCtx = sws_getContext(srcW, srcH, ffmpegDecode->frame->format, dstW, dstH, AV_PIX_FMT_RGB24, SWS_BILINEAR, NULL, NULL, NULL);
+		av_image_alloc(ffmpegDecode->rgb24, ffmpegDecode->linesize, dstW, dstH, AV_PIX_FMT_RGB24, 1);
+	}
 
-int VideoDecodeActionsFFmpegIsCodecSupporte(VideoCodecs codecType)
-{
-    return 1;
+	int errnum = sws_scale(ffmpegDecode->swsCtx, (uint8_t const *const *)ffmpegDecode->frame->data, ffmpegDecode->frame->linesize, 0, ffmpegDecode->frame->height, ffmpegDecode->rgb24, ffmpegDecode->linesize);
+	if(errnum <= 0)
+	{
+		char errbuf[1024] = { '\0' };
+		av_strerror(errnum, errbuf, sizeof(errbuf));
+		YLOGE("sws_scale failed, %s", errbuf);
+		return YERR_FAILED;
+	}
+
+	decodeInput->decodeData = ffmpegDecode->rgb24[0];
+	decodeInput->decodeDataSize = errnum * ffmpegDecode->frame->width * 3;
+	decodeInput->width = ffmpegDecode->frame->width;
+	decodeInput->height = errnum;
+
+	return YERR_SUCCESS;
 }
 
 struct VideoDecodeActions VideoDecodeActionsFFmpeg =
 {
-    .Name = "FFmpeg Decode",
-    .SupportedFormats = { VIDEO_CODEC_H264, VIDEO_CODEC_H265, -1 },
-    .Initialize = VideoDecodeActionsFFmpegInitialize,
-    .Release = VideoDecodeActionsFFmpegRelease,
-    .Decode = VideoDecodeActionsFFmpegDecode,
+	.Name = "FFmpeg Decode",
+	.SupportedFormats = { AV_FORMAT_H264, -1 },
+	.Initialize = VideoDecodeActionsFFmpegInitialize,
+	.Release = VideoDecodeActionsFFmpegRelease,
+	.Decode = VideoDecodeActionsFFmpegDecode,
 };

@@ -27,7 +27,7 @@ VideoDecode *VideoDecodeCreate(VideoDecodeOptions *options)
                 break;
             }
 
-            if(decodeActions->SupportedFormats[j] == options->CodecType)
+            if(decodeActions->SupportedFormats[j] == options->AVFormat)
             {
                 YLOGI("create VideoDecode success, %s", decodeActions->Name);
 
@@ -41,6 +41,11 @@ VideoDecode *VideoDecodeCreate(VideoDecodeOptions *options)
     return NULL;
 }
 
+void VideoDecodeDelete(VideoDecode *decode)
+{
+    free(decode);
+}
+
 int VideoDecodeInitialize(VideoDecode *decode)
 {
     return decode->Actions->Initialize(decode);
@@ -51,8 +56,8 @@ void VideoDecodeRelease(VideoDecode *decode)
     decode->Actions->Release(decode);
 }
 
-int VideoDecodeDecode(VideoDecode *decode, char *videoData, int dataSize, char **decodeData, int *size)
+int VideoDecodeDecode(VideoDecode *decode, VideoDecodeInput *decodeInput)
 {
-    return decode->Actions->Decode(decode, videoData, dataSize, decodeData, size);
+    return decode->Actions->Decode(decode, decodeInput);
 }
 
