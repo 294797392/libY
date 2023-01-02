@@ -1,5 +1,5 @@
 ﻿/***********************************************************************************
- * @ file    : vod_d3d9.h
+ * @ file    : VideoRendererD3D9.h
  * @ author  : oheiheiheiheihei
  * @ version : 0.9
  * @ date    : 2022.10.02 11:21
