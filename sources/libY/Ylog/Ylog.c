@@ -53,16 +53,16 @@ static Yappender *appenders[] =
 	&Yappender_console,
 	NULL
 };
-static Ylog *log = NULL;
+static Ylog *Ylog_instance = NULL;
 
 static void consume_log_queue_callback(void *userdata, void *element)
 {
 	Yobject *yo = (Yobject *)element;
 	Ymsg *ymsg = (Ymsg *)Y_object_get_data(yo);
 
-	for(int i = 0; i < log->num_appenders; i++)
+	for(int i = 0; i < Ylog_instance->num_appenders; i++)
 	{
-		Yappender *appender = log->appenders[i];
+		Yappender *appender = Ylog_instance->appenders[i];
 		appender->write(appender->context, ymsg);
 	}
 
@@ -153,7 +153,7 @@ static void init_appenders(Ylog *log, cJSON *json)
 
 int Y_log_init(const char *config)
 {
-	if(log != NULL)
+	if(Ylog_instance != NULL)
 	{
 		return YERR_SUCCESS;
 	}
@@ -174,9 +174,9 @@ int Y_log_init(const char *config)
 	//	return YERR_INVALID_JSON;
 	//}
 
-	log = (Ylog*)calloc(1, sizeof(Ylog));
+	Ylog_instance = (Ylog*)calloc(1, sizeof(Ylog));
 	//log->config = json;
-	log->msg_pool = Y_create_pool(sizeof(Ymsg), YMSG_POOL_SIZE);
+	Ylog_instance->msg_pool = Y_create_pool(sizeof(Ymsg), YMSG_POOL_SIZE);
 
 	//// 先解析全局配置
 	//init_options(log, json);
@@ -185,8 +185,8 @@ int Y_log_init(const char *config)
 	//init_appenders(log, json);
 
 	// 启动日志队列
-	log->consume_queue = Y_create_buffer_queue(NULL);
-	Y_buffer_queue_start(log->consume_queue, 1, consume_log_queue_callback);
+	Ylog_instance->consume_queue = Y_create_buffer_queue(NULL);
+	Y_buffer_queue_start(Ylog_instance->consume_queue, 1, consume_log_queue_callback);
 
 	return YERR_SUCCESS;
 }
@@ -194,7 +194,7 @@ int Y_log_init(const char *config)
 Ylogger *Y_log_get_logger(const char *name)
 {
 	Ylogger *logger = (Ylogger*)calloc(1, sizeof(Ylogger));
-	logger->log = log;
+	logger->log = Ylog_instance;
 	return logger;
 }
 
@@ -212,7 +212,7 @@ void Y_log_write(Ylogger *logger, Ylog_level level, int line, char *msg, ...)
 	vsnprintf(message, MAX_LOG_LINE, msg, ap);
 	va_end(ap);
 
-	Yobject *yo = Y_pool_obtain(log->msg_pool, sizeof(Ymsg));
+	Yobject *yo = Y_pool_obtain(Ylog_instance->msg_pool, sizeof(Ymsg));
 	Ymsg *ymsg = (Ymsg *)Y_object_get_data(yo);
 	ymsg->level = level;
 
@@ -222,7 +222,7 @@ void Y_log_write(Ylogger *logger, Ylog_level level, int line, char *msg, ...)
 
 	ymsg->level = level;
 
-	Y_buffer_queue_enqueue(log->consume_queue, yo);
+	Y_buffer_queue_enqueue(Ylog_instance->consume_queue, yo);
 }
 
 
