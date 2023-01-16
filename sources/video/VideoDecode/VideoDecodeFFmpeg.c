@@ -15,6 +15,15 @@
 #include "VideoDecode.h"
 #include "AVFormats.h"
 
+#pragma comment(lib, "avcodec.lib")
+#pragma comment(lib, "avdevice.lib")
+#pragma comment(lib, "avfilter.lib")
+#pragma comment(lib, "avformat.lib")
+#pragma comment(lib, "avutil.lib")
+#pragma comment(lib, "postproc.lib")
+#pragma comment(lib, "swresample.lib")
+#pragma comment(lib, "swscale.lib")
+
 typedef struct FFmpegDecode
 {
 	const AVCodec *codec;
@@ -66,7 +75,7 @@ void VideoDecodeActionsFFmpegRelease(VideoDecode *decode)
 {
 	FFmpegDecode *ffmpegDecode = (FFmpegDecode *)decode->ActionsData;
 	avcodec_close(ffmpegDecode->avctx);
-	av_free(ffmpegDecode->codec);
+	av_free((void *)ffmpegDecode->codec);
 	av_frame_free(&ffmpegDecode->frame);
 	free(ffmpegDecode);
 	decode->ActionsData = NULL;
