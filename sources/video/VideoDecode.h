@@ -12,6 +12,7 @@
 
 #include "libY.h"
 
+#include "Video.h"
 #include "AVFormats.h"
 
 #ifdef __cplusplus
@@ -31,7 +32,6 @@ extern "C" {
     typedef enum
     {
         H264_NALU_UNUSED = 0,
-        H264_NALU_
     }H264_NALU_TYPES;
 
     struct VideoDecodeInput
@@ -73,6 +73,7 @@ extern "C" {
     YAPI int VideoDecodeInitialize(VideoDecode *decode);
     YAPI void VideoDecodeRelease(VideoDecode *decode);
     YAPI int VideoDecodeDecode(VideoDecode *decode, VideoDecodeInput decodeInput);
+    YAPI int VideoDecodeAddFilter(VideoDecode *decode, VideoFilter filter);
 
 #ifdef __cplusplus
 }

@@ -1,4 +1,13 @@
-﻿#include <stdlib.h>
+﻿/***********************************************************************************
+ * @ file    : VideoRendererFFmpeg.h
+ * @ author  : oheiheiheiheihei
+ * @ version : 0.9
+ * @ date    : 2023.1.31 19:26
+ * @ brief   : FFmpeg解码器
+ * @ remark  ：滤波器使用：https://blog.csdn.net/locahuang/article/details/119187896
+ ************************************************************************************/
+
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -29,6 +38,12 @@ typedef struct FFmpegDecode
 	const AVCodec *codec;
 	AVCodecContext *avctx;
 	AVFrame *frame;                             // 保存解码后的YUV数据
+
+	AVFilterGraph *filterGraph;					// 创建统合整个滤波过程的滤波图结构体
+	AVFilterContext *bufferSrcFilterCtx;
+	AVFilterContext *bufferSinkFilterCtx;
+	AVFilterContext *flipFilter;				// 视频翻转使用的Filter
+
 	struct SwsContext *swsCtx;
 	uint8_t *rgb24[4];
 	int linesize[4];
@@ -114,6 +129,7 @@ int VideoDecodeActionsFFmpegDecode(VideoDecode *decode, VideoDecodeInput *decode
 		return YERR_FAILED;
 	}
 
+	// 初始化像素转换
 	if(ffmpegDecode->swsCtx == NULL)
 	{
 		int srcW = ffmpegDecode->frame->width;
@@ -140,6 +156,35 @@ int VideoDecodeActionsFFmpegDecode(VideoDecode *decode, VideoDecodeInput *decode
 
 	return YERR_SUCCESS;
 }
+
+// int VideoDecodeActionsFFmpegAddFilter(VideoDecode *decode, VideoFilter filter)
+// {
+// 	FFmpegDecode *ffmpegDecode = (FFmpegDecode*)decode->ActionsData;
+// 	if(ffmpegDecode->filterGraph == NULL)
+// 	{
+// 		ffmpegDecode->filterGraph = avfilter_graph_alloc();
+// 	}
+	// // 解码成功后初始化Filter（如果需要滤波器的话）
+	// if(decode->Options->Flip != VIDEO_FLIP_NONE)
+	// {
+	// 	const AVFilter *buffersrc  = avfilter_get_by_name("buffer");
+    // 	const AVFilter *buffersink = avfilter_get_by_name("buffersink");
+	// 	const AVFilter *flipFilter = NULL;
+
+	// 	switch (decode->Options->Flip)
+	// 	{
+	// 	case VIDEO_FLIP_X: flipFilter = avfilter_get_by_name("hflip"); break;
+	// 	case VIDEO_FLIP_Y: flipFilter = avfilter_get_by_name("vflip"); break;
+	// 	default: break;
+	// 	}
+
+	// 	char args[1024] = {'\0'};
+	// 	snprintf(args, sizeof(args), "video_size=%dx%d:pix_fmt=%d:time_base=%d/%d:pixel_aspect=%d/%d", ffmpegDecode->frame->width, errnum, AV_PIX_FMT_RGB24, 1, 25, 1, 1);
+	// 	avfilter_graph_create_filter(&ffmpegDecode->bufferSrcFilterCtx, buffersrc, "in", args, NULL, ffmpegDecode->filterGraph);
+	// 	avfilter_graph_create_filter(&ffmpegDecode->bufferSinkFilterCtx, buffersink, "out", NULL, NULL, ffmpegDecode->filterGraph);
+	// 	avfilter_graph_create_filter(&ffmpegDecode->flipFilter, flipFilter, "flip", NULL, NULL, ffmpegDecode->filterGraph);
+	// }
+// }
 
 struct VideoDecodeActions VideoDecodeActionsFFmpeg =
 {
