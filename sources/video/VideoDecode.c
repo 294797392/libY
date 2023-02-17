@@ -63,5 +63,6 @@ int VideoDecodeDecode(VideoDecode *decode, VideoDecodeInput *decodeInput)
 
 int VideoDecodeAddFilter(VideoDecode *decode, VideoFilter filter)
 {
-    return decode->Actions->AddFilter(decode, filter);
+    return 0;
+    //return decode->Actions->AddFilter(decode, filter);
 }

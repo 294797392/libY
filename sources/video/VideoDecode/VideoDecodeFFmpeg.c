@@ -39,11 +39,6 @@ typedef struct FFmpegDecode
 	AVCodecContext *avctx;
 	AVFrame *frame;                             // 保存解码后的YUV数据
 
-	AVFilterGraph *filterGraph;					// 创建统合整个滤波过程的滤波图结构体
-	AVFilterContext *bufferSrcFilterCtx;
-	AVFilterContext *bufferSinkFilterCtx;
-	AVFilterContext *flipFilter;				// 视频翻转使用的Filter
-
 	struct SwsContext *swsCtx;
 	uint8_t *rgb24[4];
 	int linesize[4];
