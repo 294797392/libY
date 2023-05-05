@@ -1,4 +1,6 @@
+#ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
+#endif
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -14,44 +16,35 @@
 
 #include "libY.h"
 
-int Y_file_stat(const char *file_path, Yfstat *stat)
+int Y_file_get_size(const char *file_path)
 {
 #if (defined(Y_WIN32)) || (defined(Y_MINGW))
+
 	WIN32_FILE_ATTRIBUTE_DATA attr_data;
 	memset(&attr_data, 0, sizeof(WIN32_FILE_ATTRIBUTE_DATA));
 	int rc = GetFileAttributesExA(file_path, GetFileExInfoStandard, &attr_data);
 	if(rc == 0)
 	{
 		rc = GetLastError();
-		return YERR_FILE_STAT_FAILED;
+		printf("GetFileAttributesExA failed, %d", rc);
+		return -1;
 	}
-	stat->exist = (attr_data.dwFileAttributes & 0x10) == 0;
-	stat->length = (stat->length | attr_data.nFileSizeHigh) << 32 | attr_data.nFileSizeLow;
+
+	return ((uint64_t)attr_data.nFileSizeHigh << 32) + attr_data.nFileSizeLow;
+
 #elif (defined(Y_UNIX)) || (defined(Y_MSYS))
 	//stat s;
 	//fstat()
 #endif
 
-	return YERR_SUCCESS;
 }
 
-int Y_file_readbytes(const char *file_path, char **bytes, uint64_t *size)
+int Y_file_read_all(const char *file_path, char **content, uint64_t *size)
 {
-	Yfstat stat;
-	int rc = Y_file_stat(file_path, &stat);
-	if(rc != YERR_SUCCESS)
+	int file_size = Y_file_get_size(file_path);
+	if(file_size <= 0)
 	{
-		return rc;
-	}
-
-	if(stat.exist == 0)
-	{
-		return YERR_FILE_NOT_FOUND;
-	}
-
-	if(stat.length == 0)
-	{
-		return YERR_SUCCESS;
+		return YERR_FAILED;
 	}
 
 	FILE *f = fopen(file_path, "r");
@@ -59,12 +52,12 @@ int Y_file_readbytes(const char *file_path, char **bytes, uint64_t *size)
 	{
 		return YERR_FAILED;
 	}
-	char *buf = (char *)calloc((size_t)stat.length + 1, 1);
-	fread(buf, 1, (size_t)stat.length, f);
+	char *buf = (char *)calloc((size_t)file_size + 1, 1);
+	fread(buf, 1, (size_t)file_size, f);
 	fclose(f);
-	
-	*size = stat.length;
-	*bytes = buf;
+
+	*size = file_size;
+	*content = buf;
 
 	return YERR_SUCCESS;
 }

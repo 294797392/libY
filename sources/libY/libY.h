@@ -150,25 +150,17 @@
 #ifndef YFILE
 #define YFILE
 
-	// 存储文件信息
-	typedef struct Yfstat_s
-	{
-		int exist;
-		uint64_t length;
-	}Yfstat;
-
-	/*
-	 * 描述：
-	 * 以字节为单位返回文件大小
-	 *
-	 * 参数：
-	 * @file_path：要读取的文件的完整路径
-	 *
-	 * 返回值：
-	 * 文件大小，以字节为单位
-	 */
-	YAPI int Y_file_stat(const char *file_path, Yfstat *stat);
-
+    /*
+     * 描述：
+     * 获取文件大小
+     *
+     * 参数：
+     * @file_path：要获取的文件的完整路径
+     *
+     * 返回值：
+     * 文件大小，-1表示文件不存在
+     */
+    YAPI int Y_file_get_size(const char *file_path);
 
 	/*
 	 * 描述：
@@ -176,16 +168,16 @@
 	 *
 	 * 参数：
 	 * @file_path：要读取的文件的完整路径
-	 * @bytes：字节缓冲区
+	 * @content：存储文件内容的缓冲区
 	 *
 	 * 返回值：
 	 * 文件内容的长度
 	 */
-	YAPI int Y_file_readbytes(const char *file_path, char **bytes, uint64_t *size);
+	YAPI int Y_file_read_all(const char *file_path, char **content, uint64_t *size);
 
 	/*
 	 * 描述：
-	 * 释放使用Y_file_readall函数开辟的内存空间
+	 * 释放使用Y_file_read_all函数开辟的内存空间
 	 *
 	 * 参数：
 	 * @content：要释放的内存空间

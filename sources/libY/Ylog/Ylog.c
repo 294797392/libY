@@ -183,6 +183,9 @@ int Y_log_init(const char *config)
 
 	//// 再解析appender配置
 	//init_appenders(log, json);
+	Yappender *appender1 = get_appender("console");
+	Ylog_instance->appenders[0] = appender1;
+	Ylog_instance->num_appenders = 1;
 
 	// 启动日志队列
 	Ylog_instance->consume_queue = Y_create_buffer_queue(NULL);

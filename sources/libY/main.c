@@ -131,7 +131,11 @@ static void demo_Ylog()
 
 int main(int argc, char **argv)
 {
-	Y_log_init(("E:\\oheiheiheiheihei\\libY\\msvc\\Debug\\Ylog.json"));
+	char *content = NULL;
+	uint64_t size = 0;
+	Y_file_read_all("E:\\oheiheiheiheihei\\libY\\msvc\\build\\libY.pdb", &content, &size);
+
+	Y_log_init(NULL);
 
 	YLOGI(("123"));
 
