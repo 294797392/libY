@@ -82,7 +82,7 @@ static Yobject *bucket_obtain(Ybucket *bucket)
 			Yobject *yo = (Yobject *)calloc(1, sizeof(Yobject));
 			yo->block = calloc(1, bucket->block_size);
 			yo->bucket = bucket;
-			//printf("queue_count = 0, alloc black, %d\n", bucket->num_blocks);
+			//printf("queue_count = 0, alloc block, %d, max_blocks = %d\n", bucket->num_blocks, bucket->max_blocks);
 			Y_lock_unlock(bucket->lock);
 			return yo;
 		}

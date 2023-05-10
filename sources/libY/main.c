@@ -131,9 +131,9 @@ static void demo_Ylog()
 
 int main(int argc, char **argv)
 {
-	char *content = NULL;
-	uint64_t size = 0;
-	Y_file_read_all("E:\\oheiheiheiheihei\\libY\\msvc\\build\\libY.pdb", &content, &size);
+	//char *content = NULL;
+	//uint64_t size = 0;
+	//Y_file_read_all("E:\\oheiheiheiheihei\\libY\\msvc\\build\\libY.pdb", &content, &size);
 
 	Y_log_init(NULL);
 
@@ -199,9 +199,10 @@ int main(int argc, char **argv)
 
 	while (1)
 	{
-		char line[1024] = { '\0' };
-		fgets(line, sizeof(line), stdin);
-		YLOGI(("your input is : %s"), line);
+		YLOGI("爱神的箭看哈撒科打诨看上的喀什点击喀什的空间谙声点击喀什");
+		//char line[1024] = { '\0' };
+		//fgets(line, sizeof(line), stdin);
+		//YLOGI(("your input is : %s"), line);
 	}
 
 	return 0;

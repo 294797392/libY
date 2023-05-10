@@ -210,3 +210,9 @@ void *Y_list_query(Ylist *yl, Ylist_query_func queryfunc, void *data, void *user
 
 	return NULL;
 }
+
+void **Y_list_to_array(Ylist *yl, int *count)
+{
+	*count = yl->length;
+	return yl->array;
+}

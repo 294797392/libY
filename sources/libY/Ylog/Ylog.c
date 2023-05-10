@@ -19,7 +19,6 @@
 #define DEFAULT_PATH				("Ylog.txt")
 #define DEFAULT_SIZE				4194304
 #define DEFAULT_FORMAT				("")
-#define YMSG_POOL_SIZE				8192
 
 // Ylog是否已经初始化
 static int initialized = 0;
@@ -35,10 +34,12 @@ typedef struct Ylog_s
 
 	Ylogger *logger[256];
 
-	Ypool *msg_pool;
-	Ybuffer_queue *consume_queue;
-
 	cJSON *config;
+
+	/// <summary>
+	/// 写日志的锁
+	/// </summary>
+	Ylock write_lock;
 }Ylog;
 
 struct Ylogger_s
@@ -54,20 +55,6 @@ static Yappender *appenders[] =
 	NULL
 };
 static Ylog *Ylog_instance = NULL;
-
-static void consume_log_queue_callback(void *userdata, void *element)
-{
-	Yobject *yo = (Yobject *)element;
-	Ymsg *ymsg = (Ymsg *)Y_object_get_data(yo);
-
-	for(int i = 0; i < Ylog_instance->num_appenders; i++)
-	{
-		Yappender *appender = Ylog_instance->appenders[i];
-		appender->write(appender->context, ymsg);
-	}
-
-	Y_pool_recycle(yo);
-}
 
 
 
@@ -175,8 +162,8 @@ int Y_log_init(const char *config)
 	//}
 
 	Ylog_instance = (Ylog*)calloc(1, sizeof(Ylog));
+	Y_create_lock(Ylog_instance->write_lock);
 	//log->config = json;
-	Ylog_instance->msg_pool = Y_create_pool(sizeof(Ymsg), YMSG_POOL_SIZE);
 
 	//// 先解析全局配置
 	//init_options(log, json);
@@ -186,10 +173,6 @@ int Y_log_init(const char *config)
 	Yappender *appender1 = get_appender("console");
 	Ylog_instance->appenders[0] = appender1;
 	Ylog_instance->num_appenders = 1;
-
-	// 启动日志队列
-	Ylog_instance->consume_queue = Y_create_buffer_queue(NULL);
-	Y_buffer_queue_start(Ylog_instance->consume_queue, 1, consume_log_queue_callback);
 
 	return YERR_SUCCESS;
 }
@@ -215,17 +198,20 @@ void Y_log_write(Ylogger *logger, Ylog_level level, int line, char *msg, ...)
 	vsnprintf(message, MAX_LOG_LINE, msg, ap);
 	va_end(ap);
 
-	Yobject *yo = Y_pool_obtain(Ylog_instance->msg_pool, sizeof(Ymsg));
-	Ymsg *ymsg = (Ymsg *)Y_object_get_data(yo);
-	ymsg->level = level;
+	Ymsg ymsg;
+	ymsg.level = level;
 
 	// 格式化最终要输出的日志
 	const char *format = "[%s][%d]%s\r\n\0";
-	snprintf(ymsg->msg, sizeof(ymsg->msg), format, logger->name, line, message);
+	snprintf(ymsg.msg, sizeof(ymsg.msg), format, logger->name, line, message);
 
-	ymsg->level = level;
-
-	Y_buffer_queue_enqueue(Ylog_instance->consume_queue, yo);
+	Y_lock_lock(Ylog_instance->write_lock);
+	for(int i = 0; i < Ylog_instance->num_appenders; i++)
+	{
+		Yappender *appender = Ylog_instance->appenders[i];
+		appender->write(appender->context, &ymsg);
+	}
+	Y_lock_unlock(Ylog_instance->write_lock);
 }
 
 
