@@ -7,6 +7,8 @@
 
 #define MAX_POOL_SIZE		512
 
+typedef struct Ypool_s Ypool;
+
 typedef struct Ybucket_s
 {
 	int block_size;
@@ -18,15 +20,6 @@ typedef struct Ybucket_s
 	Ypool *pool;
 }Ybucket;
 
-struct Yobject_s
-{
-	// 内存块地址
-	void *block;
-
-	// 该缓冲块对象所属的bucket
-	Ybucket *bucket;
-};
-
 struct Ypool_s
 {
 	int max_block_size;
@@ -37,6 +30,11 @@ struct Ypool_s
 	int num_buckets;
 };
 
+
+/// <summary>
+/// 全局缓冲区管理对象
+/// </summary>
+static Ypool *pool = NULL;
 
 
 static int select_bucket_index(uint32_t buffer_size)
@@ -69,7 +67,7 @@ static Ybucket *create_bucket(int block_size, int max_blocks)
 	return bucket;
 }
 
-static Yobject *bucket_obtain(Ybucket *bucket)
+static void *bucket_obtain(Ybucket *bucket)
 {
 	Y_lock_lock(bucket->lock);
 
@@ -79,12 +77,10 @@ static Yobject *bucket_obtain(Ybucket *bucket)
 		if(bucket->num_blocks < bucket->max_blocks)
 		{
 			bucket->num_blocks++;
-			Yobject *yo = (Yobject *)calloc(1, sizeof(Yobject));
-			yo->block = calloc(1, bucket->block_size);
-			yo->bucket = bucket;
+			void *block = calloc(1, bucket->block_size);
 			//printf("queue_count = 0, alloc block, %d, max_blocks = %d\n", bucket->num_blocks, bucket->max_blocks);
 			Y_lock_unlock(bucket->lock);
-			return yo;
+			return block;
 		}
 		else
 		{
@@ -99,33 +95,32 @@ static Yobject *bucket_obtain(Ybucket *bucket)
 	{
 		//printf("reuse block\n");
 
-		Yobject *yo = (Yobject *)Y_queue_dequeue(bucket->queue);
+		void *block = Y_queue_dequeue(bucket->queue);
 		Y_lock_unlock(bucket->lock);
-		return yo;
+		return block;
 	}
 }
 
-static void bucket_recycle(Yobject *yo)
+static void bucket_recycle(Ybucket *bucket, void *block)
 {
-	Ybucket *bucket = yo->bucket;
-
 	Y_lock_lock(bucket->lock);
 
-	memset(yo->block, 0, bucket->block_size);
-	Y_queue_enqueue(bucket->queue, yo);
-	int queue_count = Y_queue_size(bucket->queue);
+	memset(block, 0, bucket->block_size);
+	Y_queue_enqueue(bucket->queue, block);
+	//int queue_count = Y_queue_size(bucket->queue);
 	//printf("queue_size = %d\n", queue_count);
 
 	Y_lock_unlock(bucket->lock);
 }
 
 
-Ypool *Y_create_pool(int max_block_size, int max_blocks)
+int Y_init_pool(int max_block_size, int max_blocks)
 {
 	Ypool *yp = (Ypool *)calloc(1, sizeof(Ypool));
+	Y_create_lock(yp->lock);
+
 	yp->max_block_size = max_block_size;
 	yp->max_block_per_bucket = max_blocks;
-	Y_create_lock(yp->lock);
 
 	int max_buckets = select_bucket_index(max_block_size) + 1;
 	yp->buckets = (Ybucket **)calloc(max_buckets, sizeof(Ybucket *));
@@ -138,42 +133,35 @@ Ypool *Y_create_pool(int max_block_size, int max_blocks)
 		yp->buckets[i] = bucket;
 	}
 
-	return yp;
+	pool = yp;
+	return YERR_SUCCESS;
 }
 
-Yobject *Y_pool_obtain(Ypool *yp, int blocksize)
+void *Y_pool_obtain(int blocksize)
 {
 	int bucket_index = select_bucket_index(blocksize);
 
 	// 先查找该大小是否有对应的bucket
 	// 如果申请的大小大于缓冲池里可申请的内存最大大小，那么就找不到bucket，这种情况下返回NULL
-	if(bucket_index > yp->num_buckets - 1)
+	if(bucket_index > pool->num_buckets - 1)
 	{
 		printf("request blocksize too big, %d", blocksize);
 		return NULL;
 	}
 
-	Ybucket *bucket = yp->buckets[bucket_index];
-	Yobject *yo = bucket_obtain(bucket);
-	return yo;
+	Ybucket *bucket = pool->buckets[bucket_index];
+	return bucket_obtain(bucket);
 }
 
-void Y_pool_recycle(Yobject *yo)
+void Y_pool_recycle(void *block, int blocksize)
 {
-	Ybucket *bucket = yo->bucket;
-	Ypool *pool = bucket->pool;
-
-	int bucket_index = select_bucket_index(bucket->block_size);
-
+	int bucket_index = select_bucket_index(blocksize);
 	if(bucket_index > pool->num_buckets - 1)
 	{
 		return;
 	}
 
-	bucket_recycle(yo);
-}
+	Ybucket *bucket = pool->buckets[bucket_index];
 
-void *Y_object_get_data(Yobject *yo)
-{
-	return yo->block;
+	bucket_recycle(bucket, block);
 }

@@ -90,44 +90,31 @@ static void demo_Ylist()
 
 static void demo_Ypool()
 {
-	Ypool *yp = Y_create_pool(1024, 1024);
-
-	Yobject *objs[10] = { NULL };
+	Y_init_pool(1024, 1024);
 
 	for (int i = 0; i < 10; i++)
 	{
-		Yobject *yo = Y_pool_obtain(yp, 1024);
-		char *msg = (char *)Y_object_get_data(yo);
+		void *block = Y_pool_obtain(1024);
+		char *msg = (char *)block;
 		snprintf(msg, 1024, "%d", i);
-		objs[i] = yo;
-	}
-
-	//for (size_t i = 5; i < 10; i++)
-	//{
-	//	Y_pool_recycle(yp, objs[i]);
-	//}
-
-	for (size_t i = 0; i < 10; i++)
-	{
-		Y_pool_recycle(objs[i]);
-	}
-
-
-	for (size_t i = 0; i < 10; i++)
-	{
-		Yobject *yo = Y_pool_obtain(yp, 1024);
-		char *msg = (char *)Y_object_get_data(yo);
 		YLOGI(("%s"), msg);
+		Y_pool_recycle(block, 1024);
 	}
 }
 
 static void demo_Ylog()
 {
-	while (1)
+	while(1)
 	{
 		YLOGI(("test log, %d"), errno);
 	}
 }
+
+typedef struct test_s
+{
+	void *p1;
+	void *p2;
+}test;
 
 int main(int argc, char **argv)
 {
@@ -136,6 +123,7 @@ int main(int argc, char **argv)
 	//Y_file_read_all("E:\\oheiheiheiheihei\\libY\\msvc\\build\\libY.pdb", &content, &size);
 
 	Y_log_init(NULL);
+	demo_Ypool();
 
 	YLOGI(("123"));
 
@@ -199,10 +187,9 @@ int main(int argc, char **argv)
 
 	while (1)
 	{
-		YLOGI("爱神的箭看哈撒科打诨看上的喀什点击喀什的空间谙声点击喀什");
-		//char line[1024] = { '\0' };
-		//fgets(line, sizeof(line), stdin);
-		//YLOGI(("your input is : %s"), line);
+		char line[1024] = { '\0' };
+		fgets(line, sizeof(line), stdin);
+		YLOGI(("your input is : %s"), line);
 	}
 
 	return 0;

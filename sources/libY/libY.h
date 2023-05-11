@@ -479,12 +479,10 @@
 #ifndef YPOOL
 #define YPOOL
 
-	typedef struct Yobject_s Yobject;
-	typedef struct Ypool_s Ypool;
-
 	/*
 	 * 描述：
-	 * 创建一个对象缓冲池
+	 * 初始化内存缓冲池
+     * 整个应用程序生命周期内只需要调用一遍即可
 	 *
 	 * 参数：
 	 * @max_block_size：缓冲池里可以申请的最大的缓冲区大小
@@ -493,7 +491,7 @@
 	 * 返回值：
 	 * 创建的缓冲池对象
 	 */
-	YAPI Ypool *Y_create_pool(int max_block_size, int max_blocks);
+    YAPI int Y_init_pool(int max_block_size, int max_blocks);
 
 	/*
 	 * 描述：
@@ -506,9 +504,9 @@
 	 * @blocksize：要申请的内存块的大小
 	 *
 	 * 返回值：
-	 * 缓冲对象
+	 * 内存地址
 	 */
-	YAPI Yobject *Y_pool_obtain(Ypool *yp, int blocksize);
+    YAPI void *Y_pool_obtain(int blocksize);
 
 	/*
 	 * 描述：
@@ -517,18 +515,10 @@
 	 * 这个函数会把你用完的对象重新放到缓冲池里，以便于下次复用
 	 *
 	 * 参数：
-	 * @yo：要回收的对象
+	 * @block：要复用的内存块。注意，该内存地址必须是通过Y_pool_obtain分配而得到的
+     * @blocksize：内存块的长度
 	 */
-	YAPI void Y_pool_recycle(Yobject *yo);
-
-	/*
-	 * 描述：
-	 * 获取Yobject里你开辟的内存空间
-	 *
-	 * 返回值：
-	 * 内存地址
-	 */
-	YAPI void *Y_object_get_data(Yobject *yo);
+	YAPI void Y_pool_recycle(void *block, int blocksize);
 #endif
 
 
