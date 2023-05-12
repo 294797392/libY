@@ -491,7 +491,7 @@
 	 * 返回值：
 	 * 创建的缓冲池对象
 	 */
-    YAPI int Y_init_pool(int max_block_size, int max_blocks);
+    YAPI int Y_pool_init(int max_block_size, int max_blocks);
 
 	/*
 	 * 描述：
@@ -507,6 +507,20 @@
 	 * 内存地址
 	 */
     YAPI void *Y_pool_obtain(int blocksize);
+
+    /*
+     * 描述：
+     * 重新分配对象的大小
+     *
+     * 参数：
+     * @block：要重新分配的内存对象
+     * @blocksize：要申请的内存块的大小
+     * @newsize：新对象的大小
+     *
+     * 返回值：
+     * 内存地址
+     */
+    YAPI void *Y_pool_resize(void *block, int blocksize, int newsize);
 
 	/*
 	 * 描述：

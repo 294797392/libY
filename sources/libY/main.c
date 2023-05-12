@@ -65,7 +65,7 @@ static void demo_Ylist()
 {
 	Ylist *yl = Y_create_list2(Ylist_free_item);
 
-	for (int i = 0; i < 100; i++)
+	for(int i = 0; i < 100; i++)
 	{
 		Ylist_item *item = (Ylist_item *)calloc(1, sizeof(Ylist_item));
 		char *line = (char *)calloc(1, 1024);
@@ -81,7 +81,7 @@ static void demo_Ylist()
 	Y_list_removeat(yl, 0, 1);
 	Y_list_clear(yl);
 
-	while (1)
+	while(1)
 	{
 		char line[1024] = { '\0' };
 		fgets(line, sizeof(line), stdin);
@@ -90,7 +90,7 @@ static void demo_Ylist()
 
 static void demo_Ypool()
 {
-	Y_init_pool(1024, 1024);
+	Y_pool_init(1024, 1024);
 
 	for (int i = 0; i < 10; i++)
 	{

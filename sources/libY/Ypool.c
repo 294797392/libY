@@ -114,7 +114,7 @@ static void bucket_recycle(Ybucket *bucket, void *block)
 }
 
 
-int Y_init_pool(int max_block_size, int max_blocks)
+int Y_pool_init(int max_block_size, int max_blocks)
 {
 	Ypool *yp = (Ypool *)calloc(1, sizeof(Ypool));
 	Y_create_lock(yp->lock);
@@ -151,6 +151,19 @@ void *Y_pool_obtain(int blocksize)
 
 	Ybucket *bucket = pool->buckets[bucket_index];
 	return bucket_obtain(bucket);
+}
+
+void *Y_pool_resize(void *block, int blocksize, int newsize)
+{
+	int bucket_index = select_bucket_index(blocksize);
+	if(bucket_index > pool->num_buckets - 1)
+	{
+		printf("request blocksize too big, %d", blocksize);
+		return NULL;
+	}
+
+	void *newblock = realloc(block, newsize);
+	return newblock;
 }
 
 void Y_pool_recycle(void *block, int blocksize)
