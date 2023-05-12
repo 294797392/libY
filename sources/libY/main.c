@@ -56,14 +56,9 @@ typedef struct Ylist_item_s
 	char *line;
 }Ylist_item;
 
-static void Ylist_free_item(void *item)
-{
-	free(item);
-}
-
 static void demo_Ylist()
 {
-	Ylist *yl = Y_create_list2(Ylist_free_item);
+	Ylist *yl = Y_create_list();
 
 	for(int i = 0; i < 100; i++)
 	{
@@ -78,7 +73,7 @@ static void demo_Ylist()
 	item->line = (char *)calloc(1, 1024);
 	snprintf(item->line, 1024, "99999");
 	Y_list_insert(yl, 0, item);
-	Y_list_removeat(yl, 0, 1);
+	Y_list_removeat(yl, 0);
 	Y_list_clear(yl);
 
 	while(1)

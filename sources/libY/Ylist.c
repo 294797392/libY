@@ -17,8 +17,6 @@ struct Ylist_s
 
 	// 当前数组里元素的数量
 	int length;
-
-	Ylist_free_func freefunc;
 };
 
 // 把元素从从start_index的地方向后移动一个元素
@@ -37,12 +35,6 @@ static void move_left(Ylist *yl, int start_index)
 	{
 		yl->array[i - 1] = yl->array[i];
 	}
-}
-
-static int foreach_free(Ylist *yl, void *item, void *userdata)
-{
-	yl->freefunc(item);
-	return YERR_SUCCESS;
 }
 
 static void ensure_capacity(Ylist *yl, int count)
@@ -79,13 +71,6 @@ Ylist *Y_create_list()
 	return yl;
 }
 
-Ylist *Y_create_list2(Ylist_free_func freefunc)
-{
-	Ylist *yl = Y_create_list();
-	yl->freefunc = freefunc;
-	return yl;
-}
-
 void Y_delete_list(Ylist *yl)
 {
 	if(yl->array != NULL)
@@ -119,12 +104,7 @@ void Y_list_add(Ylist *yl, void *item)
 
 void Y_list_clear(Ylist *yl)
 {
-	if(yl->freefunc != NULL && yl->length > 0)
-	{
-		Y_list_foreach(yl, foreach_free, NULL);
-		memset(yl->array, 0, sizeof(void *) * yl->length);
-		yl->length = 0;
-	}
+	yl->length = 0;
 }
 
 int Y_list_count(Ylist *yl)
@@ -166,33 +146,21 @@ void Y_list_insert(Ylist *yl, int index, void *item)
 	yl->length++;
 }
 
-void Y_list_remove(Ylist *yl, void *item, int free)
+void Y_list_remove(Ylist *yl, void *item)
 {
 	int index = Y_list_contains(yl, item);
-	if(index < 0)
-	{
-		// 元素不存在
-		// YLOGE(("item not found"));
-		return;
-	}
-
-	Y_list_removeat(yl, index, free);
+	Y_list_removeat(yl, index);
 }
 
-void Y_list_removeat(Ylist *yl, int at, int free)
+void Y_list_removeat(Ylist *yl, int at)
 {
-	if(at < 0 || at > yl->length)
+	if(at < 0 || at >= yl->length)
 	{
 		// YLOGE(("index outof range"));
 		return;
 	}
 
 	void *item = yl->array[at];
-
-	if(free == 1 && yl->freefunc != NULL)
-	{
-		yl->freefunc(item);
-	}
 
 	move_left(yl, at);
 	yl->length--;
