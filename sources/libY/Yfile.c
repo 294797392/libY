@@ -39,6 +39,24 @@ int Y_file_get_size(const char *file_path)
 
 }
 
+int Y_file_exist(const char *file_path)
+{
+	FILE *f = fopen(file_path, "r");
+	if(f == NULL)
+	{
+		if(errno == 2)
+		{
+			return -1;
+		}
+	}
+	else
+	{
+		fclose(f);
+	}
+
+	return 0;
+}
+
 int Y_file_read_all(const char *file_path, char **content, uint64_t *size)
 {
 	int file_size = Y_file_get_size(file_path);
@@ -53,6 +71,11 @@ int Y_file_read_all(const char *file_path, char **content, uint64_t *size)
 		return YERR_FAILED;
 	}
 	char *buf = (char *)calloc((size_t)file_size + 1, 1);
+	if(buf == NULL)
+	{
+		return YERR_NO_MEM;
+	}
+
 	fread(buf, 1, (size_t)file_size, f);
 	fclose(f);
 
