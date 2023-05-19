@@ -83,20 +83,6 @@ static void demo_Ylist()
 	}
 }
 
-static void demo_Ypool()
-{
-	Y_pool_init(1024, 1024);
-
-	for (int i = 0; i < 10; i++)
-	{
-		void *block = Y_pool_obtain(1024);
-		char *msg = (char *)block;
-		snprintf(msg, 1024, "%d", i);
-		YLOGI(("%s"), msg);
-		Y_pool_recycle(block, 1024);
-	}
-}
-
 static void demo_Ylog()
 {
 	while(1)
@@ -105,11 +91,63 @@ static void demo_Ylog()
 	}
 }
 
-typedef struct test_s
+
+typedef struct linklist_s linklist;
+typedef struct linklist_node_s linklist_node;
+
+struct linklist_node_s
 {
-	void *p1;
-	void *p2;
-}test;
+	linklist_node *next;
+	linklist_node *prev;
+
+	int value;
+};
+
+struct linklist_s
+{
+	linklist_node *first;
+	linklist_node *last;
+	int count;
+};
+
+static void linklist_foreach(linklist_node *node)
+{
+	printf("value = %d\n", node->value);
+}
+
+static void demo_Ylinklist()
+{
+	linklist *list = (linklist *)calloc(1, sizeof(linklist));
+
+	linklist_node *node1 = (linklist_node *)calloc(1, sizeof(linklist_node));
+	node1->value = 1;
+	linklist_node *node2 = (linklist_node *)calloc(1, sizeof(linklist_node));
+	node2->value = 2;
+	linklist_node *node3 = (linklist_node *)calloc(1, sizeof(linklist_node));
+	node3->value = 3;
+	linklist_node *node4 = (linklist_node *)calloc(1, sizeof(linklist_node));
+	node4->value = 4;
+	linklist_node *node5 = (linklist_node *)calloc(1, sizeof(linklist_node));
+	node5->value = 5;
+
+	printf("--------------------\n");
+	Y_linklist_add(linklist_node, list, node1);
+	Y_linklist_add(linklist_node, list, node2);
+	Y_linklist_add(linklist_node, list, node3);
+	Y_linklist_add(linklist_node, list, node4);
+	Y_linklist_add(linklist_node, list, node5);
+	//Y_linklist_foreach(linklist_node, list, linklist_foreach);
+
+	printf("--------------------\n");
+	Y_linklist_remove(linklist_node, list, node1);
+	Y_linklist_remove(linklist_node, list, node3);
+	Y_linklist_remove(linklist_node, list, node5);
+	//Y_linklist_foreach(linklist_node, list, linklist_foreach);
+
+	printf("--------------------\n");
+	Y_linklist_clear(list);
+	Y_linklist_foreach(linklist_node, list, linklist_foreach);
+}
 
 int main(int argc, char **argv)
 {
@@ -118,9 +156,10 @@ int main(int argc, char **argv)
 	//Y_file_read_all("E:\\oheiheiheiheihei\\libY\\msvc\\build\\libY.pdb", &content, &size);
 
 	Y_log_init(NULL);
-	demo_Ypool();
 
-	YLOGI(("123"));
+	YLOGI(("test log"));
+
+	demo_Ylinklist();
 
 	//for(size_t i = 0; i < 99999999; i++)
 	//{

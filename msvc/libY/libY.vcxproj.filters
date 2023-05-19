@@ -6,7 +6,6 @@
     <ClCompile Include="..\..\sources\libY\Yfile.c" />
     <ClCompile Include="..\..\sources\libY\Ylist.c" />
     <ClCompile Include="..\..\sources\libY\Ymap.c" />
-    <ClCompile Include="..\..\sources\libY\Ypool.c" />
     <ClCompile Include="..\..\sources\libY\Yqueue.c" />
     <ClCompile Include="..\..\sources\libY\Ystring.c" />
     <ClCompile Include="..\..\sources\libY\Ythread.c" />

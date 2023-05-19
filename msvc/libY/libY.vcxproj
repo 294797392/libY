@@ -28,7 +28,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -163,7 +163,6 @@
     <ClCompile Include="..\..\sources\libY\Ylog\Yappender_file.c" />
     <ClCompile Include="..\..\sources\libY\Ylog\Ylog.c" />
     <ClCompile Include="..\..\sources\libY\Ymap.c" />
-    <ClCompile Include="..\..\sources\libY\Ypool.c" />
     <ClCompile Include="..\..\sources\libY\Yqueue.c" />
     <ClCompile Include="..\..\sources\libY\Ystring.c" />
     <ClCompile Include="..\..\sources\libY\Ythread.c" />
