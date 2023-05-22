@@ -929,6 +929,7 @@
         {\
             node_type *current = __linklist_foreach_current;\
             __linklist_foreach_current = __linklist_foreach_current->next;\
+            /** 考虑到调用者可能会在链表foreach的时候释放node，所以先找到链表里的下一个节点，再执行foreach操作 **/\
             code\
         }\
 
