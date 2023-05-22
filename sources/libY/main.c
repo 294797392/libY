@@ -33,19 +33,27 @@
 
 static void demo_Yqueue()
 {
-	Yqueue *q = Y_create_queue(NULL);
+	Yqueue *q = Y_create_queue();
 
-	for(int i = 0; i < 100; i++)
+	for(int i = 0; i < 512; i++)
 	{
 		char *buf = (char *)calloc(1, 64);
 		snprintf(buf, 64, "%d", i);
 		Y_queue_enqueue(q, buf);
 	}
 
-	for(int i = 0; i < 100; i++)
+	for(int i = 0; i < 512; i++)
 	{
 		char *buf = (char *)Y_queue_dequeue(q);
 		printf("%s\n", buf);
+		free(buf);
+	}
+
+	for(int i = 0; i < 512; i++)
+	{
+		char *buf = (char *)calloc(1, 64);
+		snprintf(buf, 64, "%d", i);
+		Y_queue_enqueue(q, buf);
 	}
 }
 
@@ -115,7 +123,7 @@ static void linklist_foreach(linklist_node *node)
 	printf("value = %d\n", node->value);
 }
 
-static void demo_Ylinklist()
+static void demo_Ychain()
 {
 	linklist *list = (linklist *)calloc(1, sizeof(linklist));
 
@@ -131,41 +139,37 @@ static void demo_Ylinklist()
 	node5->value = 5;
 
 	printf("--------------------\n");
-	Y_linklist_add(linklist_node, list, node1);
-	Y_linklist_add(linklist_node, list, node2);
-	Y_linklist_add(linklist_node, list, node3);
-	Y_linklist_add(linklist_node, list, node4);
-	Y_linklist_add(linklist_node, list, node5);
-	//Y_linklist_foreach(linklist_node, list, linklist_foreach);
+	Y_chain_add(linklist_node, list, node1);
+	Y_chain_add(linklist_node, list, node2);
+	Y_chain_add(linklist_node, list, node3);
+	Y_chain_add(linklist_node, list, node4);
+	Y_chain_add(linklist_node, list, node5);
+	//Y_chain_foreach(linklist_node, list,
+	//	printf("%d\n", current->value);
+	//);
 
 	printf("--------------------\n");
-	Y_linklist_remove(linklist_node, list, node1);
-	Y_linklist_remove(linklist_node, list, node3);
-	Y_linklist_remove(linklist_node, list, node5);
-	//Y_linklist_foreach(linklist_node, list, linklist_foreach);
+	Y_chain_remove(linklist_node, list, node1);
+	Y_chain_remove(linklist_node, list, node3);
+	Y_chain_remove(linklist_node, list, node5);
+	//Y_chain_foreach(linklist_node, list,
+	//	printf("%d\n", current->value);
+	//);
 
 	printf("--------------------\n");
-	Y_linklist_clear(list);
-	Y_linklist_foreach(linklist_node, list, linklist_foreach);
+	Y_chain_clear(list);
+	Y_chain_foreach(linklist_node, list,
+		printf("%d\n", current->value);
+	);
 }
 
 int main(int argc, char **argv)
 {
-	//char *content = NULL;
-	//uint64_t size = 0;
-	//Y_file_read_all("E:\\oheiheiheiheihei\\libY\\msvc\\build\\libY.pdb", &content, &size);
-
 	Y_log_init(NULL);
 
 	YLOGI(("test log"));
 
-	demo_Ylinklist();
-
-	//for(size_t i = 0; i < 99999999; i++)
-	//{
-	//	YLOGD(("%d"), i);
-	//	Ysleep(1);
-	//}
+	demo_Ychain();
 
 	//demo_Yqueue();
 
@@ -219,7 +223,7 @@ int main(int argc, char **argv)
 
 	//printf("%s\n", buf);
 
-	while (1)
+	while(1)
 	{
 		char line[1024] = { '\0' };
 		fgets(line, sizeof(line), stdin);
